@@ -19,7 +19,9 @@ If you have g++ >= 6.0 installed, You can switch your active compiler by
 export CXX=/usr/bin/g++-8 && export CC=/usr/bin/gcc-8
 ```
 
-First, install dependencies of Ogre. Make sure that you install it locally since otherwise it will overwrite your local ogre installation.
+First, install raisimLib (https://github.com/leggedrobotics/raisimLib).
+
+Then, install dependencies of Ogre. Make sure that you install it locally since otherwise it will overwrite your local ogre installation.
 ```commandline
 sudo apt-get install libgles2-mesa-dev libxt-dev libxaw7-dev libsdl2-dev libzzip-dev
 ```
@@ -42,7 +44,7 @@ cp -R Dependencies/* LOCAL_BUILD
 ```
 
 Next, build Assimp from source
-```command
+```commandline
 cd WORKSPACE
 git clone https://github.com/assimp/assimp.git
 cd assimp && mkdir build && cd build
@@ -60,7 +62,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=LOCAL_BUILD -DCMAKE_INST
 make install -j
 ```
 
-###Optional Dependencies
+### Optional Dependencies
 - ffmpeg (video recording, for OgreVis::startRecordingVideo method. The install struction can be found at https://tecadmin.net/install-ffmpeg-on-linux/)
 
 ## Examples
