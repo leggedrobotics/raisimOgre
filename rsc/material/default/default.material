@@ -1,0 +1,89 @@
+material default
+{
+   technique
+   {
+      pass
+      {
+         lighting on
+
+         ambient 0.0 0.0 0.0 0.0
+         diffuse 0.5 0.5 0.5 0.5
+         emissive 0 0 0 0
+      }
+   }
+}
+
+material redEmit
+{
+   technique
+   {
+      pass
+      {
+         lighting on
+
+         ambient 0.8 0.2 0.2 0.0
+         diffuse 0.8 0.2 0.2 0.0
+         emissive 0.3 0 0 0
+      }
+   }
+}
+
+material blueEmit
+{
+   technique
+   {
+      pass
+      {
+         lighting on
+
+         ambient 0.2 0.2 0.8 0.0
+         diffuse 0.2 0.2 0.8 0.0
+         emissive 0 0 0.3 0
+      }
+   }
+}
+
+material red
+{
+   technique
+   {
+      pass
+      {
+         lighting on
+
+         ambient 1 0 0 0.0
+         diffuse 1 0 0 0.0
+         emissive 0 0 0 0
+      }
+   }
+}
+
+material green
+{
+   technique
+   {
+      pass
+      {
+         lighting on
+
+         ambient 0 1 0 0.0
+         diffuse 0 1 0 0.0
+         emissive 0 0 0 0
+      }
+   }
+}
+
+material blue
+{
+   technique
+   {
+      pass
+      {
+         lighting on
+
+         ambient 0 0 1 1
+         diffuse 0 0 1 1
+         emissive 0 0 0 0
+      }
+   }
+}

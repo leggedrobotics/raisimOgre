@@ -1,0 +1,11 @@
+# Common sample resources needed by many of the samples.
+# Rarely used resources should be separately loaded by the
+# samples which require them.
+[General]
+# Bites uses the next entry to discover the platform shaders
+FileSystem=@RAISIM_OGRE_RESOURCE_DIR@/ogreResources/Media
+FileSystem=@RAISIM_OGRE_RESOURCE_DIR@/ogreResources/Media/materials/programs
+FileSystem=@RAISIM_OGRE_RESOURCE_DIR@/ogreResources/Media/materials/scripts
+Zip=@RAISIM_OGRE_RESOURCE_DIR@/ogreResources/Media/packs/cubemapsJS.zip
+FileSystem=@RAISIM_OGRE_RESOURCE_DIR@/pbr
+

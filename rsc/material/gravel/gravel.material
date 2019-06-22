@@ -1,0 +1,35 @@
+import rsPBR from rsPBR.material
+
+material gravel : rsPBR
+{
+    technique
+    {
+        pass
+        {
+            texture_unit Albedo
+            {
+                texture gravel_Color.png
+            }
+            texture_unit Normal
+            {
+                texture gravel_Normal.png
+            }
+			texture_unit Emissive
+			{
+				texture gravel_Emissive.png
+			}
+			texture_unit Metal
+			{
+				texture gravel_Emissive.png
+			}
+			texture_unit Roughness
+			{
+				texture gravel_Height.png
+			}
+			texture_unit AmbientOcclusion
+			{
+				texture gravel_AO.png
+			}
+        }
+    }
+}

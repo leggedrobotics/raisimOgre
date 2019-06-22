@@ -1,0 +1,45 @@
+import rsPBR from rsPBR.material
+
+material bark : rsPBR
+{
+    technique
+    {
+        pass
+        {
+            texture_unit Albedo
+            {
+                texture bark_albedo.png
+            }
+            texture_unit Normal
+            {
+                texture bark_normal3.png
+            }
+			texture_unit Emissive
+			{
+                texture bark_metalness.png
+			}
+			texture_unit Metal
+			{
+				texture bark_metalness.png
+			}
+			texture_unit Roughness
+			{
+				texture bark_rough.png
+			}
+			texture_unit AmbientOcclusion
+			{
+				texture bark_ao.png
+			}
+            texture_unit IBL_Diffuse
+            {
+                texture diffuse.jpg cubic
+            }
+            texture_unit IBL_Specular
+            {
+            }
+            texture_unit IBL_LUT
+            {
+            }
+        }
+    }
+}

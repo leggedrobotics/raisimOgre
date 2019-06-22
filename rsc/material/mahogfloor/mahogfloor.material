@@ -1,0 +1,35 @@
+import rsPBR from rsPBR.material
+
+material mahogfloor : rsPBR
+{
+    technique
+    {
+        pass
+        {
+            texture_unit Albedo
+            {
+                texture mahogfloor_basecolor.png
+            }
+            texture_unit Normal
+            {
+                texture mahogfloor_normal.png
+            }
+			texture_unit Emissive
+			{
+                texture mahogfloor_Emissive.png
+			}
+			texture_unit Metal
+			{
+				texture mahogfloor_Emissive.png
+			}
+			texture_unit Roughness
+			{
+				texture mahogfloor_roughness.png
+			}
+			texture_unit AmbientOcclusion
+			{
+				texture mahogfloor_AO.png
+			}
+        }
+    }
+}
