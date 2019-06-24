@@ -33,16 +33,16 @@ bool raisimKeyboardCallback(const OgreBites::KeyboardEvent &evt) {
   auto &key = evt.keysym.sym;
   // termination gets the highest priority
   switch (key) {
-    case '1':
+    case OgreBites::SDLK_F1:
       raisim::gui::showBodies = !raisim::gui::showBodies;
       break;
-    case '2':
+    case OgreBites::SDLK_F2:
       raisim::gui::showCollision = !raisim::gui::showCollision;
       break;
-    case '3':
+    case OgreBites::SDLK_F3:
       raisim::gui::showContacts = !raisim::gui::showContacts;
       break;
-    case '4':
+    case OgreBites::SDLK_F4:
       raisim::gui::showForces = !raisim::gui::showForces;
       break;
     default:

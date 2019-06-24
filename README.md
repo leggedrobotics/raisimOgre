@@ -13,6 +13,14 @@ Please install/save everything locally to prevent corrupting your system files. 
 - WORKSPACE: workspace where you clone your git repos
 - LOCAL_BUILD: build directory where you install exported cmake libraries
 
+To link against shared libraries in LOCAL_BUILD, you have to let LDD know where the libraries are installed. This can be done adding the following line to your ```~/bashrc```
+
+```commandline
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:LOCAL_BUILD/lib
+```
+
+If you are using an IDE, ensure that it loads your bashrc. 
+
 ### Dependencies
 If you have g++ >= 6.0 installed, You can switch your active compiler by
 ```commandline

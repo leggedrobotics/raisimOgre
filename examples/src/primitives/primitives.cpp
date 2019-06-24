@@ -62,9 +62,6 @@ int main(int argc, char **argv) {
   world.setTimeStep(0.003);
   world.setERP(world.getTimeStep(), world.getTimeStep());
 
-  /// create raisim objects
-  auto ground = world.addGround();
-
   /// starts visualizer thread
 
   /// these method must be called before initApp
@@ -79,6 +76,9 @@ int main(int argc, char **argv) {
 
   /// init
   vis->initApp();
+
+  /// create raisim objects
+  auto ground = world.addGround();
 
   std::vector<raisim::Box*> cubes;
   std::vector<raisim::Sphere*> spheres;

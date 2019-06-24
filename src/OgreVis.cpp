@@ -443,22 +443,20 @@ void OgreVis::run() {
   double visTime = 1. / desiredFPS_;
 
   while (!getRoot()->endRenderingQueued()) {
-    while (time < 0 && takeNSteps_ != 0 && !paused_) {
+    while (time < 0 && (!(takeNSteps_ == 0 && paused_) || !paused_)) {
 
       /// control and simulation
-      if(!paused_) {
-        if (controlCallback_) controlCallback_();
-        world_->integrate1();
-        world_->integrate2();
-        time += world_->getTimeStep();
-      }
+      if (controlCallback_) controlCallback_();
+      world_->integrate1();
+      world_->integrate2();
+      time += world_->getTimeStep();
 
       /// count the allowed number of sim steps
       if (takeNSteps_ > 0) takeNSteps_--;
     }
 
     /// compute how much sim is ahead
-    if(!paused_)
+    if(time > -visTime * realTimeFactor_ * .1)
       time -= visTime * realTimeFactor_;
 
     /// do actual rendering

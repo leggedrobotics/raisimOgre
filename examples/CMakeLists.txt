@@ -24,6 +24,7 @@ create_executable(atlas src/robots/atlas.cpp)
 create_executable(remoteVisualzation_server src/remote/server.cpp)
 create_executable(remoteVisualzation_client src/remote/client.cpp)
 create_executable(zurichHeightMap src/primitives/heightMapFromPng.cpp)
+create_executable(newtonsCradle src/primitives/newtonsCradle.cpp)
 
 #==
 # Install example binaries
