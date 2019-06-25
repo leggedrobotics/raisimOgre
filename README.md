@@ -71,7 +71,7 @@ make install -j
 ```
 
 ### Optional Dependencies
-- ffmpeg (video recording, for OgreVis::startRecordingVideo method. The install struction can be found at https://tecadmin.net/install-ffmpeg-on-linux/)
+- ffmpeg (video recording, for OgreVis::startRecordingVideo method. The install instruction can be found at https://tecadmin.net/install-ffmpeg-on-linux/)
 
 ## Examples
 ANYmal | ANYmal on a heightmap  

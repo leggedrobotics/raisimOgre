@@ -50,7 +50,7 @@ void setupCallback() {
   // beyond this distance, shadow disappears
   vis->getSceneManager()->setShadowFarDistance(60);
   // size of contact points and contact forces
-  vis->setContactVisObjectSize(0.1, 3.0);
+  vis->setContactVisObjectSize(0.1, 1.0);
   // speed of camera motion in freelook mode
   vis->getCameraMan()->setTopSpeed(10);
 }
@@ -119,11 +119,14 @@ int main(int argc, char **argv) {
   ball4->setPosition(2.9, 0.0, 3.0);
   vis->createSphereVisualAndRegister(ball4, "ball4", "");
 
-  world.addStiffWire(pin1, 0, {0,0,0}, ball1, 0, {0,0,0}, 2.0);
-  world.addStiffWire(pin2, 0, {0,0,0}, ball2, 0, {0,0,0}, 2.0);
-  world.addStiffWire(pin3, 0, {0,0,0}, ball3, 0, {0,0,0}, 2.0);
-  world.addStiffWire(pin4, 0, {0,0,0}, ball4, 0, {0,0,0}, 2.0);
-
+  auto wire1 = world.addStiffWire(pin1, 0, {0,0,0}, ball1, 0, {0,0,0}, 2.0);
+  vis->createWireVisualAndRegister(wire1, "wire1", "red");
+  auto wire2 = world.addStiffWire(pin2, 0, {0,0,0}, ball2, 0, {0,0,0}, 2.0);
+  vis->createWireVisualAndRegister(wire2, "wire2", "red");
+  auto wire3 = world.addStiffWire(pin3, 0, {0,0,0}, ball3, 0, {0,0,0}, 2.0);
+  vis->createWireVisualAndRegister(wire3, "wire3", "red");
+  auto wire4 = world.addStiffWire(pin4, 0, {0,0,0}, ball4, 0, {0,0,0}, 2.0);
+  vis->createWireVisualAndRegister(wire4, "wire4", "red");
 
   /// create visualizer objects
   vis->createGroundVisualAndRegister(ground, 20, "floor", "default");

@@ -70,9 +70,9 @@ void OgreVis::loadMaterialFile(const std::string &filename) {
 void OgreVis::loadMeshFile(const std::string &file, const std::string &meshName, bool fromMemory) {
   AssimpLoader::AssOptions opts;
 
-  if(Ogre::MeshManager::getSingleton().getByName(meshName)) return;
+  if (Ogre::MeshManager::getSingleton().getByName(meshName)) return;
 
-  if(!fromMemory) {
+  if (!fromMemory) {
     if (!fileExists(file))
       OGRE_EXCEPT(Ogre::Exception::ERR_FILE_NOT_FOUND, "File " + file + " not found.", "OgreMeshLoaded");
 
@@ -82,19 +82,19 @@ void OgreVis::loadMeshFile(const std::string &file, const std::string &meshName,
                                            file.size() - file.find_last_of(separator()) - extension.size() - 2);
     std::string path = getPathName(file);
     meshFilename = path + separator() + baseFilename + "_" + extension + ".mesh";
-    if(extension == "mesh")
+    if (extension == "mesh")
       return;
 
     opts.source = file;
 
-    if(extension == "dae") {
+    if (extension == "dae") {
       std::ifstream fstream;
       fstream.open(file);
       std::string cadFileString((std::istreambuf_iterator<char>(fstream)),
-                                 std::istreambuf_iterator<char>());
+                                std::istreambuf_iterator<char>());
 
       auto itr = cadFileString.find("<up_axis>Z_UP</up_axis>");
-      if(itr != std::string::npos)
+      if (itr != std::string::npos)
         opts.flipYZ = true;
     }
   } else {
@@ -136,7 +136,8 @@ bool OgreVis::mousePressed(const MouseButtonEvent &evt) {
         if (selected_ == hovered_) break;
         if (selected_) {
           for (int i = 0; i < selectedMaterial_.size(); i++)
-            dynamic_cast<Ogre::Entity *>(selected_->getAttachedObject(0))->getSubEntity(i)->setMaterialName(selectedMaterial_[i]);
+            dynamic_cast<Ogre::Entity *>(selected_->getAttachedObject(0))->getSubEntity(i)->setMaterialName(
+                selectedMaterial_[i]);
           selected_ = nullptr;
         }
         selected_ = hovered_;
@@ -456,7 +457,7 @@ void OgreVis::run() {
     }
 
     /// compute how much sim is ahead
-    if(time > -visTime * realTimeFactor_ * .1)
+    if (time > -visTime * realTimeFactor_ * .1)
       time -= visTime * realTimeFactor_;
 
     /// do actual rendering
@@ -534,9 +535,9 @@ void OgreVis::addVisualObject(const std::string &name,
 }
 
 void OgreVis::clearVisualObject() {
-  for(auto& vo: visObject_) {
-    Ogre::Entity *ent = dynamic_cast<Ogre::Entity*>(vo.second.graphics->getAttachedObject(0));
-    vo.second.graphics->detachObject((short unsigned int)0);
+  for (auto &vo: visObject_) {
+    Ogre::Entity *ent = dynamic_cast<Ogre::Entity *>(vo.second.graphics->getAttachedObject(0));
+    vo.second.graphics->detachObject((short unsigned int) 0);
     scnMgr_->destroyEntity(ent);
     scnMgr_->destroySceneNode(vo.second.graphics);
   }
@@ -595,6 +596,31 @@ std::vector<GraphicObject> *OgreVis::createCylinderVisualAndRegister(raisim::Cyl
   return registerSet(name,
                      cylinder,
                      {generateGraphicalObject(name, "cylinderMesh", material, {rad, rad, h}, {0, 0, 0}, rot, 0)});
+}
+
+raisim::VisualObject *OgreVis::createWireVisualAndRegister(raisim::Wire *wire,
+                                                           const std::string &name,
+                                                           const std::string &material) {
+  wire->setName(name);
+
+  auto *ent = raisim::OgreVis::getSceneManager()->createEntity(name,
+                                                               "cylinderMesh",
+                                                               Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+  wires_[name] = VisualObject();
+
+  ent->setCastShadows(true);
+
+  if (!material.empty())
+    ent->getSubEntity(0)->setMaterialName(material);
+  /// hack to check if texture coordinates exist
+  VisualObject &obj = wires_[name];
+  obj.graphics = getSceneManager()->getRootSceneNode()->createChildSceneNode(name);
+  obj.graphics->attachObject(ent);
+  obj.scale = {1., 1., 1.};
+  obj.graphics->scale(float(obj.scale[0]), float(obj.scale[1]), float(obj.scale[2]));
+  obj.group = RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP;
+  obj.name = name;
 }
 
 std::vector<GraphicObject> *OgreVis::createCapsuleVisualAndRegister(raisim::Capsule *capsule,
@@ -694,8 +720,7 @@ void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
         meshName = "capsuleMesh";
         dim = {vo.visShapeParam[0], vo.visShapeParam[0], vo.visShapeParam[1]};
         break;
-      default:
-        RSFATAL("unsupported visual shape of "<<name<<" of "<<as->getRobotDescriptionfFileName())
+      default: RSFATAL("unsupported visual shape of " << name << " of " << as->getRobotDescriptionfFileName())
     }
     graphics.push_back(generateGraphicalObject(visname + meshName,
                                                meshName,
@@ -720,7 +745,7 @@ void OgreVis::select(const GraphicObject &ob, bool highlight) {
   for (auto sub: newSelEn->getSubEntities())
     selectedMaterial_.push_back(sub->getMaterialName());
 
-  if(highlight)
+  if (highlight)
     for (auto sub: newSelEn->getSubEntities())
       sub->setMaterialName("selection");
 
@@ -751,7 +776,7 @@ void OgreVis::buildHeightMap(const std::string &name,
                              float ySize,
                              float centerY,
                              const std::vector<float> &height) {
-  if(Ogre::MeshManager::getSingleton().getByName(name))
+  if (Ogre::MeshManager::getSingleton().getByName(name))
     return;
   std::vector<float> vertex;
   std::vector<float> normal;
@@ -845,7 +870,7 @@ void OgreVis::buildHeightMap(const std::string &name,
 
   // now begin the object definition
   // We create a submesh per material
-  
+
   Ogre::MeshPtr mMesh =
       Ogre::MeshManager::getSingleton().createManual(name, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   Ogre::SubMesh *submesh = mMesh->createSubMesh(name + "_submesh");
@@ -948,7 +973,7 @@ std::vector<GraphicObject> *OgreVis::createTerrainVisualAndRegister(raisim::Heig
   auto &height = hm->getHeightVector();
   std::vector<float> heightFloat;
   heightFloat.reserve(height.size());
-  for(auto h: height)
+  for (auto h: height)
     heightFloat.push_back(h);
 
   buildHeightMap(name, xSamples, xSize, centerX, ySamples, ySize, centerY, heightFloat);
@@ -982,11 +1007,10 @@ void OgreVis::createAndAppendVisualObject(const std::string &name,
 
 void OgreVis::updateVisualizationObject(raisim::VisualObject &vo) {
   Vec<4> quat;
-  vo.graphics->setPosition(float(vo.offset[0]),
-                           float(vo.offset[1]),
-                           float(vo.offset[2]));
+  vo.graphics->setPosition(float(vo.offset[0]), float(vo.offset[1]), float(vo.offset[2]));
   raisim::rotMatToQuat(vo.rotationOffset, quat);
   vo.graphics->setOrientation(float(quat[0]), float(quat[1]), float(quat[2]), float(quat[3]));
+  vo.graphics->setScale(vo.scale[0], vo.scale[1], vo.scale[2]);
 }
 
 void OgreVis::renderOneFrame() {
@@ -1009,9 +1033,7 @@ void OgreVis::renderOneFrame() {
     if (mask_ & RAISIM_CONTACT_POINT_GROUP)
       for (size_t i = contactPoints_.size(); i < nContact; i++) {
         createAndAppendVisualObject("cp" + std::to_string(i), "sphereMesh", "redEmit", contactPoints_);
-        contactPoints_.back().graphics->scale(contactPointSphereSize_,
-                                              contactPointSphereSize_,
-                                              contactPointSphereSize_);
+        contactPoints_.back().scale = {contactPointSphereSize_, contactPointSphereSize_, contactPointSphereSize_};
       }
 
     if (mask_ & RAISIM_CONTACT_FORCE_GROUP)
@@ -1046,9 +1068,9 @@ void OgreVis::renderOneFrame() {
         zaxis /= norm;
 
         raisim::zaxisToRotMat(zaxis, contactForces_[i].rotationOffset);
-        contactForces_[i].graphics->setScale(0.3 * norm / maxNorm * contactForceArrowLength_,
-                                             0.3 * norm / maxNorm * contactForceArrowLength_,
-                                             norm / maxNorm * contactForceArrowLength_);
+        contactForces_[i].scale = {0.3 * norm / maxNorm * contactForceArrowLength_,
+                                   0.3 * norm / maxNorm * contactForceArrowLength_,
+                                   norm / maxNorm * contactForceArrowLength_};
         contactForces_[i].graphics->setVisible(true);
         contactForces_[i].group = RAISIM_CONTACT_FORCE_GROUP;
         updateVisualizationObject(contactForces_[i]);
@@ -1056,9 +1078,28 @@ void OgreVis::renderOneFrame() {
     }
   }
 
-  for (auto& vob: visObject_) {
+  for (auto &vob: visObject_) {
     vob.second.graphics->setVisible(vob.second.group & mask_);
     updateVisualizationObject(vob.second);
+  }
+
+  for (auto &wire: wires_) {
+    wire.second.graphics->setVisible(wire.second.group & mask_);
+    raisim::Vec<3> mid, p1, p2, norm;
+    raisim::Mat<3, 3> rot;
+    auto wobj = world_->getWire(wire.first);
+    wobj->update();
+    p1 = wobj->getP1();
+    p2 = wobj->getP2();
+    raisim::vecadd(p1, p2, mid);
+    mid *= 0.5;
+    norm = wobj->getNorm();
+    raisim::zaxisToRotMat(norm, rot);
+
+    wire.second.offset = mid;
+    wire.second.rotationOffset = rot;
+    wire.second.scale = {wireThickness_, wireThickness_, wobj->getLength()};
+    updateVisualizationObject(wire.second);
   }
 
   getRoot()->renderOneFrame();
@@ -1070,7 +1111,10 @@ void OgreVis::renderOneFrame() {
 
   /// compute how much you have to wait and wait
   auto diff = 1. / desiredFPS_ - elapsed.count();
-  if (diff > 0) { MSLEEP(diff * 1000.); start = std::chrono::system_clock::now();}
+  if (diff > 0) {
+    MSLEEP(diff * 1000.);
+    start = std::chrono::system_clock::now();
+  }
 }
 
 void OgreVis::deselect() {

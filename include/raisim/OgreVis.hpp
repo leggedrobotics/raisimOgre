@@ -149,6 +149,14 @@ class OgreVis :
                                                               const std::string &material);
 
   /**
+  * @param raisim wire object
+  * @param name unique identifier of the object
+  * @param material for visualization */
+  raisim::VisualObject *createWireVisualAndRegister(raisim::Wire *wire,
+                                                    const std::string &name,
+                                                    const std::string &material = "default");
+
+  /**
   * @param capsule raisim capsule object
   * @param name unique identifier of the object
   * @param material for visualization */
@@ -337,12 +345,14 @@ class OgreVis :
   raisim::World *world_ = nullptr;
   SimAndGraphicsObjectPool objectSet_;
   std::map<std::string, VisualObject> visObject_;
+  std::map<std::string, VisualObject> wires_;
   uint32_t initialWindowSizeX_ = 400, initialWindowSizeY_ = 300;
   std::vector<std::string> selectedMaterial_;
   double desiredFPS_ = 30.;
   int fsaa_ = 8;
   float realTimeFactor_ = 1.0;
   bool remoteMode_ = false;
+  double wireThickness_ = 0.02;
 
   /// visualizing simulation
   std::vector<raisim::VisualObject> contactPoints_;
