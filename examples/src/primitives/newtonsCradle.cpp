@@ -105,19 +105,19 @@ int main(int argc, char **argv) {
 
   auto ball1 = world.addSphere(0.1498, 0.8, "steel");
   ball1->setPosition(0, 0.0, 1.0);
-  vis->createSphereVisualAndRegister(ball1, "ball1", "");
+  vis->createSphereVisualAndRegister(ball1, "ball1", "dark_red");
 
   auto ball2 = world.addSphere(0.1498, 0.8, "steel");
   ball2->setPosition(0.3, 0.0, 1.0);
-  vis->createSphereVisualAndRegister(ball2, "ball2", "");
+  vis->createSphereVisualAndRegister(ball2, "ball2", "black");
 
   auto ball3 = world.addSphere(0.1498, 0.8, "steel");
   ball3->setPosition(0.6, 0.0, 1.0);
-  vis->createSphereVisualAndRegister(ball3, "ball3", "");
+  vis->createSphereVisualAndRegister(ball3, "ball3", "green");
 
   auto ball4 = world.addSphere(0.1498, 0.8, "steel");
   ball4->setPosition(2.9, 0.0, 3.0);
-  vis->createSphereVisualAndRegister(ball4, "ball4", "");
+  vis->createSphereVisualAndRegister(ball4, "ball4", "orange");
 
   auto wire1 = world.addStiffWire(pin1, 0, {0,0,0}, ball1, 0, {0,0,0}, 2.0);
   vis->createWireVisualAndRegister(wire1, "wire1", "red");
