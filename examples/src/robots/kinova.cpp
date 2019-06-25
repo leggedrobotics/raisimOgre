@@ -44,6 +44,10 @@ void setupCallback() {
   vis->getLight()->setCastShadows(true);
   vis->getLightNode()->setPosition(3, 3, 3);
 
+  /// load  textures
+  vis->addResourceDirectory(vis->getResourceDir() + "/material/checkerboard");
+  vis->loadMaterialFile("checkerboard.material");
+
   /// scale related settings!! Please adapt it depending on your map size
   // beyond this distance, shadow disappears
   vis->getSceneManager()->setShadowFarDistance(10);
@@ -88,11 +92,10 @@ int main() {
   // create simulation handle
   raisim::World sim;
   sim.setTimeStep(0.002);
-  auto checkerBoard = sim.addGround();
   auto kinova = sim.addArticulatedSystem(raisim::loadResource("kinova/urdf/kinova_stand.urdf"));
-  // Sanity check of DOF
-  std::cerr << "Degree of Freedom: " << kinova->getDOF() << std::endl;
-  assert(kinova->getGeneralizedCoordinateDim() == JointsDim);
+
+  // Display DOF
+  RSINFO("Degree of Freedom: " << kinova->getDOF())
 
   // visualizer
   auto real_time_factor = 1.0;
@@ -107,20 +110,17 @@ int main() {
   vis->setSetUpCallback(setupCallback);
   vis->setImguiSetupCallback(imguiSetupCallback);
   vis->setImguiRenderCallback(imguiRenderCallBack);
-  raisim::gui::manualStepping = true;
-  vis->getTakeNSteps() = 0;
 
   vis->initApp();
   // Configure general properties
   vis->setContactVisObjectSize(0.025, 0.01);
+
   // Create the robot and ground visuals
-  groundGraphic = vis->createGroundVisualAndRegister(checkerBoard, 10, "floor", "checkerboard");
+  auto checkerBoard = sim.addGround();
+  groundGraphic = vis->createGroundVisualAndRegister(checkerBoard, 20, "floor", "checkerboard");
   kinovaGraphic = vis->createArticulatedSystemVisualAndRegister(kinova, "kinova");
   vis->select(kinovaGraphic->at(0));
   vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0.), Ogre::Radian(-1.), 3);
-
-  vis->renderOneFrame();
-
 
   /*
    * Basic Operation

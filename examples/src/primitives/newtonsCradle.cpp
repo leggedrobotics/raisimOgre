@@ -50,7 +50,7 @@ void setupCallback() {
   // beyond this distance, shadow disappears
   vis->getSceneManager()->setShadowFarDistance(60);
   // size of contact points and contact forces
-  vis->setContactVisObjectSize(0.1, 1.0);
+  vis->setContactVisObjectSize(0.03, 1.0);
   // speed of camera motion in freelook mode
   vis->getCameraMan()->setTopSpeed(10);
 }

@@ -74,20 +74,10 @@ make install -j
 - ffmpeg (video recording, for OgreVis::startRecordingVideo method. The install instruction can be found at https://tecadmin.net/install-ffmpeg-on-linux/)
 
 ## Examples
-**ANYmal on a heightmap**
 
 ![1](img/heightmap.gif "title-2")
-
-**Laikago (random actuation)**
-
 ![1](img/laikago.gif "title-1")
-
-**Primitive shapes**
-
 ![alt-text-2](img/primitives.gif "title-2")
-
-**Newton's cradle**
-
 ![alt-text-1](img/newton.gif "title-1")
 
 ## OGRE Resources

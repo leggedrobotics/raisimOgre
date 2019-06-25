@@ -80,7 +80,6 @@ int main(int argc, char **argv) {
 
   /// create raisim objects
   auto ground = world.addGround();
-  ground->setName("checkerboard");
 
   std::vector<raisim::ArticulatedSystem*> laikagos;
   std::vector<std::vector<raisim::GraphicObject>*> laikago_visual;

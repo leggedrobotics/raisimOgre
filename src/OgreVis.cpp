@@ -1056,24 +1056,32 @@ void OgreVis::renderOneFrame() {
       for (size_t i = 0; i < nContact; i++)
         maxNorm = std::max(maxNorm, contactProblem->at(i).imp_i.norm());
 
-      for (size_t i = 0; i < nContact; i++) {
-        contactForces_[i].offset = contactProblem->at(i).position_W;
-        raisim::Vec<3> zaxis = contactProblem->at(i).imp_i;
-        double norm = zaxis.norm();
-        if (norm == 0) {
-          contactForces_[i].graphics->setVisible(false);
-          continue;
+      size_t contactIdx = 0;
+
+      for (auto* obj: world_->getObjList()) {
+        for (auto& contact: obj->getContacts()) {
+          if(!contact.isObjectA() && contact.getPairObjectBodyType() != raisim::BodyType::STATIC) continue;
+          contactForces_[contactIdx].offset = contact.getPosition();
+          raisim::Vec<3> zaxis = *contact.getImpulse();
+          double norm = zaxis.norm();
+          if (norm == 0) {
+            contactForces_[contactIdx].graphics->setVisible(false);
+            continue;
+          }
+
+          raisim::transpose(contact.getContactFrame(), contactForces_[contactIdx].rotationOffset);
+
+          zaxis /= norm;
+
+          contactForces_[contactIdx].scale = {0.3 * norm / maxNorm * contactForceArrowLength_,
+                                              0.3 * norm / maxNorm * contactForceArrowLength_,
+                                              norm / maxNorm * contactForceArrowLength_};
+
+          contactForces_[contactIdx].graphics->setVisible(true);
+          contactForces_[contactIdx].group = RAISIM_CONTACT_FORCE_GROUP;
+          updateVisualizationObject(contactForces_[contactIdx]);
+          contactIdx++;
         }
-
-        zaxis /= norm;
-
-        raisim::zaxisToRotMat(zaxis, contactForces_[i].rotationOffset);
-        contactForces_[i].scale = {0.3 * norm / maxNorm * contactForceArrowLength_,
-                                   0.3 * norm / maxNorm * contactForceArrowLength_,
-                                   norm / maxNorm * contactForceArrowLength_};
-        contactForces_[i].graphics->setVisible(true);
-        contactForces_[i].group = RAISIM_CONTACT_FORCE_GROUP;
-        updateVisualizationObject(contactForces_[i]);
       }
     }
   }

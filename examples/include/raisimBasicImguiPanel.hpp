@@ -187,6 +187,13 @@ void imguiRenderCallBack() {
     }
   }
 
+  if (ImGui::CollapsingHeader("Key maps")) {
+    ImGui::Text("F1~4        : toggle visualization mask\n");
+    ImGui::Text("Mouse L : orbital mode\n");
+    ImGui::Text("Mouse R : free cam mode\n");
+    ImGui::Text("Shift        : pan during free cam mode\n");
+  }
+
   const float INDENT = ImGui::GetTreeNodeToLabelSpacing();
   if (ImGui::CollapsingHeader("Object List")) {
     ImGui::Indent(INDENT);
