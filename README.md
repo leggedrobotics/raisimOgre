@@ -95,6 +95,9 @@ make install -j
 2. Ogre resources are loaded from the resource file, whose location is defined by the `OGRE_CONFIG_DIR` macro.
 3. The two aforementioned definitions are defined in the config file.
 
+## How to contribute?
+Please fork the repo, make changes and then send a pull request. Instructions can be found [here](https://help.github.com/en/articles/creating-a-pull-request-from-a-fork)
+
 ## Available materials
 Check rsc/material for a few examples of pbr materials. 
 Basic color materials can be found [here](https://www.rapidtables.com/web/color/RGB_Color.html). Replace spaces in the name of the color by "_", e.g., "dark red" to "dark_red"
