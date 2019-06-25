@@ -74,13 +74,21 @@ make install -j
 - ffmpeg (video recording, for OgreVis::startRecordingVideo method. The install instruction can be found at https://tecadmin.net/install-ffmpeg-on-linux/)
 
 ## Examples
-ANYmal (random actuation) | ANYmal on a heightmap  
-:-----------------------------------:|:------------------------------------:
-![alt-text-1](img/anymal.gif "title-1") | ![alt-text-2](img/heightmap.gif "title-2")
+**ANYmal on a heightmap**
 
-Laikago (random actuation)   | Primitive shapes  
-:-----------------------------------:|:------------------------------------:
-![alt-text-1](img/laikago.gif "title-1") | ![alt-text-2](img/primitives.gif "title-2")
+![1](img/heightmap.gif "title-2")
+
+**Laikago (random actuation)**
+
+![1](img/laikago.gif "title-1")
+
+**Primitive shapes**
+
+![alt-text-2](img/primitives.gif "title-2")
+
+**Newton's cradle**
+
+![alt-text-1](img/newton.gif "title-1")
 
 ## OGRE Resources
 1. Basic RaisimOgre resources are defined by the `RAISIM_OGRE_RESOURCE_DIR` macro.
@@ -89,5 +97,5 @@ Laikago (random actuation)   | Primitive shapes
 
 ## Available materials
 Check rsc/material for a few examples of pbr materials. 
-Basic color materials can be found [here](https://www.rapidtables.com/web/color/RGB_Color.html). Replace space in the names by "_", e.g., "dark red" to "dark_red"
+Basic color materials can be found [here](https://www.rapidtables.com/web/color/RGB_Color.html). Replace spaces in the name of the color by "_", e.g., "dark red" to "dark_red"
 

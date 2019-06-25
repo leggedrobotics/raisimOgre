@@ -67,11 +67,12 @@ int main(int argc, char **argv) {
 
   /// these method must be called before initApp
   vis->setWorld(&world);
-  vis->setWindowSize(1200, 600);
+  vis->setWindowSize(1800, 1200);
   vis->setImguiSetupCallback(imguiSetupCallback);
   vis->setImguiRenderCallback(imguiRenderCallBack);
   vis->setSetUpCallback(setupCallback);
   vis->setAntiAliasing(8);
+  raisim::gui::manualStepping = true;
 
   /// starts visualizer thread
   vis->initApp();

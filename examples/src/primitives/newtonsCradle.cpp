@@ -86,22 +86,22 @@ int main(int argc, char **argv) {
   auto pin1 = world.addSphere(0.1, 0.8);
   pin1->setPosition(0.0, 0.0, 3.0);
   pin1->setBodyType(raisim::BodyType::STATIC);
-  auto pin1visual = vis->createSphereVisualAndRegister(pin1, "pin1", "");
+  auto pin1visual = vis->createSphereVisualAndRegister(pin1, "pin1", "lawn_green");
 
   auto pin2 = world.addSphere(0.1, 0.8);
   pin2->setPosition(0.3, 0.0, 3.0);
   pin2->setBodyType(raisim::BodyType::STATIC);
-  vis->createSphereVisualAndRegister(pin2, "pin2", "");
+  vis->createSphereVisualAndRegister(pin2, "pin2", "lawn_green");
 
   auto pin3 = world.addSphere(0.1, 0.8);
   pin3->setPosition(0.6, 0.0, 3.0);
   pin3->setBodyType(raisim::BodyType::STATIC);
-  vis->createSphereVisualAndRegister(pin3, "pin3", "");
+  vis->createSphereVisualAndRegister(pin3, "pin3", "lawn_green");
 
   auto pin4 = world.addSphere(0.1, 0.8);
   pin4->setPosition(0.9, 0.0, 3.0);
   pin4->setBodyType(raisim::BodyType::STATIC);
-  vis->createSphereVisualAndRegister(pin4, "pin4", "");
+  vis->createSphereVisualAndRegister(pin4, "pin4", "lawn_green");
 
   auto ball1 = world.addSphere(0.1498, 0.8, "steel");
   ball1->setPosition(0, 0.0, 1.0);
@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
 
   auto ball2 = world.addSphere(0.1498, 0.8, "steel");
   ball2->setPosition(0.3, 0.0, 1.0);
-  vis->createSphereVisualAndRegister(ball2, "ball2", "black");
+  vis->createSphereVisualAndRegister(ball2, "ball2", "gray");
 
   auto ball3 = world.addSphere(0.1498, 0.8, "steel");
   ball3->setPosition(0.6, 0.0, 1.0);
@@ -129,13 +129,13 @@ int main(int argc, char **argv) {
   vis->createWireVisualAndRegister(wire4, "wire4", "red");
 
   /// create visualizer objects
-  vis->createGroundVisualAndRegister(ground, 20, "floor", "default");
+  vis->createGroundVisualAndRegister(ground, 20, "floor", "checkerboard_green");
 
   /// set camera
   vis->getCameraMan()->getCamera()->setPosition(0, 3.5, 1.5);
   vis->getCameraMan()->getCamera()->pitch(Ogre::Radian(1.2));
   vis->select(pin1visual->at(0));
-  vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0.), Ogre::Radian(-1.), 3);
+  vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0.), Ogre::Radian(-1.5), 5);
 
   /// run the app
   vis->run();
