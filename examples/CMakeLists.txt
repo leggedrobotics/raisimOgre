@@ -15,16 +15,22 @@ function(create_executable app_name file_name)
   target_compile_definitions(${app_name} PRIVATE "-DEXAMPLE_ROBOT_RESOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/rsc/")
 endfunction()
 
+# robots
 create_executable(anymal src/robots/anymal.cpp)
 create_executable(laikago src/robots/laikago.cpp)
-create_executable(anymalOnHeightMap src/robots/heightMap.cpp)
-create_executable(primitives src/primitives/primitives.cpp)
 create_executable(kinova src/robots/kinova.cpp)
 create_executable(atlas src/robots/atlas.cpp)
+create_executable(anymalOnHeightMap src/robots/heightMap.cpp)
+create_executable(chain src/robots/chain.cpp)
+
+# remote
 create_executable(remoteVisualzation_server src/remote/server.cpp)
 create_executable(remoteVisualzation_client src/remote/client.cpp)
+
+# primitives
 create_executable(zurichHeightMap src/primitives/heightMapFromPng.cpp)
 create_executable(newtonsCradle src/primitives/newtonsCradle.cpp)
+create_executable(primitives src/primitives/primitives.cpp)
 
 #==
 # Install example binaries

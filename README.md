@@ -16,58 +16,58 @@ Please install/save everything locally to prevent corrupting your system files. 
 To link against shared libraries in LOCAL_BUILD, you have to let LDD know where the libraries are installed. This can be done adding the following line to your ```~/bashrc```
 
 ```commandline
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:LOCAL_BUILD/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LOCAL_BUILD/lib
 ```
 
 If you are using an IDE, ensure that it loads your bashrc. 
 
 ### Dependencies
-If you have g++ >= 6.0 installed, You can switch your active compiler by
+If you have g++ >= 6.0 installed, you can switch your active compiler by
 ```commandline
 export CXX=/usr/bin/g++-8 && export CC=/usr/bin/gcc-8
 ```
 
 First, install raisimLib (https://github.com/leggedrobotics/raisimLib).
 
-Then, install dependencies of Ogre. Make sure that you install it locally since otherwise it will overwrite your local ogre installation.
+Then, install dependencies of Ogre.
 ```commandline
 sudo apt-get install libgles2-mesa-dev libxt-dev libxaw7-dev libsdl2-dev libzzip-dev
 ```
 
-Now build Ogre from source.
+Now build Ogre from source. Make sure that you install it locally since otherwise it will overwrite your local ogre installation.
 ```commandline
-cd WORKSPACE
+cd $WORKSPACE
 git clone https://github.com/OGRECave/ogre.git
 cd ogre
 git checkout tags/v1.11.5 -b r1.11.5
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=LOCAL_BUILD
-make install -j
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$LOCAL_BUILD
+make install -j8
 ```
 
 Copy built dependencies to local folder 
 ```commandline
-cp -R Dependencies/* LOCAL_BUILD
+cp -R Dependencies/* $LOCAL_BUILD
 ```
 
 Next, build Assimp from source
 ```commandline
-cd WORKSPACE
+cd $WORKSPACE
 git clone https://github.com/assimp/assimp.git
 cd assimp && mkdir build && cd build
-cmake .. -G 'Unix Makefiles' -DCMAKE_INSTALL_PREFIX=LOCAL_BUILD
-make install -j
+cmake .. -G 'Unix Makefiles' -DCMAKE_INSTALL_PREFIX=$LOCAL_BUILD
+make install -j8
 ```
 
 ### raisimOgre
 Finally, build raisimOgre.
 ```commandline
-cd WORKSPACE/raisimOgre
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=LOCAL_BUILD -DCMAKE_INSTALL_PREFIX=LOCAL_BUILD
-make install -j
+cd $WORKSPACE
+git clone https://github.com/leggedrobotics/raisimOgre.git
+cd raisimOgre && mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$LOCAL_BUILD -DCMAKE_INSTALL_PREFIX=$LOCAL_BUILD
+make install -j8
 ```
 
 ### Optional Dependencies
