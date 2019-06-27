@@ -4,10 +4,10 @@
 
 ## Requirements
 - Linux only. support ubuntu 16.04 and 18.04 but might work on other distributions
-- g++-6 or higher
+- g++, gcc > 6 ([how to install?](https://github.com/jhwangbo/raisimHelp/tree/master#how-to-install-latest-version-of-g))
+- cmake > 3.10 ([how to install?](https://github.com/jhwangbo/raisimHelp/tree/master#how-to-install-cmake))
 
 ## Install
-
 Please install/save everything locally to prevent corrupting your system files. We will assume that you have a single workspace where you save all repos related to raisim. Here we introduce two variables
 
 - WORKSPACE: workspace where you clone your git repos
