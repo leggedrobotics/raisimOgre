@@ -31,7 +31,7 @@ First, install raisimLib (https://github.com/leggedrobotics/raisimLib).
 
 Then, install dependencies of Ogre.
 ```commandline
-sudo apt-get install libgles2-mesa-dev libxt-dev libxaw7-dev libsdl2-dev libzzip-dev
+sudo apt-get install libgles2-mesa-dev libxt-dev libxaw7-dev libsdl2-dev libzzip-dev libzzip-dev
 ```
 
 Now build Ogre from source. Make sure that you install it locally since otherwise it will overwrite your local ogre installation.
