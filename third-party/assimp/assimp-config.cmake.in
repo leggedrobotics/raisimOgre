@@ -1,0 +1,29 @@
+@PACKAGE_INIT@
+
+include(FindPackageHandleStandardArgs)
+# Unset found flag to ensure correct package configuration
+unset(assimp_FOUND)
+
+if(NOT TARGET raisim::raisimOgre)
+    include(${CMAKE_CURRENT_LIST_DIR}/assimp-targets.cmake)
+endif()
+
+get_target_property(assimp_INCLUDE_DIRS assimp::assimp INTERFACE_INCLUDE_DIRECTORIES)
+get_target_property(assimp_LIBRARIES assimp::assimp INTERFACE_LINK_LIBRARIES)
+
+#==
+# Pacakge configuration check
+#==
+
+find_package_handle_standard_args(assimp
+  REQUIRED_VARS
+    assimp_INCLUDE_DIRS
+    assimp_LIBRARIES
+)
+
+if(assimp_FOUND)
+  message(STATUS "assimp:")
+  message(STATUS "  Version: ${assimp_VERSION}")
+  message(STATUS "  Includes: ${assimp_INCLUDE_DIRS}")
+  message(STATUS "  Libraries: ${assimp_LIBRARIES}")
+endif()

@@ -12,6 +12,7 @@ option(RAISIM_OGRE_EXAMPLES "Build example applications." FALSE)
 find_package(raisim CONFIG REQUIRED)
 find_package(OGRE 1.11.5 CONFIG REQUIRED COMPONENTS Bites RTShaderSystem)
 find_package(Eigen3 REQUIRED HINTS ${Eigen3_HINT})
+find_package(assimp CONFIG 4.1.0 REQUIRED)
 
 ####################################
 ############# building #############
@@ -26,20 +27,23 @@ add_library(${PROJECT_NAME} SHARED
   ${CMAKE_CURRENT_SOURCE_DIR}/src/OgreVis.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/RaiCameraMan.cpp
 )
+
 add_library(raisim::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+add_subdirectory(third-party/assimp)
+
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
 target_compile_options(${PROJECT_NAME} PUBLIC -fPIC)
 target_compile_options(${PROJECT_NAME} PRIVATE "$<$<CONFIG:RELEASE>:-O3>")
 target_compile_options(${PROJECT_NAME} PRIVATE "$<$<CONFIG:DEBUG>:-O0>")
-
-target_link_libraries(${PROJECT_NAME} PUBLIC OgreMain OgreBites OgreRTShaderSystem OgreMeshLodGenerator assimp raisim::raisim pthread zzip)
+target_link_libraries(${PROJECT_NAME} PUBLIC OgreMain OgreBites OgreRTShaderSystem OgreMeshLodGenerator raisim::assimp raisim::raisim pthread zzip)
 target_include_directories(${PROJECT_NAME}
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
+
 
 ####################################
 ########### installation ###########

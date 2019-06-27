@@ -39,7 +39,7 @@ void setupCallback() {
   vis->getLightNode()->setDirection({lightdir});
   vis->setCameraSpeed(300);
 
-  /// load  textures
+  /// load textures
   vis->addResourceDirectory(vis->getResourceDir() + "/material/checkerboard");
   vis->loadMaterialFile("checkerboard.material");
 

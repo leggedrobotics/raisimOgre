@@ -61,10 +61,9 @@ make install -j8
 ```
 
 ### raisimOgre
-Finally, build raisimOgre.
+Finally, build raisimOgre (assuming that you already have cloned this repo).
 ```commandline
 cd $WORKSPACE
-git clone https://github.com/leggedrobotics/raisimOgre.git
 cd raisimOgre && mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$LOCAL_BUILD -DCMAKE_INSTALL_PREFIX=$LOCAL_BUILD
 make install -j8
@@ -75,10 +74,10 @@ make install -j8
 
 ## Examples
 
-![1](img/heightmap.gif "title-2")
-![1](img/laikago.gif "title-1")
-![alt-text-2](img/primitives.gif "title-2")
-![alt-text-1](img/newton.gif "title-1")
+![1](img/heightmap.gif "heightmap")
+![1](img/laikago.gif "laikago")
+![alt-text-2](img/primitives.gif "primitives")
+![alt-text-1](img/newton.gif "newton")
 
 ## OGRE Resources
 1. Basic RaisimOgre resources are defined by the `RAISIM_OGRE_RESOURCE_DIR` macro.
