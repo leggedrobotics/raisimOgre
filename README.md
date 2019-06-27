@@ -51,15 +51,6 @@ Copy built dependencies to local folder
 cp -R Dependencies/* $LOCAL_BUILD
 ```
 
-Next, build Assimp from source
-```commandline
-cd $WORKSPACE
-git clone https://github.com/assimp/assimp.git
-cd assimp && mkdir build && cd build
-cmake .. -G 'Unix Makefiles' -DCMAKE_INSTALL_PREFIX=$LOCAL_BUILD
-make install -j8
-```
-
 ### raisimOgre
 Finally, build raisimOgre (assuming that you already have cloned this repo).
 ```commandline
