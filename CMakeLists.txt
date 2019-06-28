@@ -31,7 +31,6 @@ add_library(${PROJECT_NAME} SHARED
 add_library(raisim::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 add_subdirectory(third-party/assimp)
 
-
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
 target_compile_options(${PROJECT_NAME} PUBLIC -fPIC)
 target_compile_options(${PROJECT_NAME} PRIVATE "$<$<CONFIG:RELEASE>:-O3>")
