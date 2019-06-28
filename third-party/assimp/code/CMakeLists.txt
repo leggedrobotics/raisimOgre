@@ -883,6 +883,11 @@ ENDIF (ASSIMP_BUILD_NONFREE_C4D_IMPORTER)
 
 ADD_LIBRARY( assimp ${assimp_src} )
 add_library(assimp::assimp ALIAS assimp)
+target_include_directories(assimp
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+        $<INSTALL_INTERFACE:include>
+        )
 
 TARGET_LINK_LIBRARIES(assimp ${ZLIB_LIBRARIES} ${OPENDDL_PARSER_LIBRARIES} assimp::IrrXML )
 
@@ -977,10 +982,10 @@ export(
 
 # Install headers
 install(
-        DIRECTORY
-            ${CMAKE_CURRENT_SOURCE_DIR}
+        FILES
+            ${PUBLIC_HEADERS}
         DESTINATION
-            ${CMAKE_INSTALL_INCLUDEDIR}
+            ${CMAKE_INSTALL_INCLUDEDIR}/assimp
 )
 
 add_library(raisim::assimp ALIAS assimp)
