@@ -886,6 +886,7 @@ add_library(assimp::assimp ALIAS assimp)
 target_include_directories(assimp
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
         $<INSTALL_INTERFACE:include>
         )
 
@@ -986,6 +987,13 @@ install(
             ${PUBLIC_HEADERS}
         DESTINATION
             ${CMAKE_INSTALL_INCLUDEDIR}/assimp
+)
+
+install(
+        FILES
+            ${COMPILER_HEADERS}
+        DESTINATION
+            ${CMAKE_INSTALL_INCLUDEDIR}/assimp/Compiler
 )
 
 add_library(raisim::assimp ALIAS assimp)
