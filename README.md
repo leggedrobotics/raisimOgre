@@ -46,11 +46,6 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$LOCAL_BUILD
 make install -j8
 ```
 
-Copy built dependencies to local folder 
-```commandline
-cp -R Dependencies/* $LOCAL_BUILD
-```
-
 ### raisimOgre
 Finally, build raisimOgre (assuming that you already have cloned this repo).
 ```commandline
