@@ -12,7 +12,7 @@ option(RAISIM_OGRE_EXAMPLES "Build example applications." FALSE)
 find_package(raisim CONFIG REQUIRED)
 find_package(OGRE 1.11.5 CONFIG REQUIRED COMPONENTS Bites RTShaderSystem)
 find_package(Eigen3 REQUIRED HINTS ${Eigen3_HINT})
-find_package(assimp CONFIG 4.1.0 REQUIRED)
+#find_package(assimp CONFIG 4.1.0 REQUIRED)
 
 ####################################
 ############# building #############

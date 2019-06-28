@@ -6,7 +6,6 @@ unset(raisimOgre_FOUND)
 
 find_package(raisim CONFIG REQUIRED)
 find_package(OGRE 1.11.5 CONFIG REQUIRED COMPONENTS Bites RTShaderSystem)
-find_package(assimp CONFIG 4.1.0 REQUIRED)
 
 if(NOT TARGET raisim::raisimOgre)
     include(${CMAKE_CURRENT_LIST_DIR}/raisimOgre-targets.cmake)

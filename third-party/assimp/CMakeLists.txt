@@ -255,8 +255,8 @@ if (ASSIMP_UBSAN)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=undefined -fno-sanitize-recover=all")
 endif()
 
-INCLUDE (FindPkgMacros)
-INCLUDE (PrecompiledHeader)
+#INCLUDE (FindPkgMacros)
+#INCLUDE (PrecompiledHeader)
 
 # If this is an in-source build (CMAKE_SOURCE_DIR == CMAKE_BINARY_DIR),
 # write the library/executable files to the respective directories in the
@@ -283,17 +283,16 @@ ELSE()
 ENDIF()
 
 # Only generate this target if no higher-level project already has
-IF (NOT TARGET uninstall)
-  # add make uninstall capability
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules/cmake_uninstall.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" IMMEDIATE @ONLY)
-  add_custom_target(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
-ENDIF()
+#IF (NOT TARGET uninstall)
+#  # add make uninstall capability
+#  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules/cmake_uninstall.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" IMMEDIATE @ONLY)
+#  add_custom_target(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
+#ENDIF()
 
 # cmake configuration files
 #CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/assimp-config.cmake.in"         "${CMAKE_CURRENT_BINARY_DIR}/assimp-config.cmake" @ONLY IMMEDIATE)
 #CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/assimp-config-version.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/assimp-config-version.cmake" @ONLY IMMEDIATE)
 #install(FILES "${CMAKE_CURRENT_BINARY_DIR}/assimp-config.cmake"             "${CMAKE_CURRENT_BINARY_DIR}/assimp-config-version.cmake" DESTINATION "${ASSIMP_LIB_INSTALL_DIR}/cmake/assimp-${ASSIMP_VERSION_MAJOR}.${ASSIMP_VERSION_MINOR}" COMPONENT ${LIBASSIMP-DEV_COMPONENT})
-
 IF( BUILD_DOCS )
     add_subdirectory(doc)
 ENDIF( BUILD_DOCS )
@@ -326,7 +325,7 @@ ENDIF(NOT ZLIB_FOUND)
 INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
 
 # Search for unzip
-use_pkgconfig(UNZIP minizip)
+#use_pkgconfig(UNZIP minizip)
 
 IF ( ASSIMP_NO_EXPORT )
   ADD_DEFINITIONS( -DASSIMP_BUILD_NO_EXPORT)
