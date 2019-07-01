@@ -31,7 +31,7 @@ First, install raisimLib (https://github.com/leggedrobotics/raisimLib).
 
 Then, install dependencies of Ogre.
 ```commandline
-sudo apt-get install libgles2-mesa-dev libxt-dev libxaw7-dev libsdl2-dev libzzip-dev libzzip-dev
+sudo apt-get install libgles2-mesa-dev libxt-dev libxaw7-dev libsdl2-dev libzzip-dev libzzip-dev libfreeimage-dev libfreetype6-dev
 ```
 
 Now build Ogre from source. Make sure that you install it locally since otherwise it will overwrite your local ogre installation.
@@ -42,7 +42,8 @@ cd ogre
 git checkout tags/v1.11.5 -b r1.11.5
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$LOCAL_BUILD
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$LOCAL_BUILD -DOGRE_BUILD_COMPONENT_BITES=ON  -DOGRE_BUILD_SAMPLES=False -DOGRE_INSTALL_SAMPLES=False
+
 make install -j8
 ```
 
@@ -59,7 +60,6 @@ make install -j8
 - ffmpeg (video recording, for OgreVis::startRecordingVideo method. The install instruction can be found at https://tecadmin.net/install-ffmpeg-on-linux/)
 
 ## Examples
-
 ![1](img/heightmap.gif "heightmap")
 ![1](img/laikago.gif "laikago")
 ![alt-text-2](img/primitives.gif "primitives")
