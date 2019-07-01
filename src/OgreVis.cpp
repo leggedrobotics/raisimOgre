@@ -420,7 +420,7 @@ std::vector<GraphicObject> *OgreVis::registerSet(const std::string &name,
                                                  std::vector<GraphicObject> &&graphics) {
   // check if it exists. if not create a new one
   objectSet_.insert(name, ob, std::move(graphics));
-  return &objectSet_[ob].first;
+  return objectSet_[ob].first;
 }
 
 void OgreVis::sync() {
@@ -428,11 +428,18 @@ void OgreVis::sync() {
 }
 
 void OgreVis::remove(raisim::Object *ob) {
+  auto set = objectSet_[ob];
+
+  for(auto go : *set.first) {
+    this->getSceneManager()->destroyEntity(go.name);
+    this->getSceneManager()->getRootSceneNode()->removeAndDestroyChild(go.graphics);
+  }
+
   objectSet_.erase(ob);
 }
 
 void OgreVis::remove(const std::string &name) {
-  objectSet_.erase(name);
+  remove(objectSet_.ref[name]);
 }
 
 void OgreVis::run() {

@@ -92,7 +92,7 @@ class SimAndGraphicsObjectPool {
   }
 
   /** return graphical objects and its existence **/
-  std::pair<std::vector<raisim::GraphicObject>&, bool> operator [](Object* ob) { return {set[ob], set.find(ob) != set.end()}; }
+  std::pair<std::vector<raisim::GraphicObject>*, bool> operator [](Object* ob) { return {&set[ob], set.find(ob) != set.end()}; }
 
   /** return raisim objects and its existence **/
   std::pair<Object*, bool> operator [](const std::string& name) { return {ref[name], ref.find(name) != ref.end()}; }

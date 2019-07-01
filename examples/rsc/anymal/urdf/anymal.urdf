@@ -112,6 +112,13 @@
             </geometry>
             <material name="anymal_material"/>
         </visual>
+        <collision>
+            <!-- KFE actuator -->
+            <origin rpy="1.57079632679 0 0" xyz="0.0 0.07205 -0.25"/>
+            <geometry>
+                <cylinder length="0.11" radius="0.06"/>
+            </geometry>
+        </collision>
         <inertial>
             <origin rpy="0 0 0" xyz="-0.003897968082 0.054226618537 -0.214583373795"/>
             <mass value="1.634976467"/>
@@ -235,6 +242,13 @@
             </geometry>
             <material name="anymal_material"/>
         </visual>
+        <collision>
+            <!-- KFE actuator -->
+            <origin rpy="1.57079632679 0 0" xyz="0.0 -0.07205 -0.25"/>
+            <geometry>
+                <cylinder length="0.11" radius="0.06"/>
+            </geometry>
+        </collision>
         <inertial>
             <origin rpy="0 0 0" xyz="-0.003897968082 -0.054226618537 -0.214583373795"/>
             <mass value="1.634976467"/>
@@ -359,6 +373,13 @@
             </geometry>
             <material name="anymal_material"/>
         </visual>
+        <collision>
+            <!-- KFE actuator -->
+            <origin rpy="1.57079632679 0 0" xyz="0.0 0.07205 -0.25"/>
+            <geometry>
+                <cylinder length="0.11" radius="0.06"/>
+            </geometry>
+        </collision>
         <inertial>
             <origin rpy="0 0 0" xyz="0.003897968082 0.054226618537 -0.214583373795"/>
             <mass value="1.634976467"/>
@@ -482,6 +503,13 @@
             </geometry>
             <material name="anymal_material"/>
         </visual>
+        <collision>
+            <!-- KFE actuator -->
+            <origin rpy="1.57079632679 0 0" xyz="0.0 -0.07205 -0.25"/>
+            <geometry>
+                <cylinder length="0.11" radius="0.06"/>
+            </geometry>
+        </collision>
         <inertial>
             <origin rpy="0 0 0" xyz="0.003897968082 -0.054226618537 -0.214583373795"/>
             <mass value="1.634976467"/>
