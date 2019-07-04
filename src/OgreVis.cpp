@@ -410,7 +410,7 @@ void OgreVis::setup() {
   std::string cylinderFile = raisim::OgreVis::getResourceDir() + "/model/primitives/cylinder.obj";
   std::string planeFile = raisim::OgreVis::getResourceDir() + "/model/primitives/plane.obj";
   std::string capsuleFile = raisim::OgreVis::getResourceDir() + "/model/primitives/capsule.obj";
-  std::string arrowFile = raisim::OgreVis::getResourceDir() + "/model/primitives/arrow.fbx";
+  std::string arrowFile = raisim::OgreVis::getResourceDir() + "/model/primitives/arrow.obj";
 
   raisim::OgreVis::loadMeshFile(sphereFile, "sphereMesh");
   raisim::OgreVis::loadMeshFile(cubeFile, "cubeMesh");
@@ -1092,6 +1092,7 @@ void OgreVis::renderOneFrame() {
           if(!contact.isObjectA() && contact.getPairObjectBodyType() != raisim::BodyType::STATIC) continue;
           contactForces_[contactIdx].offset = contact.getPosition();
           raisim::Vec<3> zaxis = *contact.getImpulse();
+          raisim::Mat<3,3> rot;
           double norm = zaxis.norm();
           if (norm == 0) {
             contactForces_[contactIdx].graphics->setVisible(false);
@@ -1106,6 +1107,9 @@ void OgreVis::renderOneFrame() {
                                               0.3 * norm / maxNorm * contactForceArrowLength_,
                                               norm / maxNorm * contactForceArrowLength_};
 
+          raisim::zaxisToRotMat(zaxis, rot);
+
+          contactForces_[contactIdx].rotationOffset = rot;
           contactForces_[contactIdx].graphics->setVisible(true);
           contactForces_[contactIdx].group = RAISIM_CONTACT_FORCE_GROUP;
           updateVisualizationObject(contactForces_[contactIdx]);
