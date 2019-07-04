@@ -15,14 +15,18 @@ class GraphicObject {
  public:
   GraphicObject() {
     rotationOffset.setIdentity();
+    scale = {1.0, 1.0, 1.0};
+    offset = {.0, .0, .0};
   }
+
   Ogre::SceneNode* graphics = nullptr;
-  raisim::Vec<3> scale = {1.0, 1.0, 1.0}, offset = {.0, .0, .0};
+  raisim::Vec<3> scale, offset;
   raisim::Mat<3, 3> rotationOffset;
   unsigned long int group = 1ul;
   size_t localId = 0;
   bool selectable_ = true;
   std::string name;
+  std::string meshName;
 };
 
 
@@ -31,6 +35,8 @@ class VisualObject {
  public:
   VisualObject(Ogre::SceneNode* grp) : graphics(grp) {
     rotationOffset.setIdentity();
+    scale = {1.0, 1.0, 1.0};
+    offset = {.0, .0, .0};
   }
 
   VisualObject() {
@@ -38,7 +44,7 @@ class VisualObject {
   }
 
   Ogre::SceneNode* graphics = nullptr;
-  raisim::Vec<3> scale = {1.0, 1.0, 1.0}, offset = {.0, .0, .0};
+  raisim::Vec<3> scale, offset;
   raisim::Mat<3, 3> rotationOffset;
   unsigned long int group = 1ul;
   std::string name;
@@ -98,14 +104,14 @@ class SimAndGraphicsObjectPool {
   std::pair<Object*, bool> operator [](const std::string& name) { return {ref[name], ref.find(name) != ref.end()}; }
 
   /** return raisim objects and its local index. The first element is nullptr if not found **/
-  std::tuple<Object*, size_t, bool> operator [](Ogre::SceneNode* node) {
+  std::pair<Object*, size_t> operator [](Ogre::SceneNode* node) {
     for(auto& ele : set) {
       auto found = std::find_if(ele.second.begin(), ele.second.end(),
                    [node](const raisim::GraphicObject& ref) { return ref.graphics == node; });
       if(found != ele.second.end())
-        return {ele.first, found->localId, true};
+        return {ele.first, found->localId};
     }
-    return {nullptr, 0, false};
+    return {nullptr, 0};
   }
 
   /** return graphic object and its existence**/

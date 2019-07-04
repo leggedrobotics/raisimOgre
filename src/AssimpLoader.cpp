@@ -961,6 +961,7 @@ Ogre::MaterialPtr AssimpLoader::createMaterial(int index, const aiMaterial* mat,
     }
 
     Ogre::ResourceManager::ResourceCreateOrRetrieveResult status = omatMgr->createOrRetrieve(ReplaceSpaces(basename), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+
 #if (OGRE_VERSION < ((1 << 16) | (9 << 8) | 0))
     Ogre::MaterialPtr omat = status.first;
 #else

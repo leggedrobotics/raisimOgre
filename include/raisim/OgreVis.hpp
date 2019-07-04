@@ -204,7 +204,7 @@ class OgreVis :
   }
 
   /** return the current selected item **/
-  std::tuple<Object *, size_t, bool> getSelected() { return objectSet_[selected_]; }
+  std::pair<Object *, size_t> getSelected() { return objectSet_[selected_]; }
 
   /** return the current selected item **/
   GraphicObject *getSelectedGraphicalObject() { return objectSet_.getGraphicObject(selected_); }
@@ -214,7 +214,7 @@ class OgreVis :
   void deselect();
 
   /** get the raisim object **/
-  std::tuple<raisim::Object *, size_t, bool> getRaisimObject(Ogre::SceneNode *ob);
+  std::pair<raisim::Object *, size_t> getRaisimObject(Ogre::SceneNode *ob);
 
   /** get the raw resource storage **/
   SimAndGraphicsObjectPool &getObjectSet();
@@ -295,6 +295,7 @@ class OgreVis :
   void frameRendered(const Ogre::FrameEvent &evt) final;
   bool frameStarted(const Ogre::FrameEvent &evt) final;
   bool frameEnded(const Ogre::FrameEvent &evt) final;
+  void renderQueueEnded(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& repeatThisInvocation);
 
   GraphicObject generateGraphicalObject(const std::string &name,
                                         const std::string &meshName,
@@ -348,6 +349,7 @@ class OgreVis :
   std::map<std::string, VisualObject> wires_;
   uint32_t initialWindowSizeX_ = 400, initialWindowSizeY_ = 300;
   std::vector<std::string> selectedMaterial_;
+  std::map<std::string, size_t> meshUsageCount_;
   double desiredFPS_ = 30.;
   int fsaa_ = 8;
   float realTimeFactor_ = 1.0;

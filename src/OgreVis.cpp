@@ -35,6 +35,16 @@ namespace raisim {
 
 OgreVis::~OgreVis() {
   delete lm_;
+
+  for(auto it = meshUsageCount_.begin(); it != meshUsageCount_.end(); it++) {
+    if(it->second != 0) {
+      auto mesh = Ogre::MeshManager::getSingleton().getByName(it->first);
+      for(int i=0; i<mesh->getNumSubMeshes(); i++) {
+        mesh->destroySubMesh(i);
+      }
+    }
+  }
+
 }
 
 bool OgreVis::mouseMoved(const MouseMotionEvent &evt) {
@@ -69,6 +79,8 @@ void OgreVis::loadMaterialFile(const std::string &filename) {
 
 void OgreVis::loadMeshFile(const std::string &file, const std::string &meshName, bool fromMemory) {
   AssimpLoader::AssOptions opts;
+  if(meshUsageCount_.find(meshName) != meshUsageCount_.end())
+    meshUsageCount_[meshName]++;
 
   if (Ogre::MeshManager::getSingleton().getByName(meshName)) return;
 
@@ -209,8 +221,8 @@ bool OgreVis::frameRenderingQueued(const Ogre::FrameEvent &evt) {
   /// video recording
   if (initiateVideoRecording_) {
     imageCounter = 0;
-    auto w = getRenderWindow()->getWidth();
-    auto h = getRenderWindow()->getHeight();
+    auto w = getRenderWindow()->getViewport(0)->getActualWidth();
+    auto h = getRenderWindow()->getViewport(0)->getActualHeight();
     std::string command =
         "ffmpeg -r " + std::to_string(desiredFPS_) + " -f rawvideo -pix_fmt rgb24 -s " + std::to_string(w) + "x"
             + std::to_string(h) +
@@ -228,6 +240,7 @@ void OgreVis::frameRendered(const Ogre::FrameEvent &evt) {
   if (isVideoRecording_) return;
   Ogre::ImguiManager::getSingleton().frameRendered(evt);
   cameraMan_->frameRendered(evt);
+
 }
 
 bool OgreVis::frameStarted(const Ogre::FrameEvent &evt) {
@@ -241,7 +254,7 @@ bool OgreVis::frameStarted(const Ogre::FrameEvent &evt) {
 
 bool OgreVis::frameEnded(const Ogre::FrameEvent &evt) {
   if (isVideoRecording_ && stopVideoRecording_) {
-    RSINFO(currentVideoFile_ << " is saved");
+    RSINFO(currentVideoFile_ << " is saved")
     stopVideoRecording_ = false;
     isVideoRecording_ = false;
     pclose(ffmpeg);
@@ -258,8 +271,6 @@ bool OgreVis::frameEnded(const Ogre::FrameEvent &evt) {
 //    if(imageCounter > imageBufferSize_)
 //      stopVideoRecording_ = true;
   }
-
-
   // reset the visibility of the objects
   for (auto &ele : objectSet_.set)
     for (auto &grp : ele.second)
@@ -326,6 +337,7 @@ void OgreVis::setup() {
   mRoot->initialise(false);
   std::map<std::string, std::string> param;
   param["FSAA"] = std::to_string(fsaa_);
+
   createWindow(mAppName, initialWindowSizeX_, initialWindowSizeY_, param);
 
   locateResources();
@@ -345,6 +357,7 @@ void OgreVis::setup() {
   Ogre::Root *root = getRoot();
   scnMgr_ = root->createSceneManager();
   Ogre::ImguiManager::getSingleton().init(scnMgr_);
+  scnMgr_->addRenderQueueListener(Ogre::ImguiManager::getSingletonPtr());
 
   // register our scene with the RTSS
   Ogre::RTShader::ShaderGenerator *shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
@@ -397,7 +410,7 @@ void OgreVis::setup() {
   std::string cylinderFile = raisim::OgreVis::getResourceDir() + "/model/primitives/cylinder.obj";
   std::string planeFile = raisim::OgreVis::getResourceDir() + "/model/primitives/plane.obj";
   std::string capsuleFile = raisim::OgreVis::getResourceDir() + "/model/primitives/capsule.obj";
-  std::string arrowFile = raisim::OgreVis::getResourceDir() + "/model/primitives/arrow.obj";
+  std::string arrowFile = raisim::OgreVis::getResourceDir() + "/model/primitives/arrow.fbx";
 
   raisim::OgreVis::loadMeshFile(sphereFile, "sphereMesh");
   raisim::OgreVis::loadMeshFile(cubeFile, "cubeMesh");
@@ -429,8 +442,16 @@ void OgreVis::sync() {
 
 void OgreVis::remove(raisim::Object *ob) {
   auto set = objectSet_[ob];
+  world_->removeObject(ob);
 
   for(auto go : *set.first) {
+    if(meshUsageCount_[go.meshName] == 1) {
+      auto mesh = Ogre::MeshManager::getSingleton().getByName(go.meshName);
+      for(int i=0; i<mesh->getNumSubMeshes(); i++) {
+        mesh->destroySubMesh(i);
+      }
+      meshUsageCount_[go.meshName]--;
+    }
     this->getSceneManager()->destroyEntity(go.name);
     this->getSceneManager()->getRootSceneNode()->removeAndDestroyChild(go.graphics);
   }
@@ -511,6 +532,7 @@ GraphicObject OgreVis::generateGraphicalObject(const std::string &name,
   obj.group = group;
   obj.rotationOffset = rot;
   obj.name = name;
+  obj.meshName;
 
   return obj;
 }
@@ -761,7 +783,7 @@ void OgreVis::select(const GraphicObject &ob, bool highlight) {
   selected_ = node;
 }
 
-std::tuple<raisim::Object *, size_t, bool> OgreVis::getRaisimObject(Ogre::SceneNode *ob) {
+std::pair<raisim::Object *, size_t> OgreVis::getRaisimObject(Ogre::SceneNode *ob) {
   return objectSet_[ob];
 }
 
