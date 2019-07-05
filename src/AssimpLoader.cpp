@@ -164,6 +164,9 @@ bool AssimpLoader::convert(const AssOptions options, const std::string& meshName
 
     loadDataFromNode(scene, meshName, scene->mRootNode, mPath);
 
+    for(auto mesh: mMeshes)
+      mesh->load();
+
     // clean up
     mMeshes.clear();
     mMaterialCode = "";
@@ -180,6 +183,8 @@ bool AssimpLoader::convert(const AssOptions options, const std::string& meshName
 
     Ogre::MeshManager::getSingleton().removeUnreferencedResources();
     Ogre::SkeletonManager::getSingleton().removeUnreferencedResources();
+
+
 
     return true;
 }

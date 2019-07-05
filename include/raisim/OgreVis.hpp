@@ -295,7 +295,6 @@ class OgreVis :
   void frameRendered(const Ogre::FrameEvent &evt) final;
   bool frameStarted(const Ogre::FrameEvent &evt) final;
   bool frameEnded(const Ogre::FrameEvent &evt) final;
-  void renderQueueEnded(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& repeatThisInvocation);
 
   GraphicObject generateGraphicalObject(const std::string &name,
                                         const std::string &meshName,

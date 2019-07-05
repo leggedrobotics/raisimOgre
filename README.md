@@ -37,12 +37,12 @@ sudo apt-get install libgles2-mesa-dev libxt-dev libxaw7-dev libsdl2-dev libzzip
 Now build Ogre from source. Make sure that you install it locally since otherwise it will overwrite your local ogre installation.
 ```commandline
 cd $WORKSPACE
-git clone https://github.com/OGRECave/ogre.git
+git clone https://github.com/leggedrobotics/ogre.git
 cd ogre
-git checkout tags/v1.11.5 -b r1.11.5
+git checkout raisimOgre
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$LOCAL_BUILD -DOGRE_BUILD_COMPONENT_BITES=ON  -DOGRE_BUILD_SAMPLES=False -DOGRE_BUILD_DEPENDENCIES=OFF
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$LOCAL_BUILD -DOGRE_BUILD_COMPONENT_BITES=ON -OGRE_BUILD_COMPONENT_JAVA=OFF -DOGRE_BUILD_DEPENDENCIES=OFF -DOGRE_BUILD_SAMPLES=False
 
 make install -j8
 ```

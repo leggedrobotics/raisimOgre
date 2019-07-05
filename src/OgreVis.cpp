@@ -36,14 +36,6 @@ namespace raisim {
 OgreVis::~OgreVis() {
   delete lm_;
 
-  for(auto it = meshUsageCount_.begin(); it != meshUsageCount_.end(); it++) {
-    if(it->second != 0) {
-      auto mesh = Ogre::MeshManager::getSingleton().getByName(it->first);
-      for(int i=0; i<mesh->getNumSubMeshes(); i++) {
-        mesh->destroySubMesh(i);
-      }
-    }
-  }
 
 }
 
@@ -81,6 +73,8 @@ void OgreVis::loadMeshFile(const std::string &file, const std::string &meshName,
   AssimpLoader::AssOptions opts;
   if(meshUsageCount_.find(meshName) != meshUsageCount_.end())
     meshUsageCount_[meshName]++;
+  else
+    meshUsageCount_[meshName] = 1;
 
   if (Ogre::MeshManager::getSingleton().getByName(meshName)) return;
 
@@ -442,14 +436,12 @@ void OgreVis::sync() {
 
 void OgreVis::remove(raisim::Object *ob) {
   auto set = objectSet_[ob];
-  world_->removeObject(ob);
 
   for(auto go : *set.first) {
     if(meshUsageCount_[go.meshName] == 1) {
-      auto mesh = Ogre::MeshManager::getSingleton().getByName(go.meshName);
-      for(int i=0; i<mesh->getNumSubMeshes(); i++) {
-        mesh->destroySubMesh(i);
-      }
+      Ogre::MeshManager::getSingleton().unload(go.meshName);
+      Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().getByName(go.meshName);
+      Ogre::MeshManager::getSingleton().remove(mesh);
       meshUsageCount_[go.meshName]--;
     }
     this->getSceneManager()->destroyEntity(go.name);
@@ -532,7 +524,7 @@ GraphicObject OgreVis::generateGraphicalObject(const std::string &name,
   obj.group = group;
   obj.rotationOffset = rot;
   obj.name = name;
-  obj.meshName;
+  obj.meshName = meshName;
 
   return obj;
 }
@@ -902,6 +894,10 @@ void OgreVis::buildHeightMap(const std::string &name,
 
   Ogre::MeshPtr mMesh =
       Ogre::MeshManager::getSingleton().createManual(name, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+  RSFATAL_IF(meshUsageCount_.find(name)!=meshUsageCount_.end(), "Destroy the exsiting terrain before creating one")
+  meshUsageCount_[name]=1;
+
   Ogre::SubMesh *submesh = mMesh->createSubMesh(name + "_submesh");
   Ogre::AxisAlignedBox bounds;
 
