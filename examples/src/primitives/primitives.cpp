@@ -95,22 +95,22 @@ int main(int argc, char **argv) {
         switch ((i + j + k) % 4) {
           case 0:
             cubes.push_back(world.addBox(1, 1, 1, 1));
-            vis->createBoxVisualAndRegister(cubes.back(), "cubes" + number, "red");
+            vis->createGraphicalObject(cubes.back(), "cubes" + number, "red");
             ob = cubes.back();
             break;
           case 1:
             spheres.push_back(world.addSphere(0.5, 1));
-            vis->createSphereVisualAndRegister(spheres.back(), "sphere" + number, "green");
+            vis->createGraphicalObject(spheres.back(), "sphere" + number, "green");
             ob = spheres.back();
             break;
           case 2:
             capsules.push_back(world.addCapsule(0.5, 1., 1));
-            vis->createCapsuleVisualAndRegister(capsules.back(), "capsules" + number, "blue");
+            vis->createGraphicalObject(capsules.back(), "capsules" + number, "blue");
             ob = capsules.back();
             break;
           case 3:
             cylinders.push_back(world.addCylinder(0.5, 0.5, 1));
-            vis->createCylinderVisualAndRegister(cylinders.back(), "cylinders" + number, "default");
+            vis->createGraphicalObject(cylinders.back(), "cylinders" + number, "default");
             ob = cylinders.back();
             break;
         }
@@ -120,7 +120,7 @@ int main(int argc, char **argv) {
   }
 
   /// create visualizer objects
-  vis->createGroundVisualAndRegister(ground, 20, "floor", "default");
+  vis->createGraphicalObject(ground, 20, "floor", "default");
 
   /// set camera
   vis->getCameraMan()->getCamera()->setPosition(0,-N*3.5,N*1.5);

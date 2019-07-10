@@ -38,7 +38,7 @@ void setupCallback() {
   vis->getLightNode()->setPosition(3, 3, 3);
   vis->setCameraSpeed(300);
 
-  /// load  textures
+  /// load textures
   vis->addResourceDirectory(vis->getResourceDir() + "/material/checkerboard");
   vis->loadMaterialFile("checkerboard.material");
 
@@ -56,7 +56,7 @@ void setupCallback() {
 
   /// skybox
   Ogre::Quaternion quat;
-  quat.FromAngleAxis(Ogre::Radian(M_PI_2), {1, 0, 0});
+  quat.FromAngleAxis(Ogre::Radian(M_PI_2), {1., 0, 0});
   vis->getSceneManager()->setSkyBox(true,
                                     "Examples/StormySkyBox",
                                     500,
@@ -94,8 +94,8 @@ int main(int argc, char **argv) {
   robot->setGeneralizedCoordinate(gc);
 
   /// create visualizer objects
-  vis->createGroundVisualAndRegister(ground, 10, "floor", "checkerboard_green");
-  auto robot_visual = vis->createArticulatedSystemVisualAndRegister(robot, "atlas");
+  vis->createGraphicalObject(ground, 10, "floor", "checkerboard_green");
+  auto robot_visual = vis->createGraphicalObject(robot, "atlas");
 
   vis->select(robot_visual->at(0));
   vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0), Ogre::Radian(-1.f), 10);

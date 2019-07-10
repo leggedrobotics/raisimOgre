@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
   std::vector<std::vector<raisim::GraphicObject>*> laikago_visual;
 
   /// create visualizer objects
-  vis->createGroundVisualAndRegister(ground, 20, "floor", "checkerboard_green");
+  vis->createGraphicalObject(ground, 20, "floor", "checkerboard_green");
 
   /// laikago joint PD controller
   Eigen::VectorXd jointNominalConfig(19), jointVelocityTarget(18);
@@ -101,7 +101,8 @@ int main(int argc, char **argv) {
   for(size_t i=0; i<N; i++) {
     for(size_t j=0; j<N; j++) {
       laikagos.push_back(world.addArticulatedSystem(raisim::loadResource("laikago/laikago.urdf")));
-      laikago_visual.push_back(vis->createArticulatedSystemVisualAndRegister(laikagos.back(), "laikago"+std::to_string(i)+"X"+std::to_string(j)));
+      laikago_visual.push_back(vis->createGraphicalObject(laikagos.back(),
+                                                          "laikago" + std::to_string(i) + "X" + std::to_string(j)));
       laikagos.back()->setGeneralizedCoordinate({double(2*i), double(j), 0.44, 0.70710678118, 0.70710678118, 0.0, 0.0, 0.0, 0.0,
                                         -0.7, 0, 0, -0.7, 0.00, 0, -0.7, 0, 0, -0.7});
       laikagos.back()->setGeneralizedForce(Eigen::VectorXd::Zero(laikagos.back()->getDOF()));

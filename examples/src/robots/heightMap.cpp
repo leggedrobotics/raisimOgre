@@ -99,9 +99,9 @@ int main(int argc, char **argv) {
   auto hm = world.addHeightMap(0.0, 0.0, terrainProperties);
 
   /// create visualizer objects
-  vis->createTerrainVisualAndRegister(hm, "terrain", "default");
-  vis->createSphereVisualAndRegister(sphere1, "sphere1", "gravel");
-  vis->createSphereVisualAndRegister(sphere2, "sphere2", "default");
+  vis->createGraphicalObject(hm, "terrain", "default");
+  vis->createGraphicalObject(sphere1, "sphere1", "gravel");
+  vis->createGraphicalObject(sphere2, "sphere2", "default");
 
   /// ANYmal joint PD controller
   Eigen::VectorXd jointNominalConfig(19), jointVelocityTarget(18);
@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
   jointNominalConfig << 0, 0, 0, 0, 0, 0, 0, 0.03, 0.4, -0.8, -0.03, 0.4, -0.8, 0.03, -0.4, 0.8, -0.03, -0.4, 0.8;
   jointVel << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
 
-  auto anymal_graphics = vis->createArticulatedSystemVisualAndRegister(anymal, "ANYmal");
+  auto anymal_graphics = vis->createGraphicalObject(anymal, "ANYmal");
 
   anymal->setGeneralizedCoordinate({0, 0, 3.54, 1.0, 0.0, 0.0, 0.0, 0.03, 0.4,
                                     -0.8, -0.03, 0.4, -0.8, 0.03, -0.4, 0.8, -0.03, -0.4, 0.8});

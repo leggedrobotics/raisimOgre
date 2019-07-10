@@ -90,10 +90,10 @@ int main(int argc, char **argv) {
   // loading heightmap from a png file
   auto heightMap = world.addHeightMap(raisim::loadResource("heightMap/zurichHeightMap.png"), 0, 0, 100, 100, 0.0005, -20);
 
-  vis->createSphereVisualAndRegister(sphere1, "sphere1", "gravel");
-  vis->createSphereVisualAndRegister(sphere2, "sphere2", "default");
-  vis->createTerrainVisualAndRegister(heightMap, "floor", "default");
-  auto* anymal_visual = vis->createArticulatedSystemVisualAndRegister(anymal, "anymal");
+  vis->createGraphicalObject(sphere1, "sphere1", "gravel");
+  vis->createGraphicalObject(sphere2, "sphere2", "default");
+  vis->createGraphicalObject(heightMap, "floor", "default");
+  auto* anymal_visual = vis->createGraphicalObject(anymal, "anymal");
 
   sphere1->setPosition(0, 0, 5);
   sphere2->setPosition(0.5, 0, 3);

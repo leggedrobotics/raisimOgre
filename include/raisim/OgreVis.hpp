@@ -120,71 +120,62 @@ class OgreVis :
    * @param sphere raisim sphere object
    * @param name unique identifier of the object
    * @param material for visualization */
-  std::vector<GraphicObject> *createSphereVisualAndRegister(raisim::Sphere *sphere,
-                                                            const std::string &name,
-                                                            const std::string &material);
+  std::vector<GraphicObject> *createGraphicalObject(raisim::Sphere *sphere,
+                                                    const std::string &name,
+                                                    const std::string &material);
 
   /**
   * @param ground raisim ground object
   * @param name unique identifier of the object
   * @param material for visualization */
-  std::vector<GraphicObject> *createGroundVisualAndRegister(raisim::Ground *ground,
-                                                            double planeDim,
-                                                            const std::string &name,
-                                                            const std::string &material);
+  std::vector<GraphicObject> *createGraphicalObject(raisim::Ground *ground,
+                                                    double planeDim,
+                                                    const std::string &name,
+                                                    const std::string &material);
 
   /**
   * @param box raisim box object
   * @param name unique identifier of the object
   * @param material for visualization */
-  std::vector<GraphicObject> *createBoxVisualAndRegister(raisim::Box *box,
-                                                         const std::string &name,
-                                                         const std::string &material);
+  std::vector<GraphicObject> *createGraphicalObject(raisim::Box *box,
+                                                    const std::string &name,
+                                                    const std::string &material);
   /**
   * @param capsule raisim capsule object
   * @param name unique identifier of the object
   * @param material for visualization */
-  std::vector<GraphicObject> *createCylinderVisualAndRegister(raisim::Cylinder *capsule,
-                                                              const std::string &name,
-                                                              const std::string &material);
+  std::vector<GraphicObject> *createGraphicalObject(raisim::Cylinder *capsule,
+                                                    const std::string &name,
+                                                    const std::string &material);
 
   /**
   * @param raisim wire object
   * @param name unique identifier of the object
   * @param material for visualization */
-  raisim::VisualObject *createWireVisualAndRegister(raisim::Wire *wire,
-                                                    const std::string &name,
-                                                    const std::string &material = "default");
+  raisim::VisualObject *createGraphicalObject(raisim::Wire *wire,
+                                              const std::string &name,
+                                              const std::string &material = "default");
 
   /**
   * @param capsule raisim capsule object
   * @param name unique identifier of the object
   * @param material for visualization */
-  std::vector<GraphicObject> *createCapsuleVisualAndRegister(raisim::Capsule *capsule,
-                                                             const std::string &name,
-                                                             const std::string &material);
+  std::vector<GraphicObject> *createGraphicalObject(raisim::Capsule *capsule,
+                                                    const std::string &name,
+                                                    const std::string &material);
 
   /**
   * @param as raisim articulated system object
   * @param name unique identifier of the object */
-  std::vector<GraphicObject> *createArticulatedSystemVisualAndRegister(raisim::ArticulatedSystem *as,
-                                                                       const std::string &name);
+  std::vector<GraphicObject> *createGraphicalObject(raisim::ArticulatedSystem *as,
+                                                    const std::string &name);
 
   /**
   * @param as raisim articulated system object
   * @param name unique identifier of the object */
-  std::vector<GraphicObject> *createTerrainVisualAndRegister(raisim::HeightMap *hm,
-                                                             const std::string &name,
-                                                             const std::string &material = "default");
-
-  void buildHeightMap(const std::string &name,
-                      size_t xSamples,
-                      float xSize,
-                      float centerX,
-                      size_t ySamples,
-                      float ySize,
-                      float centerY,
-                      const std::vector<float> &height);
+  std::vector<GraphicObject> *createGraphicalObject(raisim::HeightMap *hm,
+                                                    const std::string &name,
+                                                    const std::string &material = "default");
 
   /** sync raisim and ogre*/
   void sync();
@@ -266,6 +257,15 @@ class OgreVis :
                        unsigned long int group = RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP);
 
   void clearVisualObject();
+
+  void buildHeightMap(const std::string &name,
+                      size_t xSamples,
+                      float xSize,
+                      float centerX,
+                      size_t ySamples,
+                      float ySize,
+                      float centerY,
+                      const std::vector<float> &height);
 
  private:
   OgreVis()

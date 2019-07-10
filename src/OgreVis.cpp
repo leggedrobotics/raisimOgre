@@ -565,9 +565,9 @@ void OgreVis::clearVisualObject() {
   visObject_.clear();
 }
 
-std::vector<GraphicObject> *OgreVis::createSphereVisualAndRegister(raisim::Sphere *sphere,
-                                                                   const std::string &name,
-                                                                   const std::string &material) {
+std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Sphere *sphere,
+                                                           const std::string &name,
+                                                           const std::string &material) {
   auto rad = sphere->getRadius();
   raisim::Mat<3, 3> rot;
   rot.setIdentity();
@@ -576,10 +576,10 @@ std::vector<GraphicObject> *OgreVis::createSphereVisualAndRegister(raisim::Spher
   return registerSet(name, sphere, {graphicalObj});
 }
 
-std::vector<GraphicObject> *OgreVis::createGroundVisualAndRegister(raisim::Ground *ground,
-                                                                   double planeDim,
-                                                                   const std::string &name,
-                                                                   const std::string &material) {
+std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Ground *ground,
+                                                           double planeDim,
+                                                           const std::string &name,
+                                                           const std::string &material) {
   raisim::Mat<3, 3> rot;
   rot.setIdentity();
   ground->setName(name);
@@ -595,9 +595,9 @@ std::vector<GraphicObject> *OgreVis::createGroundVisualAndRegister(raisim::Groun
                                                             RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP)});
 }
 
-std::vector<GraphicObject> *OgreVis::createBoxVisualAndRegister(raisim::Box *box,
-                                                                const std::string &name,
-                                                                const std::string &material) {
+std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Box *box,
+                                                           const std::string &name,
+                                                           const std::string &material) {
   raisim::Mat<3, 3> rot;
   rot.setIdentity();
   box->setName(name);
@@ -606,22 +606,22 @@ std::vector<GraphicObject> *OgreVis::createBoxVisualAndRegister(raisim::Box *box
                      {generateGraphicalObject(name, "cubeMesh", material, box->getDim(), {0, 0, 0}, rot, 0)});
 }
 
-std::vector<GraphicObject> *OgreVis::createCylinderVisualAndRegister(raisim::Cylinder *cylinder,
-                                                                     const std::string &name,
-                                                                     const std::string &material) {
-  auto rad = cylinder->getRadius();
-  auto h = cylinder->getHeight();
+std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Cylinder *capsule,
+                                                           const std::string &name,
+                                                           const std::string &material) {
+  auto rad = capsule->getRadius();
+  auto h = capsule->getHeight();
   raisim::Mat<3, 3> rot;
   rot.setIdentity();
-  cylinder->setName(name);
+  capsule->setName(name);
   return registerSet(name,
-                     cylinder,
+                     capsule,
                      {generateGraphicalObject(name, "cylinderMesh", material, {rad, rad, h}, {0, 0, 0}, rot, 0)});
 }
 
-raisim::VisualObject *OgreVis::createWireVisualAndRegister(raisim::Wire *wire,
-                                                           const std::string &name,
-                                                           const std::string &material) {
+raisim::VisualObject *OgreVis::createGraphicalObject(raisim::Wire *wire,
+                                                     const std::string &name,
+                                                     const std::string &material) {
   wire->setName(name);
 
   auto *ent = raisim::OgreVis::getSceneManager()->createEntity(name,
@@ -644,9 +644,9 @@ raisim::VisualObject *OgreVis::createWireVisualAndRegister(raisim::Wire *wire,
   obj.name = name;
 }
 
-std::vector<GraphicObject> *OgreVis::createCapsuleVisualAndRegister(raisim::Capsule *capsule,
-                                                                    const std::string &name,
-                                                                    const std::string &material) {
+std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Capsule *capsule,
+                                                           const std::string &name,
+                                                           const std::string &material) {
   auto rad = capsule->getRadius();
   auto h = capsule->getHeight();
   capsule->setName(name);
@@ -681,8 +681,8 @@ raisim::SimAndGraphicsObjectPool &OgreVis::getObjectSet() {
   return objectSet_;
 }
 
-std::vector<GraphicObject> *OgreVis::createArticulatedSystemVisualAndRegister(raisim::ArticulatedSystem *as,
-                                                                              const std::string &name) {
+std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::ArticulatedSystem *as,
+                                                           const std::string &name) {
   std::vector<GraphicObject> graphics;
 
   int itemId = 0;
@@ -984,9 +984,9 @@ void OgreVis::buildHeightMap(const std::string &name,
   mMesh->_setBoundingSphereRadius((bounds.getMaximum() - bounds.getMinimum()).length() / 2);
 }
 
-std::vector<GraphicObject> *OgreVis::createTerrainVisualAndRegister(raisim::HeightMap *hm,
-                                                                    const std::string &name,
-                                                                    const std::string &material) {
+std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::HeightMap *hm,
+                                                           const std::string &name,
+                                                           const std::string &material) {
 
   auto xSamples = hm->getXSamples();
   auto xSize = hm->getXSize();

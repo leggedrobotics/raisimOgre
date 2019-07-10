@@ -80,8 +80,8 @@ int main(int argc, char **argv) {
   auto chain = world.addArticulatedSystem(raisim::loadResource("chain/robot.urdf"));
 
   /// create visualizer objects
-  vis->createGroundVisualAndRegister(ground, 50, "floor", "default");
-  auto chain_graphics = vis->createArticulatedSystemVisualAndRegister(chain, "ANYmal");
+  vis->createGraphicalObject(ground, 50, "floor", "default");
+  auto chain_graphics = vis->createGraphicalObject(chain, "ANYmal");
 
   vis->select(chain_graphics->at(0));
   vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0), -Ogre::Radian(M_PI_4), 0.5);

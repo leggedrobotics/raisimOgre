@@ -86,50 +86,50 @@ int main(int argc, char **argv) {
   auto pin1 = world.addSphere(0.1, 0.8);
   pin1->setPosition(0.0, 0.0, 3.0);
   pin1->setBodyType(raisim::BodyType::STATIC);
-  auto pin1visual = vis->createSphereVisualAndRegister(pin1, "pin1", "lawn_green");
+  auto pin1visual = vis->createGraphicalObject(pin1, "pin1", "lawn_green");
 
   auto pin2 = world.addSphere(0.1, 0.8);
   pin2->setPosition(0.3, 0.0, 3.0);
   pin2->setBodyType(raisim::BodyType::STATIC);
-  vis->createSphereVisualAndRegister(pin2, "pin2", "lawn_green");
+  vis->createGraphicalObject(pin2, "pin2", "lawn_green");
 
   auto pin3 = world.addSphere(0.1, 0.8);
   pin3->setPosition(0.6, 0.0, 3.0);
   pin3->setBodyType(raisim::BodyType::STATIC);
-  vis->createSphereVisualAndRegister(pin3, "pin3", "lawn_green");
+  vis->createGraphicalObject(pin3, "pin3", "lawn_green");
 
   auto pin4 = world.addSphere(0.1, 0.8);
   pin4->setPosition(0.9, 0.0, 3.0);
   pin4->setBodyType(raisim::BodyType::STATIC);
-  vis->createSphereVisualAndRegister(pin4, "pin4", "lawn_green");
+  vis->createGraphicalObject(pin4, "pin4", "lawn_green");
 
   auto ball1 = world.addSphere(0.1498, 0.8, "steel");
   ball1->setPosition(0, 0.0, 1.0);
-  vis->createSphereVisualAndRegister(ball1, "ball1", "dark_red");
+  vis->createGraphicalObject(ball1, "ball1", "dark_red");
 
   auto ball2 = world.addSphere(0.1498, 0.8, "steel");
   ball2->setPosition(0.3, 0.0, 1.0);
-  vis->createSphereVisualAndRegister(ball2, "ball2", "gray");
+  vis->createGraphicalObject(ball2, "ball2", "gray");
 
   auto ball3 = world.addSphere(0.1498, 0.8, "steel");
   ball3->setPosition(0.6, 0.0, 1.0);
-  vis->createSphereVisualAndRegister(ball3, "ball3", "green");
+  vis->createGraphicalObject(ball3, "ball3", "green");
 
   auto ball4 = world.addSphere(0.1498, 0.8, "steel");
   ball4->setPosition(2.9, 0.0, 3.0);
-  vis->createSphereVisualAndRegister(ball4, "ball4", "orange");
+  vis->createGraphicalObject(ball4, "ball4", "orange");
 
   auto wire1 = world.addStiffWire(pin1, 0, {0,0,0}, ball1, 0, {0,0,0}, 2.0);
-  vis->createWireVisualAndRegister(wire1, "wire1", "red");
+  vis->createGraphicalObject(wire1, "wire1", "red");
   auto wire2 = world.addStiffWire(pin2, 0, {0,0,0}, ball2, 0, {0,0,0}, 2.0);
-  vis->createWireVisualAndRegister(wire2, "wire2", "red");
+  vis->createGraphicalObject(wire2, "wire2", "red");
   auto wire3 = world.addStiffWire(pin3, 0, {0,0,0}, ball3, 0, {0,0,0}, 2.0);
-  vis->createWireVisualAndRegister(wire3, "wire3", "red");
+  vis->createGraphicalObject(wire3, "wire3", "red");
   auto wire4 = world.addStiffWire(pin4, 0, {0,0,0}, ball4, 0, {0,0,0}, 2.0);
-  vis->createWireVisualAndRegister(wire4, "wire4", "red");
+  vis->createGraphicalObject(wire4, "wire4", "red");
 
   /// create visualizer objects
-  vis->createGroundVisualAndRegister(ground, 20, "floor", "checkerboard_green");
+  vis->createGraphicalObject(ground, 20, "floor", "checkerboard_green");
 
   /// set camera
   vis->getCameraMan()->getCamera()->setPosition(0, 3.5, 1.5);

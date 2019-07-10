@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
   std::vector<raisim::ArticulatedSystem*> anymals;
 
   /// create visualizer objects
-  vis->createGroundVisualAndRegister(ground, 20, "floor", "checkerboard_green");
+  vis->createGraphicalObject(ground, 20, "floor", "checkerboard_green");
 
   /// ANYmal joint PD controller
   Eigen::VectorXd jointNominalConfig(19), jointVelocityTarget(18);
@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
   for(size_t i=0; i<N; i++) {
     for(size_t j=0; j<N; j++) {
       anymals.push_back(world.addArticulatedSystem(raisim::loadResource("anymal/urdf/anymal.urdf")));
-      vis->createArticulatedSystemVisualAndRegister(anymals.back(), "ANYmal"+std::to_string(i)+"X"+std::to_string(j));
+      vis->createGraphicalObject(anymals.back(), "ANYmal" + std::to_string(i) + "X" + std::to_string(j));
       anymals.back()->setGeneralizedCoordinate({double(2*i), double(j), 0.54, 1.0, 0.0, 0.0, 0.0, 0.03, 0.4,
                                         -0.8, -0.03, 0.4, -0.8, 0.03, -0.4, 0.8, -0.03, -0.4, 0.8});
       anymals.back()->setGeneralizedForce(Eigen::VectorXd::Zero(anymals.back()->getDOF()));

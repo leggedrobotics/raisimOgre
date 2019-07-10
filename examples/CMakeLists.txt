@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(raisimOgre_examples VERSION 0.1.0)
+project(raisimOgre_examples VERSION 0.2.0)
 
 find_package(raisimOgre CONFIG REQUIRED)
 find_package(Eigen3 REQUIRED HINTS ${Eigen3_HINT})

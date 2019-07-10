@@ -117,8 +117,8 @@ int main() {
 
   // Create the robot and ground visuals
   auto checkerBoard = sim.addGround();
-  groundGraphic = vis->createGroundVisualAndRegister(checkerBoard, 20, "floor", "checkerboard");
-  kinovaGraphic = vis->createArticulatedSystemVisualAndRegister(kinova, "kinova");
+  groundGraphic = vis->createGraphicalObject(checkerBoard, 20, "floor", "checkerboard");
+  kinovaGraphic = vis->createGraphicalObject(kinova, "kinova");
   vis->select(kinovaGraphic->at(0));
   vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0.), Ogre::Radian(-1.), 3);
 
