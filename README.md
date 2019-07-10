@@ -1,6 +1,9 @@
-# raisimOGRE: Visualizer for raisim
+# raisimOgre: Visualizer for raisim
 
 # THIS LIBRARY DEPENDS ON RAISIM WHICH IS NOT PUBLICLY AVAILABLE YET. RAISIM WILL BE RELEASED VERY SOON #
+
+## What is raisimOgre?
+raisimOgre is a visualizer for raisim. It is a simple wrapper around Ogre3d (https://www.ogre3d.org/), which is an open-source 3d rendering library.
 
 ## Requirements
 - Linux only. support ubuntu 16.04 and 18.04 but might work on other distributions
