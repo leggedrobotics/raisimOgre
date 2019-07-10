@@ -21,12 +21,12 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LOCAL_BUILD/lib
 
 If you are using an IDE, ensure that it loads your bashrc. 
 
-### Dependencies
 If you have g++ >= 6.0 installed, you can switch your active compiler by
 ```commandline
 export CXX=/usr/bin/g++-8 && export CC=/usr/bin/gcc-8
 ```
 
+### Dependencies
 First, install raisimLib (https://github.com/leggedrobotics/raisimLib).
 
 Then, install dependencies of Ogre.
