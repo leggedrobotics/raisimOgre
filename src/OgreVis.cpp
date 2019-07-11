@@ -7,29 +7,6 @@
 #include <chrono>
 #include "OgreTangentSpaceCalc.h"
 
-inline char separator() {
-#ifdef _WIN32
-  return '\\';
-#else
-  return '/';
-#endif
-}
-
-inline std::string getPathName(const std::string &s) {
-
-  char sep = '/';
-
-#ifdef _WIN32
-  sep = '\\';
-#endif
-
-  size_t i = s.rfind(sep, s.length());
-  if (i != std::string::npos) {
-    return (s.substr(0, i));
-  }
-
-  return ("");
-}
 
 namespace raisim {
 
@@ -86,7 +63,7 @@ void OgreVis::loadMeshFile(const std::string &file, const std::string &meshName,
     std::string extension = file.substr(file.find_last_of('.') + 1);
     std::string baseFilename = file.substr(file.find_last_of(separator()) + 1,
                                            file.size() - file.find_last_of(separator()) - extension.size() - 2);
-    std::string path = getPathName(file);
+    std::string path = raisim::getPathName(file);
     meshFilename = path + separator() + baseFilename + "_" + extension + ".mesh";
     if (extension == "mesh")
       return;

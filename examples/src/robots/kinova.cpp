@@ -119,6 +119,7 @@ int main() {
   auto checkerBoard = sim.addGround();
   groundGraphic = vis->createGraphicalObject(checkerBoard, 20, "floor", "checkerboard");
   kinovaGraphic = vis->createGraphicalObject(kinova, "kinova");
+
   vis->select(kinovaGraphic->at(0));
   vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0.), Ogre::Radian(-1.), 3);
 
@@ -135,7 +136,7 @@ int main() {
 
   // basic operation
   jointConfigTarget << DEFAULT_JOINT_CONFIG;
-  std::cout << "[INFO] Starting basic operation!" << std::endl;
+  RSINFO("starting basic operation!")
   for (size_t k = 0; k < 10000; k++) {
     while (time < 0.0) {
       // get robot's state
@@ -165,7 +166,8 @@ int main() {
   kinova->setState(jointConfig, jointVel);
   kinova->setGeneralizedForce(tau);
   // random input
-  std::cout << "[INFO] Starting random input operation!" << std::endl;
+  RSINFO("starting random input operation!")
+
   for (size_t k = 0; k < 10000; k++) {
     // random input
     jointConfigTarget.setRandom();
