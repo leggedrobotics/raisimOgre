@@ -1,5 +1,5 @@
 //
-// Created by jemin on 2/28/19.
+// Created by Jemin Hwangbo on 2/28/19.
 // MIT License
 //
 // Copyright (c) 2019-2019 Robotic Systems Lab, ETH Zurich

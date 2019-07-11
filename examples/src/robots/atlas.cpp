@@ -1,5 +1,5 @@
 //
-// Created by jemin on 2/28/19.
+// Created by Jemin Hwangbo on 2/28/19.
 // MIT License
 //
 // Copyright (c) 2019-2019 Robotic Systems Lab, ETH Zurich
@@ -21,8 +21,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
-
 
 
 #include <raisim/OgreVis.hpp>
