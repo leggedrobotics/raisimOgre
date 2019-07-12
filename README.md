@@ -22,7 +22,7 @@ To link against shared libraries in LOCAL_BUILD, you have to let LDD know where 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LOCAL_BUILD/lib
 ```
 
-If you are using an IDE, ensure that it loads your bashrc. 
+If you are using an IDE, ensure that it loads your bashrc. For Clion (which is the recommended IDE) users, the instruction can be found [here](https://github.com/jhwangbo/raisimHelp/blob/master/README.md#use-variables-defined-in-your-bashrc-in-clion).
 
 If you have g++ >= 6.0 installed, you can switch your active compiler by
 ```commandline
