@@ -68,8 +68,7 @@ By default, we disable building raisim ogre examples. If you want to build examp
 ```commandline
 cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$LOCAL_BUILD -DCMAKE_INSTALL_PREFIX=$LOCAL_BUILD -DRAISIM_OGRE_EXAMPLES=True
 ```
-Executables will then be found from $LOCAL_BUILD/bin/
-If an example stops after execution, you can toggel by (Simulation -> uncheck Manual stepping from RaiSim Application Window).
+Executables will then be found from ```$LOCAL_BUILD/bin/```. If an example stops after execution, you can toggel by (Simulation -> uncheck Manual stepping from RaiSim Application Window).
 
 anymalOnHeightMap
 
