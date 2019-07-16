@@ -390,6 +390,13 @@ void OgreVis::setup() {
   raisim::OgreVis::loadMeshFile(capsuleFile, "capsuleMesh");
   raisim::OgreVis::loadMeshFile(arrowFile, "arrowMesh");
 
+  primitiveMeshNames_.insert("sphereMesh");
+  primitiveMeshNames_.insert("cubeMesh");
+  primitiveMeshNames_.insert("cylinderMesh");
+  primitiveMeshNames_.insert("planeMesh");
+  primitiveMeshNames_.insert("capsuleMesh");
+  primitiveMeshNames_.insert("arrowMesh");
+
   raisim::OgreVis::addResourceDirectory(raisim::OgreVis::getResourceDir() + "/material/selection");
   raisim::OgreVis::loadMaterialFile("selection.material");
 
@@ -414,8 +421,8 @@ void OgreVis::sync() {
 void OgreVis::remove(raisim::Object *ob) {
   auto set = objectSet_[ob];
 
-  for(auto go : *set.first) {
-    if(meshUsageCount_[go.meshName] == 1) {
+  for(auto& go : *set.first) {
+    if(primitiveMeshNames_.find(go.meshName) == primitiveMeshNames_.end() && meshUsageCount_[go.meshName] == 1) {
       Ogre::MeshManager::getSingleton().unload(go.meshName);
       Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().getByName(go.meshName);
       Ogre::MeshManager::getSingleton().remove(mesh);
@@ -619,6 +626,8 @@ raisim::VisualObject *OgreVis::createGraphicalObject(raisim::Wire *wire,
   obj.graphics->scale(float(obj.scale[0]), float(obj.scale[1]), float(obj.scale[2]));
   obj.group = RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP;
   obj.name = name;
+
+  return &wires_[name];
 }
 
 std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Capsule *capsule,
@@ -631,21 +640,21 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Capsule *caps
   rot.setIdentity();
   return registerSet(name,
                      capsule,
-                     {generateGraphicalObject(name + "/cyl",
+                     {generateGraphicalObject(name + "_cyl",
                                               "cylinderMesh",
                                               material,
                                               {rad, rad, h},
                                               {0, 0, 0},
                                               rot,
                                               0),
-                      generateGraphicalObject(name + "/sph1",
+                      generateGraphicalObject(name + "_sph1",
                                               "sphereMesh",
                                               material,
                                               {rad, rad, rad},
                                               {0, 0, 0.5},
                                               rot,
                                               0),
-                      generateGraphicalObject(name + "/sph2",
+                      generateGraphicalObject(name + "_sph2",
                                               "sphereMesh",
                                               material,
                                               {rad, rad, rad},
@@ -665,13 +674,15 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::ArticulatedSy
   int itemId = 0;
 
   for (auto &vo: as->getVisOb())
-    registerRaisimGraphicalObjects(vo, graphics, as, name + std::to_string(itemId++), RAISIM_OBJECT_GROUP);
+    registerRaisimGraphicalObjects(vo, graphics, as, name +"_"+ std::to_string(itemId++), RAISIM_OBJECT_GROUP);
+
+  itemId = 0;
 
   for (auto &vo: as->getVisColOb())
     registerRaisimGraphicalObjects(vo,
                                    graphics,
                                    as,
-                                   name + "_collisionBody" + std::to_string(itemId++),
+                                   name + "_collisionBody_" + std::to_string(itemId++),
                                    RAISIM_COLLISION_BODY_GROUP);
 
   return registerSet(name, as, std::move(graphics));
@@ -686,7 +697,7 @@ void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
     std::string fullFilePath = as->getResourceDir() + separator() + vo.fileName;
     if (!Ogre::MeshManager::getSingleton().getByName(fullFilePath))
       raisim::OgreVis::loadMeshFile(fullFilePath, fullFilePath);
-    auto visname = name + "/" + as->getBodyNames()[vo.localIdx] + "_" + getBaseFileName(vo.fileName);
+    auto visname = name + "_" + as->getBodyNames()[vo.localIdx] + "_" + getBaseFileName(vo.fileName);
     graphics.push_back(generateGraphicalObject(visname,
                                                fullFilePath,
                                                "",
@@ -698,7 +709,7 @@ void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
                                                true,
                                                group));
   } else {
-    auto visname = name + "/" + as->getBodyNames()[vo.localIdx] + "_";
+    auto visname = name + "_" + as->getBodyNames()[vo.localIdx] + "_";
     raisim::Vec<3> dim;
     std::string meshName;
     switch (vo.shape) {
@@ -732,7 +743,6 @@ void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
                                                group));
   }
   graphics.back().rotationOffset = vo.rot;
-  graphics.back().name = vo.name;
 }
 
 void OgreVis::select(const GraphicObject &ob, bool highlight) {

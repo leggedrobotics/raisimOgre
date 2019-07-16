@@ -349,6 +349,7 @@ class OgreVis :
   uint32_t initialWindowSizeX_ = 400, initialWindowSizeY_ = 300;
   std::vector<std::string> selectedMaterial_;
   std::map<std::string, size_t> meshUsageCount_;
+  std::set<std::string> primitiveMeshNames_;
   double desiredFPS_ = 30.;
   int fsaa_ = 8;
   float realTimeFactor_ = 1.0;
