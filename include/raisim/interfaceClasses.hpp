@@ -92,6 +92,7 @@ class SimAndGraphicsObjectPool {
                                   float(pos[2] + offsetInWorld[2]));
         raisim::rotMatToQuat(rot, quat);
         grp.graphics->setOrientation(float(quat[0]), float(quat[1]), float(quat[2]), float(quat[3]));
+        grp.graphics->setScale({float(grp.scale[0]), float(grp.scale[1]), float(grp.scale[2])});
       }
     }
   }
