@@ -276,7 +276,7 @@ class OgreVis :
     RSINFO("Loading RaisimOgre Resource from: " + resourceDir_)
     RSINFO("Loading Ogre Configuration from: " + std::string(OGREVIS_MAKE_STR(OGRE_CONFIG_DIR)))
 
-    lm_ = new Ogre::LogManager();
+    lm_ = std::make_unique<Ogre::LogManager>();
     lm_->createLog("", true, false, false); //TODO: redirect to our own logger.
 
     start = std::chrono::system_clock::now();
@@ -295,6 +295,7 @@ class OgreVis :
   void frameRendered(const Ogre::FrameEvent &evt) final;
   bool frameStarted(const Ogre::FrameEvent &evt) final;
   bool frameEnded(const Ogre::FrameEvent &evt) final;
+  void videoThread();
 
   GraphicObject generateGraphicalObject(const std::string &name,
                                         const std::string &meshName,
@@ -363,14 +364,20 @@ class OgreVis :
   double contactForceArrowRadius_ = 0.03;
   double contactForceArrowLength_ = 0.1;
   raisim::VisualObject externalForceArrow_;
-  Ogre::LogManager *lm_;
+  std::unique_ptr<Ogre::LogManager> lm_;
 
   /// video recording related
   std::string currentVideoFile_;
   bool initiateVideoRecording_;
   bool stopVideoRecording_;
   bool isVideoRecording_;
+  bool newFrameAvailable_ = false;
+  std::mutex videoFrameMutext_, videoInitMutex_;
+
+  std::unique_ptr<Ogre::PixelBox> videoPixelBox_;
+  std::unique_ptr<Ogre::uchar> videoBuffer_;
   FILE *ffmpeg;
+  std::unique_ptr<std::thread> videoThread_;
   int imageCounter, imageBufferSize_;
   int takeNSteps_ = 0; // negative means run infinitely
   bool paused_ = false;

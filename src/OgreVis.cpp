@@ -11,9 +11,6 @@
 namespace raisim {
 
 OgreVis::~OgreVis() {
-  delete lm_;
-
-
 }
 
 bool OgreVis::mouseMoved(const MouseMotionEvent &evt) {
@@ -188,30 +185,50 @@ bool OgreVis::frameRenderingQueued(const Ogre::FrameEvent &evt) {
     if (hovered_) break;
     iter++;
   }
-
-  /// video recording
-  if (initiateVideoRecording_) {
-    imageCounter = 0;
-    auto w = getRenderWindow()->getViewport(0)->getActualWidth();
-    auto h = getRenderWindow()->getViewport(0)->getActualHeight();
-    std::string command =
-        "ffmpeg -r " + std::to_string(desiredFPS_) + " -f rawvideo -pix_fmt rgb24 -s " + std::to_string(w) + "x"
-            + std::to_string(h) +
-            " -i - -threads 0 -preset fast -y -pix_fmt yuv420p -crf 21 " + currentVideoFile_;
-    const char *cmd = command.c_str();
-    ffmpeg = popen(cmd, "w");
-    RSINFO("recording video")
-    isVideoRecording_ = true;
-    initiateVideoRecording_ = false;
-  }
   return true;
+}
+
+void OgreVis::videoThread() {
+  imageCounter = 0;
+  auto w = getRenderWindow()->getViewport(0)->getActualWidth();
+  auto h = getRenderWindow()->getViewport(0)->getActualHeight();
+  std::string command =
+      "ffmpeg -r " + std::to_string(desiredFPS_) + " -f rawvideo -pix_fmt rgb24 -s " + std::to_string(w) + "x"
+          + std::to_string(h) +
+          " -i - -threads 0 -preset fast -y -pix_fmt yuv420p -crf 21 " + currentVideoFile_;
+  const char *cmd = command.c_str();
+  ffmpeg = popen(cmd, "w");
+  RSFATAL_IF(!ffmpeg, "a pipe cannot be initiated for video recording. Maybe missing ffmpeg?")
+
+  Ogre::PixelFormat pf = getRenderWindow()->suggestPixelFormat();
+  videoBuffer_.reset(OGRE_ALLOC_T(Ogre::uchar, w * h * Ogre::PixelUtil::getNumElemBytes(pf), MEMCATEGORY_RENDERSYS));
+  videoPixelBox_ = std::make_unique<Ogre::PixelBox>(w, h, 1, pf, videoBuffer_.get());
+  videoInitMutex_.unlock();
+
+  while(true) {
+    if(stopVideoRecording_) {
+      fflush(ffmpeg);
+      pclose(ffmpeg);
+      imageCounter = 0;
+      break;
+    } else if (newFrameAvailable_) {
+      std::lock_guard<std::mutex> lock(videoFrameMutext_);
+      newFrameAvailable_ = false;
+      fwrite(videoPixelBox_->data, Ogre::PixelUtil::getNumElemBytes(pf) * w * h, 1, ffmpeg);
+    } else {
+      usleep(1e4);
+    }
+  }
+
+  isVideoRecording_ = false;
+  stopVideoRecording_ = false;
+  newFrameAvailable_ = false;
 }
 
 void OgreVis::frameRendered(const Ogre::FrameEvent &evt) {
   if (isVideoRecording_) return;
   Ogre::ImguiManager::getSingleton().frameRendered(evt);
   cameraMan_->frameRendered(evt);
-
 }
 
 bool OgreVis::frameStarted(const Ogre::FrameEvent &evt) {
@@ -220,28 +237,41 @@ bool OgreVis::frameStarted(const Ogre::FrameEvent &evt) {
       evt.timeSinceLastFrame,
       Ogre::Rect(0, 0, getRenderWindow()->getWidth(), getRenderWindow()->getHeight()));
   if (imGuiRenderCallback_) imGuiRenderCallback_();
+
+  /// video recording
+  if (!isVideoRecording_ && initiateVideoRecording_) {
+    videoInitMutex_.lock();
+    isVideoRecording_ = true;
+    initiateVideoRecording_ = false;
+    if(videoThread_ && videoThread_->joinable()) videoThread_->join();
+    videoThread_ = std::make_unique<std::thread>(&OgreVis::videoThread, this);
+  }
+
   return true;
 }
 
 bool OgreVis::frameEnded(const Ogre::FrameEvent &evt) {
   if (isVideoRecording_ && stopVideoRecording_) {
-    RSINFO(currentVideoFile_ << " is saved")
-    stopVideoRecording_ = false;
-    isVideoRecording_ = false;
-    pclose(ffmpeg);
-    imageCounter = 0;
-  } else if (isVideoRecording_) {
+    videoThread_->join();
+  } else if (isVideoRecording_ && !stopVideoRecording_) {
+
+    /// wait until the video thread processes the previous frame
+    while(newFrameAvailable_)
+      usleep(1e4);
+
+    std::lock_guard<std::mutex> lock(videoFrameMutext_);
+    std::lock_guard<std::mutex> lock2(videoInitMutex_);
+
     imageCounter++;
-    uint32_t w = getRenderWindow()->getWidth(), h = getRenderWindow()->getHeight();
-    Ogre::PixelFormat pf = getRenderWindow()->suggestPixelFormat();
-    Ogre::uchar *data = OGRE_ALLOC_T(Ogre::uchar, w * h * Ogre::PixelUtil::getNumElemBytes(pf), MEMCATEGORY_RENDERSYS);
-    Ogre::PixelBox pb(w, h, 1, pf, data);
-    getRenderWindow()->copyContentsToMemory(pb, pb);
-    fwrite(pb.data, Ogre::PixelUtil::getNumElemBytes(pf) * w * h, 1, ffmpeg);
-    delete data;
+
+//    Ogre::uchar *data = OGRE_ALLOC_T(Ogre::uchar, w * h * Ogre::PixelUtil::getNumElemBytes(pf), MEMCATEGORY_RENDERSYS);
+    getRenderWindow()->copyContentsToMemory(*videoPixelBox_, *videoPixelBox_);
+//    OGRE_FREE(data, MEMCATEGORY_RENDERSYS);
+    newFrameAvailable_ = true;
 //    if(imageCounter > imageBufferSize_)
 //      stopVideoRecording_ = true;
   }
+
   // reset the visibility of the objects
   for (auto &ele : objectSet_.set)
     for (auto &grp : ele.second)
@@ -769,11 +799,12 @@ std::pair<raisim::Object *, size_t> OgreVis::getRaisimObject(Ogre::SceneNode *ob
 void OgreVis::startRecordingVideo(const std::string &filename) {
   initiateVideoRecording_ = true;
   stopVideoRecording_ = false;
+  isVideoRecording_ = false; // since we did not init
   currentVideoFile_ = filename;
 }
 
 void OgreVis::stopRecordingVideoAndSave() {
-  if (isVideoRecording_) stopVideoRecording_ = true;
+  stopVideoRecording_ = true;
 }
 
 void OgreVis::buildHeightMap(const std::string &name,
