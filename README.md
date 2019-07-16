@@ -34,7 +34,7 @@ First, install raisimLib (https://github.com/leggedrobotics/raisimLib).
 
 Then, install dependencies of Ogre.
 ```commandline
-sudo apt-get install libgles2-mesa-dev libxt-dev libxaw7-dev libsdl2-dev libzzip-dev libzzip-dev libfreeimage-dev libfreetype6-dev
+sudo apt-get install libgles2-mesa-dev libxt-dev libxaw7-dev libsdl2-dev libzzip-dev libfreeimage-dev libfreetype6-dev libpugixml-dev
 ```
 
 Now build Ogre from source. Make sure that you install it locally since otherwise it will overwrite your local ogre installation.
@@ -63,10 +63,29 @@ make install -j8
 - ffmpeg (video recording, for OgreVis::startRecordingVideo method. The install instruction can be found at https://tecadmin.net/install-ffmpeg-on-linux/)
 
 ## Examples
+By default, we disable building raisim ogre examples. If you want to build examples we provide, you can enable this by setting RAISIM_OGRE_EXAMPLES flag to true;
+
+```commandline
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$LOCAL_BUILD -DCMAKE_INSTALL_PREFIX=$LOCAL_BUILD -DRAISIM_OGRE_EXAMPLES=True
+```
+Executables will then be found from ```$LOCAL_BUILD/bin/```. If an example stops after execution, you can toggel by (Simulation -> uncheck Manual stepping from RaiSim Application Window).
+
+anymalOnHeightMap
+
 ![1](img/heightmap.gif "heightmap")
+
+laikago
+
 ![1](img/laikago.gif "laikago")
+
+primitives
+
 ![alt-text-2](img/primitives.gif "primitives")
+
+newtonsCradle
+
 ![alt-text-1](img/newton.gif "newton")
+
 
 ## OGRE Resources
 1. Basic RaisimOgre resources are defined by the `RAISIM_OGRE_RESOURCE_DIR` macro.

@@ -45,6 +45,7 @@ set(EXAMPLE_BINS
   atlas
   remoteVisualzation_server
   remoteVisualzation_client
+  newtonsCradle
 )
 
 install(
