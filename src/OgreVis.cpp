@@ -56,8 +56,8 @@ void OgreVis::loadMeshFile(const std::string &file, const std::string &meshName,
   if (Ogre::MeshManager::getSingleton().getByName(meshName)) return;
 
   if (!fromMemory) {
-    if (!fileExists(file))
-      OGRE_EXCEPT(Ogre::Exception::ERR_FILE_NOT_FOUND, "File " + file + " not found.", "OgreMeshLoaded");
+
+    RSFATAL_IF(!fileExists(file), "File " + file + " not found.")
 
     std::string meshFilename;
     std::string extension = file.substr(file.find_last_of('.') + 1);
