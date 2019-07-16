@@ -68,7 +68,6 @@ class SimAndGraphicsObjectPool {
   }
 
   void erase(Object* obj) {
-    world_->removeObject(obj);
     set.erase(obj);
     auto it = std::find_if(ref.begin(), ref.end(),
                            [obj](const std::pair<std::string, Object*>& ref){ return ref.second == obj; });

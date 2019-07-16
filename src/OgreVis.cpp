@@ -872,7 +872,7 @@ void OgreVis::buildHeightMap(const std::string &name,
   Ogre::MeshPtr mMesh =
       Ogre::MeshManager::getSingleton().createManual(name, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-  RSFATAL_IF(meshUsageCount_.find(name)!=meshUsageCount_.end(), "Destroy the exsiting terrain before creating one")
+  RSFATAL_IF(meshUsageCount_.find(name)!=meshUsageCount_.end() && meshUsageCount_[name]!=0, "Destroy the existing terrain before creating one")
   meshUsageCount_[name]=1;
 
   Ogre::SubMesh *submesh = mMesh->createSubMesh(name + "_submesh");

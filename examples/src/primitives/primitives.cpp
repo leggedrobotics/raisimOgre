@@ -85,6 +85,8 @@ int main(int argc, char **argv) {
   std::vector<raisim::Capsule*> capsules;
   std::vector<raisim::Cylinder*> cylinders;
 
+
+
   static const int N=6;
 
   for(size_t i=0; i<N; i++) {
@@ -118,6 +120,8 @@ int main(int argc, char **argv) {
       }
     }
   }
+
+
 
   /// create visualizer objects
   vis->createGraphicalObject(ground, 20, "floor", "default");
