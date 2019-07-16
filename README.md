@@ -72,15 +72,19 @@ Executables will then be found from $LOCAL_BUILD/bin/
 If an example stops after execution, you can toggel by (Simulation -> uncheck Manual stepping from RaiSim Application Window).
 
 anymalOnHeightMap
+
 ![1](img/heightmap.gif "heightmap")
 
 laikago
+
 ![1](img/laikago.gif "laikago")
 
 primitives
+
 ![alt-text-2](img/primitives.gif "primitives")
 
 newtonsCradle
+
 ![alt-text-1](img/newton.gif "newton")
 
 
