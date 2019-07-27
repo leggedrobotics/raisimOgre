@@ -35,7 +35,7 @@ Then, install dependencies of Ogre.
 sudo apt-get install libgles2-mesa-dev libxt-dev libxaw7-dev libsdl2-dev libzzip-dev libfreeimage-dev libfreetype6-dev libpugixml-dev
 ```
 
-Now build Ogre from source. Make sure that you install it locally since otherwise it will overwrite your local ogre installation.
+Now build Ogre from source. Make sure that you install it locally since otherwise it will overwrite your system ogre installation.
 ```commandline
 cd $WORKSPACE
 git clone https://github.com/leggedrobotics/ogre.git
