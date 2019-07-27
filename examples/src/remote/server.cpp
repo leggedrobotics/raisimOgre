@@ -33,7 +33,7 @@ int main() {
   world.setTimeStep(0.002);
   world.setERP(world.getTimeStep() * .1, world.getTimeStep() * .1);
 
-  auto anymal = world.addArticulatedSystem(raisim::loadResource("ANYmal_bear2/anymal.urdf"));
+  auto anymal = world.addArticulatedSystem(raisim::loadResource("anymal/anymal.urdf"));
   anymal->setName("anymal");
 
 //  auto ground = world.addGround(0);
@@ -61,7 +61,7 @@ int main() {
   terrainProperties.fractalGain = 0.25;
   auto hm = world.addHeightMap(0.0, 0.0, terrainProperties);
 
-  anymal->setGeneralizedCoordinate({0, 1, 3.54, 1.0, 0.0, 0.0, 0.0, 0.03, 0.4, -0.8, -0.03, 0.4, -0.8, 0.03, -0.4, 0.8,
+  anymal->setGeneralizedCoordinate({0, 1, 30.54, 1.0, 0.0, 0.0, 0.0, 0.03, 0.4, -0.8, -0.03, 0.4, -0.8, 0.03, -0.4, 0.8,
                                     -0.03, -0.4, 0.8});
   anymal->setControlMode(raisim::ControlMode::PD_PLUS_FEEDFORWARD_TORQUE);
   /// ANYmal joint PD controller
@@ -80,6 +80,14 @@ int main() {
   std::default_random_engine generator;
   std::normal_distribution<double> distribution(0.0, 0.2);
   std::srand(std::time(nullptr));
+
+  /// ANYmal joint PD controller
+  Eigen::VectorXd jointNominalConfig(19), jointVelocityTarget(18);
+  jointVelocityTarget.setZero();
+
+  jointNominalConfig << 0, 0, 0, 1, 0, 0, 0, 0.03, 0.7, -1.4, -0.03, 0.7, -1.4, 0.03, -0.7, 1.4, -0.03, -0.7, 1.4;
+
+  anymal->setPdTarget(jointNominalConfig, jointVelocityTarget);
 
   for(int i=0; i<20000; i++) {
     raisim::MSLEEP(2);

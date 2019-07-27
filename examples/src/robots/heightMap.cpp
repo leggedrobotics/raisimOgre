@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
   /// create raisim objects
   auto sphere1 = world.addSphere(0.1, 1);
   auto sphere2 = world.addSphere(0.1, 1);
-  auto anymal = world.addArticulatedSystem(raisim::loadResource("anymal/urdf/anymal.urdf"));
+  auto anymal = world.addArticulatedSystem(raisim::loadResource("anymal/anymal.urdf"));
   sphere1->setPosition(0, 0, 5);
   sphere2->setPosition(0.5, 0, 3);
   world.setERP(world.getTimeStep() * .1, world.getTimeStep() * .1);

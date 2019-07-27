@@ -37,6 +37,9 @@ class Deserializer {
  public:
   explicit Deserializer(const std::string &resDir) {
     resDir_ = resDir;
+    if(resDir_.back() =='/')
+      resDir_ = resDir.substr(0, resDir_.size()-1);
+
     receiveVector_.resize(raisim::RaisimServer::SEND_BUFFER_SIZE);
   };
 
