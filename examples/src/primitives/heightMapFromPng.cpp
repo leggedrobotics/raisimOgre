@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
   /// create raisim objects
   auto sphere1 = world.addSphere(0.1, 10);
   auto sphere2 = world.addSphere(0.1, 10);
-  auto anymal = world.addArticulatedSystem(raisim::loadResource("anymal/urdf/anymal.urdf"));
+  auto anymal = world.addArticulatedSystem(raisim::loadResource("anymal/anymal.urdf"));
 
   // loading heightmap from a png file
   auto heightMap = world.addHeightMap(raisim::loadResource("heightMap/zurichHeightMap.png"), 0, 0, 100, 100, 0.0005, -20);
