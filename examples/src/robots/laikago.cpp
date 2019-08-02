@@ -51,7 +51,7 @@ void setupCallback() {
   // beyond this distance, shadow disappears
   vis->getSceneManager()->setShadowFarDistance(30);
   // size of contact points and contact forces
-  vis->setContactVisObjectSize(0.03, .6);
+  vis->setContactVisObjectSize(0.06, .6);
   // speed of camera motion in freelook mode
   vis->getCameraMan()->setTopSpeed(5);
 }
@@ -103,8 +103,7 @@ int main(int argc, char **argv) {
       laikagos.push_back(world.addArticulatedSystem(raisim::loadResource("laikago/laikago.urdf")));
       laikago_visual.push_back(vis->createGraphicalObject(laikagos.back(),
                                                           "laikago" + std::to_string(i) + "X" + std::to_string(j)));
-      laikagos.back()->setGeneralizedCoordinate({double(2*i), double(j), 0.44, 0.70710678118, 0.70710678118, 0.0, 0.0, 0.0, 0.0,
-                                        -0.7, 0, 0, -0.7, 0.00, 0, -0.7, 0, 0, -0.7});
+      laikagos.back()->setGeneralizedCoordinate({double(2*i), double(j), 0.48, 1, 0.0, 0.0, 0.0, 0.0, 0.5, -1, 0, 0.5, -1, 0.00, 0.5, -1, 0, 0.5, -0.7});
       laikagos.back()->setGeneralizedForce(Eigen::VectorXd::Zero(laikagos.back()->getDOF()));
       laikagos.back()->setControlMode(raisim::ControlMode::PD_PLUS_FEEDFORWARD_TORQUE);
       laikagos.back()->setPdGains(jointPgain, jointDgain);
@@ -124,8 +123,7 @@ int main(int argc, char **argv) {
     if(controlDecimation++ % 2500 == 0)
       for(size_t i=0; i<N; i++)
         for(size_t j=0; j<N; j++)
-          laikagos[i * N + j]->setGeneralizedCoordinate({double(2 * i), double(j), 0.44, 0.70710678118, 0.70710678118, 0.0, 0.0, 0.0, 0.0,
-                                                         -0.7, 0, 0, -0.7, 0.00, 0, -0.7, 0, 0, -0.7});
+          laikagos[i * N + j]->setGeneralizedCoordinate({double(2 * i), double(j), 0.48, 1, 0.0, 0.0, 0.0, 0.0, 0.5, -1, 0, 0.5, -1, 0.00, 0.5, -1, 0, 0.5, -1});
     if(controlDecimation % 50 != 0)
       return;
 
@@ -135,7 +133,7 @@ int main(int argc, char **argv) {
 
     for(size_t i=0; i < N; i++) {
       for (size_t j = 0; j < N; j++) {
-        jointNominalConfig << 0, 0, 0, 0, 0, 0, 0, 0.0, 0.0, -0.7, 0, 0, -0.7, 0.00, 0, -0.7, 0, 0, -0.7;
+        jointNominalConfig << 0, 0, 0, 0, 0, 0, 0, 0.0, 0.5, -1, 0, 0.5, -1, 0.00, 0.5, -1, 0, 0.5, -1.;
 
         for (size_t k = 0; k < laikagos[0]->getGeneralizedCoordinateDim(); k++)
           jointNominalConfig(k) += distribution(generator);

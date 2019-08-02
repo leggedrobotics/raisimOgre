@@ -69,6 +69,7 @@ int main(int argc, char **argv) {
   /// create raisim world
   raisim::World world;
   world.setTimeStep(0.002);
+  world.setERP(0.003, 0.);
   auto vis = raisim::OgreVis::get();
 
   /// these method must be called before initApp
@@ -85,10 +86,12 @@ int main(int argc, char **argv) {
   /// create raisim objects
   auto sphere1 = world.addSphere(0.1, 10);
   auto sphere2 = world.addSphere(0.1, 10);
+
+  // the floating base orientation is initialized to identity and all joints and positions are initialized to 1
   auto anymal = world.addArticulatedSystem(raisim::loadResource("anymal/anymal.urdf"));
 
   // loading heightmap from a png file
-  auto heightMap = world.addHeightMap(raisim::loadResource("heightMap/zurichHeightMap.png"), 0, 0, 100, 100, 0.0005, -20);
+  auto heightMap = world.addHeightMap(raisim::loadResource("heightMap/zurichHeightMap.png"), 0, 0, 100, 100, 0.0005, -10);
 
   vis->createGraphicalObject(sphere1, "sphere1", "gravel");
   vis->createGraphicalObject(sphere2, "sphere2", "default");
