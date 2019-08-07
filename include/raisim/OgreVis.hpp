@@ -267,6 +267,9 @@ class OgreVis :
                       float centerY,
                       const std::vector<float> &height);
 
+  /// this method is not meant to be inerited but it solves python binding issue in raisimpy
+  void closeApp();
+
  private:
   OgreVis()
       : ApplicationContext("RaisimDemoApp") {

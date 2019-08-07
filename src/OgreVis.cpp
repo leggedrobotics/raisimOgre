@@ -1181,4 +1181,13 @@ void OgreVis::deselect() {
   selected_ = nullptr;
 }
 
+void OgreVis::closeApp() {
+  ApplicationContext::closeApp();
+  imGuiRenderCallback_ = nullptr;
+  imGuiSetupCallback_ = nullptr;
+  keyboardCallback_ = nullptr;
+  setUpCallback_ = nullptr;
+  controlCallback_ = nullptr;
+}
+
 }
