@@ -9,7 +9,7 @@ raisimOgre is a visualizer for raisim. It is a simple wrapper around Ogre3d (htt
 - cmake > 3.10 ([how to install?](https://github.com/jhwangbo/raisimHelp/tree/master#how-to-install-cmake))
 
 ## Related repos
-- [raisimOgre](https://github.com/leggedrobotics/raisimOgre): a visualizer for RAISIM
+- [raisimLib](https://github.com/leggedrobotics/raisimLib): the physics engine
 - [raisimGym](https://github.com/leggedrobotics/raisimGym): a few gym environments using RAISIM
 - [raisimPy](https://github.com/robotlearn/raisimpy): a (third-party) python wrapper of RAISIM
 
