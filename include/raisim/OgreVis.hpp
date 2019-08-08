@@ -18,6 +18,7 @@
 #include "ImguiManager.h"
 #include "AssimpLoader.h"
 #include "interfaceClasses.hpp"
+#include "SDL2/SDL.h"
 
 namespace raisim {
 
@@ -270,6 +271,9 @@ class OgreVis :
   /// this method is not meant to be inerited but it solves python binding issue in raisimpy
   void closeApp();
 
+  void hideWindow() { SDL_HideWindow(windowPair_.native); }
+  void showWindow() { SDL_ShowWindow(windowPair_.native);}
+
  private:
   OgreVis()
       : ApplicationContext("RaisimDemoApp") {
@@ -329,6 +333,7 @@ class OgreVis :
   KeyboardCallback keyboardCallback_ = nullptr;
   SetUpCallback setUpCallback_ = nullptr;
   ControlCallback controlCallback_ = nullptr;
+  NativeWindowPair windowPair_;
   Ogre::SceneNode *camNode_ = nullptr;
   Ogre::Camera *mainCamera_ = nullptr;
   raisim::CameraMan *cameraMan_;

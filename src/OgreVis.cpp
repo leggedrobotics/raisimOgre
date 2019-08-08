@@ -288,13 +288,13 @@ bool OgreVis::keyPressed(const KeyboardEvent &evt) {
   auto &key = evt.keysym.sym;
   // termination gets the highest priority
   switch (key) {
-    case SDLK_ESCAPE:
+    case OgreBites::SDLK_ESCAPE:
       getRoot()->queueEndRendering();
       break;
-    case SDLK_LSHIFT:
+    case OgreBites::SDLK_LSHIFT:
       leftShiftButtonPressed_ = true;
       break;
-    case SDLK_SPACE:
+    case OgreBites::SDLK_SPACE:
       paused_ = !paused_;
       break;
     default:
@@ -319,7 +319,7 @@ bool OgreVis::keyReleased(const KeyboardEvent &evt) {
   auto &key = evt.keysym.sym;
 
   switch (key) {
-    case SDLK_LSHIFT:
+    case OgreBites::SDLK_LSHIFT:
       leftShiftButtonPressed_ = false;
     default:
       break;
@@ -339,7 +339,7 @@ void OgreVis::setup() {
   std::map<std::string, std::string> param;
   param["FSAA"] = std::to_string(fsaa_);
 
-  createWindow(mAppName, initialWindowSizeX_, initialWindowSizeY_, param);
+  windowPair_ = createWindow(mAppName, initialWindowSizeX_, initialWindowSizeY_, param);
 
   locateResources();
   initialiseRTShaderSystem();
