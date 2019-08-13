@@ -274,6 +274,18 @@ class OgreVis :
   void hideWindow() { SDL_HideWindow(windowPair_.native); }
   void showWindow() { SDL_ShowWindow(windowPair_.native);}
 
+  /// use this method to manually assign a mesh to an object
+  GraphicObject createSingleGraphicalObject(const std::string &name,
+                                            const std::string &meshName,
+                                            const std::string &material,
+                                            const raisim::Vec<3> &scale,
+                                            const Vec<3> &offset,
+                                            const Mat<3, 3> &rot,
+                                            size_t localIdx,
+                                            bool castShadow = true,
+                                            bool selectable = true,
+                                            unsigned long int group = RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP);
+
  private:
   OgreVis()
       : ApplicationContext("RaisimDemoApp") {
@@ -304,17 +316,6 @@ class OgreVis :
   bool frameEnded(const Ogre::FrameEvent &evt) final;
   void videoThread();
 
-  GraphicObject generateGraphicalObject(const std::string &name,
-                                        const std::string &meshName,
-                                        const std::string &material,
-                                        const raisim::Vec<3> &scale,
-                                        const Vec<3> &offset,
-                                        const Mat<3, 3> &rot,
-                                        size_t localIdx,
-                                        bool castShadow = true,
-                                        bool selectable = true,
-                                        unsigned long int group = RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP);
-
   void registerRaisimGraphicalObjects(raisim::VisObject &vo,
                                       std::vector<GraphicObject> &graphics,
                                       raisim::ArticulatedSystem *as,
@@ -323,7 +324,7 @@ class OgreVis :
 
   void createAndAppendVisualObject(const std::string &name,
                                    const std::string &meshName,
-                                   const std::string mat,
+                                   const std::string &mat,
                                    std::vector<raisim::VisualObject> &vec);
 
   void updateVisualizationObject(raisim::VisualObject &vo);

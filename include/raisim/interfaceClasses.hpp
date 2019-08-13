@@ -83,8 +83,8 @@ class SimAndGraphicsObjectPool {
     for (auto &pair : set) {
       for (auto &grp : pair.second) {
         auto raisimObject = pair.first;
-        raisimObject->getPosition_W(grp.localId, pos);
-        raisimObject->getOrientation_W(grp.localId, bodyRotation);
+        raisimObject->getPosition(grp.localId, pos);
+        raisimObject->getOrientation(grp.localId, bodyRotation);
         matvecmul(bodyRotation, grp.offset, offsetInWorld);
         matmul(bodyRotation, grp.rotationOffset, rot);
         grp.graphics->setPosition(float(pos[0] + offsetInWorld[0]),

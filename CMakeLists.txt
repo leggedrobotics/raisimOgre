@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(raisimOgre VERSION 0.2.1)
+project(raisimOgre VERSION 0.3.0)
 
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
@@ -9,7 +9,7 @@ option(RAISIM_OGRE_EXAMPLES "Build example applications." FALSE)
 ####################################
 ########### dependencies ###########
 ####################################
-find_package(raisim CONFIG REQUIRED)
+find_package(raisim 0.3.0 CONFIG REQUIRED)
 find_package(OGRE 1.12.1 CONFIG REQUIRED COMPONENTS Bites RTShaderSystem)
 find_package(Eigen3 REQUIRED HINTS ${Eigen3_HINT})
 

@@ -510,16 +510,16 @@ void OgreVis::remoteRun() {
   }
 }
 
-GraphicObject OgreVis::generateGraphicalObject(const std::string &name,
-                                               const std::string &meshName,
-                                               const std::string &material,
-                                               const raisim::Vec<3> &scale,
-                                               const Vec<3> &offset,
-                                               const Mat<3, 3> &rot,
-                                               size_t localIdx,
-                                               bool castShadow,
-                                               bool selectable,
-                                               unsigned long int group) {
+GraphicObject OgreVis::createSingleGraphicalObject(const std::string &name,
+                                                   const std::string &meshName,
+                                                   const std::string &material,
+                                                   const raisim::Vec<3> &scale,
+                                                   const Vec<3> &offset,
+                                                   const Mat<3, 3> &rot,
+                                                   size_t localIdx,
+                                                   bool castShadow,
+                                                   bool selectable,
+                                                   unsigned long int group) {
   auto *ent = raisim::OgreVis::getSceneManager()->createEntity(name,
                                                                meshName,
                                                                Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -586,7 +586,7 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Sphere *spher
   raisim::Mat<3, 3> rot;
   rot.setIdentity();
   sphere->setName(name);
-  auto graphicalObj = generateGraphicalObject(name, "sphereMesh", material, {rad, rad, rad}, {0, 0, 0}, rot, 0);
+  auto graphicalObj = createSingleGraphicalObject(name, "sphereMesh", material, {rad, rad, rad}, {0, 0, 0}, rot, 0);
   return registerSet(name, sphere, {graphicalObj});
 }
 
@@ -597,16 +597,16 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Ground *groun
   raisim::Mat<3, 3> rot;
   rot.setIdentity();
   ground->setName(name);
-  return registerSet(name, ground, {generateGraphicalObject(name,
-                                                            "planeMesh",
-                                                            material,
-                                                            {planeDim, planeDim, planeDim},
-                                                            {0, 0, 0},
-                                                            rot,
-                                                            1 << 0,
-                                                            false,
-                                                            false,
-                                                            RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP)});
+  return registerSet(name, ground, {createSingleGraphicalObject(name,
+                                                                "planeMesh",
+                                                                material,
+                                                                {planeDim, planeDim, planeDim},
+                                                                {0, 0, ground->getHeight()},
+                                                                rot,
+                                                                1 << 0,
+                                                                false,
+                                                                false,
+                                                                RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP)});
 }
 
 std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Box *box,
@@ -617,7 +617,7 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Box *box,
   box->setName(name);
   return registerSet(name,
                      box,
-                     {generateGraphicalObject(name, "cubeMesh", material, box->getDim(), {0, 0, 0}, rot, 0)});
+                     {createSingleGraphicalObject(name, "cubeMesh", material, box->getDim(), {0, 0, 0}, rot, 0)});
 }
 
 std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Cylinder *capsule,
@@ -630,7 +630,7 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Cylinder *cap
   capsule->setName(name);
   return registerSet(name,
                      capsule,
-                     {generateGraphicalObject(name, "cylinderMesh", material, {rad, rad, h}, {0, 0, 0}, rot, 0)});
+                     {createSingleGraphicalObject(name, "cylinderMesh", material, {rad, rad, h}, {0, 0, 0}, rot, 0)});
 }
 
 raisim::VisualObject *OgreVis::createGraphicalObject(raisim::Wire *wire,
@@ -670,27 +670,27 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Capsule *caps
   rot.setIdentity();
   return registerSet(name,
                      capsule,
-                     {generateGraphicalObject(name + "_cyl",
-                                              "cylinderMesh",
-                                              material,
-                                              {rad, rad, h},
-                                              {0, 0, 0},
-                                              rot,
-                                              0),
-                      generateGraphicalObject(name + "_sph1",
-                                              "sphereMesh",
-                                              material,
-                                              {rad, rad, rad},
-                                              {0, 0, 0.5},
-                                              rot,
-                                              0),
-                      generateGraphicalObject(name + "_sph2",
-                                              "sphereMesh",
-                                              material,
-                                              {rad, rad, rad},
-                                              {0, 0, -0.5},
-                                              rot,
-                                              0)});
+                     {createSingleGraphicalObject(name + "_cyl",
+                                                  "cylinderMesh",
+                                                  material,
+                                                  {rad, rad, h},
+                                                  {0, 0, 0},
+                                                  rot,
+                                                  0),
+                      createSingleGraphicalObject(name + "_sph1",
+                                                  "sphereMesh",
+                                                  material,
+                                                  {rad, rad, rad},
+                                                  {0, 0, 0.5},
+                                                  rot,
+                                                  0),
+                      createSingleGraphicalObject(name + "_sph2",
+                                                  "sphereMesh",
+                                                  material,
+                                                  {rad, rad, rad},
+                                                  {0, 0, -0.5},
+                                                  rot,
+                                                  0)});
 }
 
 raisim::SimAndGraphicsObjectPool &OgreVis::getObjectSet() {
@@ -728,16 +728,16 @@ void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
     if (!Ogre::MeshManager::getSingleton().getByName(fullFilePath))
       raisim::OgreVis::loadMeshFile(fullFilePath, fullFilePath);
     auto visname = name + "_" + as->getBodyNames()[vo.localIdx] + "_" + getBaseFileName(vo.fileName);
-    graphics.push_back(generateGraphicalObject(visname,
-                                               fullFilePath,
-                                               "",
-                                               vo.scale,
-                                               vo.offset,
-                                               vo.rot,
-                                               vo.localIdx,
-                                               true,
-                                               true,
-                                               group));
+    graphics.push_back(createSingleGraphicalObject(visname,
+                                                   fullFilePath,
+                                                   "",
+                                                   vo.scale,
+                                                   vo.offset,
+                                                   vo.rot,
+                                                   vo.localIdx,
+                                                   true,
+                                                   true,
+                                                   group));
   } else {
     auto visname = name + "_" + as->getBodyNames()[vo.localIdx] + "_";
     raisim::Vec<3> dim;
@@ -761,16 +761,16 @@ void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
         break;
       default: RSFATAL("unsupported visual shape of " << name << " of " << as->getRobotDescriptionfFileName())
     }
-    graphics.push_back(generateGraphicalObject(visname + meshName,
-                                               meshName,
-                                               "",
-                                               dim,
-                                               vo.offset,
-                                               vo.rot,
-                                               vo.localIdx,
-                                               true,
-                                               true,
-                                               group));
+    graphics.push_back(createSingleGraphicalObject(visname + meshName,
+                                                   meshName,
+                                                   "",
+                                                   dim,
+                                                   vo.offset,
+                                                   vo.rot,
+                                                   vo.localIdx,
+                                                   true,
+                                                   true,
+                                                   group));
   }
   graphics.back().rotationOffset = vo.rot;
 }
@@ -1025,21 +1025,21 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::HeightMap *hm
 
   return registerSet(name,
                      hm,
-                     {generateGraphicalObject("terrain",
-                                              name,
-                                              material,
-                                              {1, 1, 1},
-                                              {0, 0, 0},
-                                              rot,
-                                              0,
-                                              false,
-                                              false,
-                                              RAISIM_COLLISION_BODY_GROUP | RAISIM_OBJECT_GROUP)});
+                     {createSingleGraphicalObject("terrain",
+                                                  name,
+                                                  material,
+                                                  {1, 1, 1},
+                                                  {0, 0, 0},
+                                                  rot,
+                                                  0,
+                                                  false,
+                                                  false,
+                                                  RAISIM_COLLISION_BODY_GROUP | RAISIM_OBJECT_GROUP)});
 }
 
 void OgreVis::createAndAppendVisualObject(const std::string &name,
                                           const std::string &meshName,
-                                          const std::string mat,
+                                          const std::string &mat,
                                           std::vector<raisim::VisualObject> &vec) {
   auto *ent = this->getSceneManager()->createEntity(name, meshName);
   ent->setMaterialName(mat);
