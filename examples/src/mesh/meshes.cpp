@@ -79,15 +79,17 @@ int main(int argc, char **argv) {
 
   /// create raisim objects
   auto ground = world.addGround();
-  vis->createGraphicalObject(ground, 20, "floor", "default");
+  vis->createGraphicalObject(ground, 20, "floor", "checkerboard_green");
 
-  std::string monkeyFile = vis->getResourceDir() + "/model/monkey/monkey.obj";
+//  std::string monkeyFile = vis->getResourceDir() + "/model/monkey/monkey.obj";
+  std::string monkeyFile = vis->getResourceDir() + "/model/primitives/cube.obj";
+//  std::string monkeyFile = "/home/donghok/raisim/raisimOgre/rsc/model/primitives/cube.obj";
 
   raisim::Mat<3, 3> inertia; inertia.setIdentity();
   const raisim::Vec<3> com = {0, 0, 0};
-  auto monkey = world.addMesh(monkeyFile, 1, inertia, com);
+  auto monkey = world.addMesh(monkeyFile, 1.0, inertia, com);
   vis->createGraphicalObject(monkey, "mesh1", "red");
-  monkey->setPosition(0, 0, 2.0);
+  monkey->setPosition(0, 0, 10.0);
 
   /// set camera
   vis->getCameraMan()->getCamera()->setPosition(0,-6*3.5,6*1.5);
@@ -98,6 +100,8 @@ int main(int argc, char **argv) {
 
   /// terminate
   vis->closeApp();
+
+  world.integrate();
 
   return 0;
 
