@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
   /// these method must be called before initApp
   auto vis = raisim::OgreVis::get();
   vis->setWorld(&world);
-  vis->setWindowSize(1800, 1000);
+  vis->setWindowSize(1280, 960);
   vis->setImguiSetupCallback(imguiSetupCallback);
   vis->setImguiRenderCallback(imguiRenderCallBack);
   vis->setSetUpCallback(setupCallback);
@@ -81,18 +81,24 @@ int main(int argc, char **argv) {
   auto ground = world.addGround();
   vis->createGraphicalObject(ground, 20, "floor", "checkerboard_green");
 
-//  std::string monkeyFile = vis->getResourceDir() + "/model/monkey/monkey.obj";
-  std::string monkeyFile = vis->getResourceDir() + "/model/primitives/cube.obj";
-//  std::string monkeyFile = "/home/donghok/raisim/raisimOgre/rsc/model/primitives/cube.obj";
+  std::string monkeyFile = vis->getResourceDir() + "/model/monkey/monkey.obj";
 
   raisim::Mat<3, 3> inertia; inertia.setIdentity();
   const raisim::Vec<3> com = {0, 0, 0};
-  auto monkey = world.addMesh(monkeyFile, 1.0, inertia, com);
-  vis->createGraphicalObject(monkey, "mesh1", "red");
-  monkey->setPosition(0, 0, 10.0);
+
+  int N = 3;
+  double gap = 1;
+
+  for(int row = 0; row < N; row++) {
+    for(int col = 0; col < N; col++) {
+      auto monkey = world.addMesh(monkeyFile, 1.0, inertia, com);
+      vis->createGraphicalObject(monkey, "mesh" + std::to_string(row) + std::to_string(col), "red");
+      monkey->setPosition(-gap*(N/2) + gap*row, -gap*(N/2) + gap*col, 2.0 + gap*(row*N+col));
+    }
+  }
 
   /// set camera
-  vis->getCameraMan()->getCamera()->setPosition(0,-6*3.5,6*1.5);
+  vis->getCameraMan()->getCamera()->setPosition(0,-6*4,6*1.5);
   vis->getCameraMan()->getCamera()->pitch(Ogre::Radian(1.2));
 
   /// run the app
@@ -100,8 +106,6 @@ int main(int argc, char **argv) {
 
   /// terminate
   vis->closeApp();
-
-  world.integrate();
 
   return 0;
 
