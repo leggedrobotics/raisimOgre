@@ -736,19 +736,24 @@ void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
     raisim::Vec<3> dim;
     std::string meshName;
     switch (vo.shape) {
-      case raisim::Shape::Box :meshName = "cubeMesh";
+      case raisim::Shape::Box :
+        meshName = "cubeMesh";
         dim = {vo.visShapeParam[0], vo.visShapeParam[1], vo.visShapeParam[2]};
         break;
-      case raisim::Shape::Sphere :meshName = "sphereMesh";
+      case raisim::Shape::Sphere :
+        meshName = "sphereMesh";
         dim = {vo.visShapeParam[0], vo.visShapeParam[0], vo.visShapeParam[0]};
         break;
-      case raisim::Shape::Cylinder :meshName = "cylinderMesh";
+      case raisim::Shape::Cylinder :
+        meshName = "cylinderMesh";
         dim = {vo.visShapeParam[0], vo.visShapeParam[0], vo.visShapeParam[1]};
         break;
-      case raisim::Shape::Capsule :meshName = "capsuleMesh";
+      case raisim::Shape::Capsule :
+        meshName = "capsuleMesh";
         dim = {vo.visShapeParam[0], vo.visShapeParam[0], vo.visShapeParam[1]};
         break;
-      default: RSFATAL("unsupported visual shape of " << name << " of " << as->getRobotDescriptionfFileName())
+      default:
+        RSFATAL("unsupported visual shape of " << name << " of " << as->getRobotDescriptionfFileName())
     }
     graphics.push_back(createSingleGraphicalObject(visname + meshName,
                                                    meshName,
