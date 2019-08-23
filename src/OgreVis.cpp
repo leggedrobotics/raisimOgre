@@ -330,6 +330,7 @@ void OgreVis::setup() {
   mRoot->initialise(false);
   std::map<std::string, std::string> param;
   param["FSAA"] = std::to_string(fsaa_);
+  param["vsync"] = "true";
 
   windowPair_ = createWindow(mAppName, initialWindowSizeX_, initialWindowSizeY_, param);
 

@@ -36,11 +36,11 @@ material monkey : rsPBR
             }
             texture_unit IBL_Specular
             {
-                texture specular.jpg cubic
+                texture diffuse.jpg cubic
             }
             texture_unit IBL_LUT
             {
-                texture brdfLUT.png
+                texture diffuse.png
             }
 
         }

@@ -40,6 +40,9 @@ void setupCallback() {
   vis->addResourceDirectory(vis->getResourceDir() + "/material/gravel");
   vis->loadMaterialFile("gravel.material");
 
+  vis->addResourceDirectory(vis->getResourceDir() + "/model/monkey");
+  vis->loadMaterialFile("monkey.material");
+
   vis->addResourceDirectory(vis->getResourceDir() + "/material/checkerboard");
   vis->loadMaterialFile("checkerboard.material");
 
@@ -73,13 +76,14 @@ int main(int argc, char **argv) {
   vis->setSetUpCallback(setupCallback);
   vis->setKeyboardCallback(raisimKeyboardCallback);
   vis->setAntiAliasing(2);
-
+  raisim::gui::manualStepping = true;
+  
   /// init
   vis->initApp();
 
   /// create raisim objects
   auto ground = world.addGround();
-  vis->createGraphicalObject(ground, 20, "floor", "checkerboard_green");
+  vis->createGraphicalObject(ground, 20, "floor", "checkerboard");
 
   std::string monkeyFile = vis->getResourceDir() + "/model/monkey/monkey.obj";
 
@@ -92,7 +96,7 @@ int main(int argc, char **argv) {
   for(int row = 0; row < N; row++) {
     for(int col = 0; col < N; col++) {
       auto monkey = world.addMesh(monkeyFile, 1.0, inertia, com);
-      vis->createGraphicalObject(monkey, "mesh" + std::to_string(row) + std::to_string(col), "red");
+      vis->createGraphicalObject(monkey, "mesh" + std::to_string(row) + std::to_string(col), "monkey");
       monkey->setPosition(-gap*(N/2) + gap*row, -gap*(N/2) + gap*col, 2.0 + gap*(row*N+col));
     }
   }

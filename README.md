@@ -3,6 +3,10 @@
 ## What is raisimOgre?
 raisimOgre is a visualizer for raisim. It is a simple wrapper around Ogre3d (https://www.ogre3d.org/), which is an open-source 3d rendering library.
 
+## News
+- Mesh functionality added in RAISIM. Now RAISIM can simulate any trimesh (including non-convex ones).
+![alt-text-2](img/monkeys.gif "meshes")
+
 ## Requirements
 - Linux only. support ubuntu 16.04 and 18.04 but might work on other distributions
 - g++, gcc > 6 ([how to install?](https://github.com/jhwangbo/raisimHelp/tree/master#how-to-install-latest-version-of-g))
