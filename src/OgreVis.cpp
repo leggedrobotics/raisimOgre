@@ -7,7 +7,6 @@
 #include <chrono>
 #include "OgreTangentSpaceCalc.h"
 
-
 namespace raisim {
 
 OgreVis::~OgreVis() {
@@ -45,7 +44,7 @@ void OgreVis::loadMaterialFile(const std::string &filename) {
 
 void OgreVis::loadMeshFile(const std::string &file, const std::string &meshName, bool fromMemory) {
   AssimpLoader::AssOptions opts;
-  if(meshUsageCount_.find(meshName) != meshUsageCount_.end())
+  if (meshUsageCount_.find(meshName) != meshUsageCount_.end())
     meshUsageCount_[meshName]++;
   else
     meshUsageCount_[meshName] = 1;
@@ -110,8 +109,7 @@ bool OgreVis::mousePressed(const MouseButtonEvent &evt) {
   if (Ogre::ImguiManager::getSingleton().mousePressed(evt)) return true;
 
   switch (evt.button) {
-    case BUTTON_LEFT:
-      leftMouseButtonPressed_ = true;
+    case BUTTON_LEFT:leftMouseButtonPressed_ = true;
       if (hovered_) {
         if (selected_ == hovered_) break;
         if (selected_) {
@@ -133,12 +131,10 @@ bool OgreVis::mousePressed(const MouseButtonEvent &evt) {
       } else {
       }
       break;
-    case BUTTON_RIGHT:
-      deselect();
+    case BUTTON_RIGHT:deselect();
       rightMouseButtonPressed_ = true;
       break;
-    default:
-      break;
+    default:break;
   }
   if (cameraMan_->mousePressed(evt)) return true;
 
@@ -149,14 +145,11 @@ bool OgreVis::mouseReleased(const MouseButtonEvent &evt) {
   if (Ogre::ImguiManager::getSingleton().mouseReleased(evt)) return true;
 
   switch (evt.button) {
-    case BUTTON_LEFT:
-      leftMouseButtonPressed_ = false;
+    case BUTTON_LEFT:leftMouseButtonPressed_ = false;
       break;
-    case BUTTON_RIGHT:
-      rightMouseButtonPressed_ = false;
+    case BUTTON_RIGHT:rightMouseButtonPressed_ = false;
       break;
-    default:
-      break;
+    default:break;
   }
 
   if (cameraMan_->mouseReleased(evt)) return true;
@@ -205,8 +198,8 @@ void OgreVis::videoThread() {
   videoPixelBox_ = std::make_unique<Ogre::PixelBox>(w, h, 1, pf, videoBuffer_.get());
   videoInitMutex_.unlock();
 
-  while(true) {
-    if(stopVideoRecording_) {
+  while (true) {
+    if (stopVideoRecording_) {
       fflush(ffmpeg);
       pclose(ffmpeg);
       imageCounter = 0;
@@ -243,7 +236,7 @@ bool OgreVis::frameStarted(const Ogre::FrameEvent &evt) {
     videoInitMutex_.lock();
     isVideoRecording_ = true;
     initiateVideoRecording_ = false;
-    if(videoThread_ && videoThread_->joinable()) videoThread_->join();
+    if (videoThread_ && videoThread_->joinable()) videoThread_->join();
     videoThread_ = std::make_unique<std::thread>(&OgreVis::videoThread, this);
   }
 
@@ -256,7 +249,7 @@ bool OgreVis::frameEnded(const Ogre::FrameEvent &evt) {
   } else if (isVideoRecording_ && !stopVideoRecording_) {
 
     /// wait until the video thread processes the previous frame
-    while(newFrameAvailable_)
+    while (newFrameAvailable_)
       usleep(1e4);
 
     std::lock_guard<std::mutex> lock(videoFrameMutext_);
@@ -297,8 +290,7 @@ bool OgreVis::keyPressed(const KeyboardEvent &evt) {
     case OgreBites::SDLK_SPACE:
       paused_ = !paused_;
       break;
-    default:
-      break;
+    default:break;
   }
 
   if (keyboardCallback_)
@@ -338,6 +330,7 @@ void OgreVis::setup() {
   mRoot->initialise(false);
   std::map<std::string, std::string> param;
   param["FSAA"] = std::to_string(fsaa_);
+  param["vsync"] = "true";
 
   windowPair_ = createWindow(mAppName, initialWindowSizeX_, initialWindowSizeY_, param);
 
@@ -451,8 +444,8 @@ void OgreVis::sync() {
 void OgreVis::remove(raisim::Object *ob) {
   auto set = objectSet_[ob];
 
-  for(auto& go : *set.first) {
-    if(primitiveMeshNames_.find(go.meshName) == primitiveMeshNames_.end() && meshUsageCount_[go.meshName] == 1) {
+  for (auto &go : *set.first) {
+    if (primitiveMeshNames_.find(go.meshName) == primitiveMeshNames_.end() && meshUsageCount_[go.meshName] == 1) {
       Ogre::MeshManager::getSingleton().unload(go.meshName);
       Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().getByName(go.meshName);
       Ogre::MeshManager::getSingleton().remove(mesh);
@@ -704,7 +697,7 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::ArticulatedSy
   int itemId = 0;
 
   for (auto &vo: as->getVisOb())
-    registerRaisimGraphicalObjects(vo, graphics, as, name +"_"+ std::to_string(itemId++), RAISIM_OBJECT_GROUP);
+    registerRaisimGraphicalObjects(vo, graphics, as, name + "_" + std::to_string(itemId++), RAISIM_OBJECT_GROUP);
 
   itemId = 0;
 
@@ -759,7 +752,8 @@ void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
         meshName = "capsuleMesh";
         dim = {vo.visShapeParam[0], vo.visShapeParam[0], vo.visShapeParam[1]};
         break;
-      default: RSFATAL("unsupported visual shape of " << name << " of " << as->getRobotDescriptionfFileName())
+      default:
+        RSFATAL("unsupported visual shape of " << name << " of " << as->getRobotDescriptionfFileName())
     }
     graphics.push_back(createSingleGraphicalObject(visname + meshName,
                                                    meshName,
@@ -907,14 +901,22 @@ void OgreVis::buildHeightMap(const std::string &name,
     }
   }
 
+  createMesh(name, vertex, normal, uv, indices);
+}
+
+void OgreVis::createMesh(const std::string& name,
+                         const std::vector<float>& vertex,
+                         const std::vector<float>& normal,
+                         const std::vector<float>& uv,
+                         const std::vector<unsigned long>& indices) {
   // now begin the object definition
   // We create a submesh per material
-
   Ogre::MeshPtr mMesh =
       Ogre::MeshManager::getSingleton().createManual(name, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-  RSFATAL_IF(meshUsageCount_.find(name)!=meshUsageCount_.end() && meshUsageCount_[name]!=0, "Destroy the existing terrain before creating one")
-  meshUsageCount_[name]=1;
+  RSFATAL_IF(meshUsageCount_.find(name) != meshUsageCount_.end() && meshUsageCount_[name] != 0,
+             "Destroy the existing terrain before creating one")
+  meshUsageCount_[name] = 1;
 
   Ogre::SubMesh *submesh = mMesh->createSubMesh(name + "_submesh");
   Ogre::AxisAlignedBox bounds;
@@ -931,7 +933,7 @@ void OgreVis::buildHeightMap(const std::string &name,
   size_t offset = 0;
   offset += declaration->addElement(source, offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION).getSize();
   offset += declaration->addElement(source, offset, Ogre::VET_FLOAT3, Ogre::VES_NORMAL).getSize();
-  offset += declaration->addElement(source, offset, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES).getSize();
+  if(uv.size()!=0) offset += declaration->addElement(source, offset, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES).getSize();
 
   // We create the hardware vertex buffer
   Ogre::HardwareVertexBufferSharedPtr vbuffer =
@@ -956,8 +958,10 @@ void OgreVis::buildHeightMap(const std::string &name,
     *vdata++ = *norm++;
     *vdata++ = *norm++;
     *vdata++ = *norm++;
-    *vdata++ = *uvco++;
-    *vdata++ = *uvco++;
+    if(uv.size()!=0) {
+      *vdata++ = *uvco++;
+      *vdata++ = *uvco++;
+    }
   }
 
   vbuffer->unlock();
@@ -1037,6 +1041,29 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::HeightMap *hm
                                                   RAISIM_COLLISION_BODY_GROUP | RAISIM_OBJECT_GROUP)});
 }
 
+std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Mesh *mesh,
+                                                           const std::string &name,
+                                                           const std::string &material) {
+
+  Mat<3, 3> rot;
+  rot.setIdentity();
+  const std::string &meshName = mesh->getMeshFileName();
+
+  raisim::OgreVis::loadMeshFile(meshName, meshName);
+  return registerSet(name, mesh, {
+          createSingleGraphicalObject(name,
+                                      meshName,
+                                      material,
+                                      {1, 1, 1},
+                                      {0, 0, 0},
+                                      rot,
+                                      0,
+                                      true,
+                                      true,
+                                      RAISIM_COLLISION_BODY_GROUP | RAISIM_OBJECT_GROUP)
+  });
+}
+
 void OgreVis::createAndAppendVisualObject(const std::string &name,
                                           const std::string &meshName,
                                           const std::string &mat,
@@ -1101,12 +1128,12 @@ void OgreVis::renderOneFrame() {
 
       size_t contactIdx = 0;
 
-      for (auto* obj: world_->getObjList()) {
-        for (auto& contact: obj->getContacts()) {
-          if(!contact.isObjectA() && contact.getPairObjectBodyType() != raisim::BodyType::STATIC) continue;
+      for (auto *obj: world_->getObjList()) {
+        for (auto &contact: obj->getContacts()) {
+          if (!contact.isObjectA() && contact.getPairObjectBodyType() != raisim::BodyType::STATIC) continue;
           contactForces_[contactIdx].offset = contact.getPosition();
           raisim::Vec<3> zaxis = *contact.getImpulse();
-          raisim::Mat<3,3> rot;
+          raisim::Mat<3, 3> rot;
           double norm = zaxis.norm();
           if (norm == 0) {
             contactForces_[contactIdx].graphics->setVisible(false);

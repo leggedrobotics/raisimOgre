@@ -172,9 +172,16 @@ class OgreVis :
                                                     const std::string &name);
 
   /**
-  * @param as raisim articulated system object
+  * @param hm raisim heightmap object
   * @param name unique identifier of the object */
   std::vector<GraphicObject> *createGraphicalObject(raisim::HeightMap *hm,
+                                                    const std::string &name,
+                                                    const std::string &material = "default");
+
+  /**
+  * @param as raisim articulated system object
+  * @param name unique identifier of the object */
+  std::vector<GraphicObject> *createGraphicalObject(raisim::Mesh *mesh,
                                                     const std::string &name,
                                                     const std::string &material = "default");
 
@@ -328,6 +335,12 @@ class OgreVis :
                                    std::vector<raisim::VisualObject> &vec);
 
   void updateVisualizationObject(raisim::VisualObject &vo);
+
+  void createMesh(const std::string& name,
+                  const std::vector<float>& vertex,
+                  const std::vector<float>& normal,
+                  const std::vector<float>& uv,
+                  const std::vector<unsigned long>& indices);
 
   ImGuiRenderCallback imGuiRenderCallback_ = nullptr;
   ImGuiSetupCallback imGuiSetupCallback_ = nullptr;
