@@ -105,3 +105,9 @@ Please fork the repo, make changes and then send a pull request. Instructions ca
 ## Available materials
 Check rsc/material for a few examples of pbr materials. 
 Basic color materials can be found [here](https://www.rapidtables.com/web/color/RGB_Color.html). Replace spaces in the name by "_", e.g., "dark red" to "dark_red"
+
+## Who made RaiSimOgre?
+Jemin Hwangbo developed raisimOgre with the help of the following contributors
+
+- Vassilios Tsounis
+
