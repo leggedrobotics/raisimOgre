@@ -1,5 +1,5 @@
 //
-// Created by donghok on 21.08.19.
+// Created by Dongho Kang on 21.08.19.
 // MIT License
 //
 // Copyright (c) 2019-2019 Robotic Systems Lab, ETH Zurich
