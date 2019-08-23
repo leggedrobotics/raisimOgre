@@ -32,6 +32,9 @@ create_executable(zurichHeightMap src/primitives/heightMapFromPng.cpp)
 create_executable(newtonsCradle src/primitives/newtonsCradle.cpp)
 create_executable(primitives src/primitives/primitives.cpp)
 
+# meshes
+create_executable(meshes src/mesh/meshes.cpp)
+
 #==
 # Install example binaries
 #==

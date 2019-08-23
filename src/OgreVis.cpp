@@ -1039,32 +1039,23 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Mesh *mesh,
                                                            const std::string &name,
                                                            const std::string &material) {
 
-  std::vector<GraphicObject> graphics;
-//  Mat<3, 3> identity;
-//  identity.setIdentity();
-//  const std::string& meshName = mesh->getMeshFileName();
-//
-//
-//  if (mesh->getMeshFileName().is_empty()) {
-//    createMesh(name, mesh->getVerticies(), {}, {}, mesh->getIndicies());
-//
-//
-//  } else {
-//    raisim::OgreVis::loadMeshFile(meshName, meshName);
-//
-//    graphics.push_back(generateGraphicalObject(name,
-//                                               meshName,
-//                                               "",
-//                                               {1, 1, 1},
-//                                               {1, 1, 1},
-//                                               identity,
-//                                               0,
-//                                               true,
-//                                               true,
-//                                               RAISIM_OBJECT_GROUP));
-//  }
+  Mat<3, 3> rot;
+  rot.setIdentity();
+  const std::string &meshName = mesh->getMeshFileName();
 
-  return registerSet(name, mesh, std::move(graphics));
+  raisim::OgreVis::loadMeshFile(meshName, meshName);
+  return registerSet(name, mesh, {
+          createSingleGraphicalObject(name,
+                                      meshName,
+                                      material,
+                                      {1, 1, 1},
+                                      {0, 0, 0},
+                                      rot,
+                                      0,
+                                      true,
+                                      true,
+                                      RAISIM_COLLISION_BODY_GROUP | RAISIM_OBJECT_GROUP)
+  });
 }
 
 void OgreVis::createAndAppendVisualObject(const std::string &name,
