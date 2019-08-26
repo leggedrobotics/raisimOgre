@@ -597,7 +597,7 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Ground *groun
                                                                 {0, 0, ground->getHeight()},
                                                                 rot,
                                                                 1 << 0,
-                                                                false,
+                                                                true,
                                                                 false,
                                                                 RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP)});
 }
