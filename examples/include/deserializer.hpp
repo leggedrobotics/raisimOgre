@@ -206,6 +206,7 @@ class Deserializer {
           data = RaisimServer::get(data, &height);
           scale = {radius, radius, height};
           meshName = "capsuleMesh";
+          vis->addVisualObject(std::to_string(obIndex), meshName, "default", scale);
           break;
 
         case raisim::ObjectType::HALFSPACE:
