@@ -238,6 +238,25 @@ class Deserializer {
           vis->addVisualObject(std::to_string(obIndex), meshName, "default", scale);
           break;
 
+        case raisim::ObjectType::MESH: {
+          std::string meshFile, fileName, topDir;
+          data = RaisimServer::getString(data, meshFile);
+//          double sx, sy, sz;
+//          data = RaisimServer::get(data, &sx);
+//          data = RaisimServer::get(data, &sy);
+//          data = RaisimServer::get(data, &sz);
+          scale = {1.0, 1.0, 1.0};
+          topDir = raisim::getTopDirectory(meshFile);
+          fileName = raisim::getFileName(meshFile);
+          vis->loadMeshFile(resDir_ + separator() + topDir + separator() + fileName,
+                            topDir + separator() + fileName);
+          vis->addVisualObject(std::to_string(obIndex),
+                               topDir + separator() + fileName,
+                               "default",
+                               scale);
+          break;
+        }
+
         case raisim::ObjectType::ARTICULATED_SYSTEM:
           std::string objResDir, topDir, localObjResDir;
           data = RaisimServer::getString(data, objResDir);
