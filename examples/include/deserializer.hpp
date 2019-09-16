@@ -130,8 +130,8 @@ class Deserializer {
         data = RaisimServer::get(data, &quaty);
         data = RaisimServer::get(data, &quatz);
 
-        vis->getVisualObjectList()[name].graphics->setPosition(posX, posY, posZ);
-        vis->getVisualObjectList()[name].graphics->setOrientation(quatW, quatx, quaty, quatz);
+        vis->getVisualObjectList()[name].graphics->setPosition(float(posX), float(posY), float(posZ));
+        vis->getVisualObjectList()[name].graphics->setOrientation(float(quatW), float(quatx), float(quaty), float(quatz));
       }
     }
     memset(&receiveVector_[0], 0, receiveVector_.size() * sizeof(receiveVector_[0]));
@@ -204,8 +204,9 @@ class Deserializer {
         case raisim::ObjectType::CAPSULE:
           data = RaisimServer::get(data, &radius);
           data = RaisimServer::get(data, &height);
-          scale = {radius, radius, height};
+          scale = {radius, radius, (radius*2+height)/3};
           meshName = "capsuleMesh";
+          vis->addVisualObject(std::to_string(obIndex), meshName, "default", scale);
           break;
 
         case raisim::ObjectType::HALFSPACE:
@@ -236,6 +237,25 @@ class Deserializer {
           meshName = std::to_string(obIndex);
           vis->addVisualObject(std::to_string(obIndex), meshName, "default", scale);
           break;
+
+        case raisim::ObjectType::MESH: {
+          std::string meshFile, fileName, topDir;
+          data = RaisimServer::getString(data, meshFile);
+//          double sx, sy, sz;
+//          data = RaisimServer::get(data, &sx);
+//          data = RaisimServer::get(data, &sy);
+//          data = RaisimServer::get(data, &sz);
+          scale = {1.0, 1.0, 1.0};
+          topDir = raisim::getTopDirectory(meshFile);
+          fileName = raisim::getFileName(meshFile);
+          vis->loadMeshFile(resDir_ + separator() + topDir + separator() + fileName,
+                            topDir + separator() + fileName);
+          vis->addVisualObject(std::to_string(obIndex),
+                               topDir + separator() + fileName,
+                               "default",
+                               scale);
+          break;
+        }
 
         case raisim::ObjectType::ARTICULATED_SYSTEM:
           std::string objResDir, topDir, localObjResDir;
