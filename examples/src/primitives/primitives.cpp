@@ -60,9 +60,6 @@ int main(int argc, char **argv) {
   /// create raisim world
   raisim::World world;
   world.setTimeStep(0.003);
-  world.setERP(world.getTimeStep(), world.getTimeStep());
-
-  /// starts visualizer thread
 
   /// these method must be called before initApp
   auto vis = raisim::OgreVis::get();

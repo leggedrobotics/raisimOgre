@@ -54,7 +54,7 @@ void setupCallback() {
   // beyond this distance, shadow disappears
   vis->getSceneManager()->setShadowFarDistance(10);
   // size of contact points and contact forces
-  vis->setContactVisObjectSize(0.03, 0.4);
+  vis->setContactVisObjectSize(0.01, 0.4);
   // speed of camera motion in freelook mode
   vis->getCameraMan()->setTopSpeed(5);
 }
@@ -83,7 +83,6 @@ int main(int argc, char **argv) {
   auto anymal = world.addArticulatedSystem(raisim::loadResource("anymal/anymal.urdf"));
   sphere1->setPosition(0, 0, 5);
   sphere2->setPosition(0.5, 0, 3);
-  world.setERP(world.getTimeStep() * .1, world.getTimeStep() * .1);
 
   /// create heightmap
   raisim::TerrainProperties terrainProperties;
