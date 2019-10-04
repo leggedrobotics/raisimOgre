@@ -37,7 +37,6 @@ void setupCallback() {
   Ogre::Vector3 lightdir(-3,-3,-0.5);
   lightdir.normalise();
   vis->getLightNode()->setDirection({lightdir});
-  vis->setCameraSpeed(300);
 
   /// load textures
   vis->addResourceDirectory(vis->getResourceDir() + "/material/checkerboard");

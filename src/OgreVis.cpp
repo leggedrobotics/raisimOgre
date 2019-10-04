@@ -2,10 +2,17 @@
 // Created by jhwangbo on 17.01.19.
 //
 
-#include <raisim/misc.hpp>
-#include "raisim/OgreVis.hpp"
+// C/C++
 #include <chrono>
-#include "OgreTangentSpaceCalc.h"
+
+// OGRE
+#include <OgreTangentSpaceCalc.h>
+
+// RaiSim
+#include <raisim/misc.hpp>
+
+// RaiSimOgre
+#include "raisim/OgreVis.hpp"
 
 namespace raisim {
 
@@ -109,13 +116,13 @@ bool OgreVis::mousePressed(const MouseButtonEvent &evt) {
   if (Ogre::ImguiManager::getSingleton().mousePressed(evt)) return true;
 
   switch (evt.button) {
-    case BUTTON_LEFT:leftMouseButtonPressed_ = true;
+    case BUTTON_LEFT:
+      leftMouseButtonPressed_ = true;
       if (hovered_) {
         if (selected_ == hovered_) break;
         if (selected_) {
           for (int i = 0; i < selectedMaterial_.size(); i++)
-            dynamic_cast<Ogre::Entity *>(selected_->getAttachedObject(0))->getSubEntity(i)->setMaterialName(
-                selectedMaterial_[i]);
+            dynamic_cast<Ogre::Entity *>(selected_->getAttachedObject(0))->getSubEntity(i)->setMaterialName(selectedMaterial_[i]);
           selected_ = nullptr;
         }
         selected_ = hovered_;
@@ -123,7 +130,6 @@ bool OgreVis::mousePressed(const MouseButtonEvent &evt) {
         selectedMaterial_.clear();
         for (auto sub: newSelEn->getSubEntities())
           selectedMaterial_.push_back(sub->getMaterialName());
-
         for (auto sub: newSelEn->getSubEntities())
           sub->setMaterialName("selection");
         cameraMan_->setStyle(CS_ORBIT);
@@ -131,7 +137,8 @@ bool OgreVis::mousePressed(const MouseButtonEvent &evt) {
       } else {
       }
       break;
-    case BUTTON_RIGHT:deselect();
+    case BUTTON_RIGHT:
+      deselect();
       rightMouseButtonPressed_ = true;
       break;
     default:break;
@@ -331,9 +338,9 @@ void OgreVis::setup() {
   std::map<std::string, std::string> param;
   param["FSAA"] = std::to_string(fsaa_);
   param["vsync"] = "true";
-
+  
   windowPair_ = createWindow(mAppName, initialWindowSizeX_, initialWindowSizeY_, param);
-
+  
   locateResources();
   initialiseRTShaderSystem();
   loadResources();
@@ -356,31 +363,27 @@ void OgreVis::setup() {
   // register our scene with the RTSS
   Ogre::RTShader::ShaderGenerator *shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
   shadergen->addSceneManager(scnMgr_);
-
-  // -- tutorial section start --
-  scnMgr_->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
   raySceneQuery_ = scnMgr_->createRayQuery(Ogre::Ray());
-
-  light_ = scnMgr_->createLight("mainLight");
-
-  Ogre::Vector3 lightdir(1., 0, -2);
-  lightdir.normalise();
-
-  light_->setType(Ogre::Light::LT_DIRECTIONAL);
-  light_->setDirection(lightdir);
-  light_->setDiffuseColour(Ogre::ColourValue(0.3f, 0.3f, 0.3f));
-  light_->setSpecularColour(Ogre::ColourValue(0.3f, 0.3f, 0.3f));
-  light_->setCastShadows(true);
-  lightNode_ = scnMgr_->getRootSceneNode()->createChildSceneNode();
-  lightNode_->attachObject(light_);
-
+  
+  // Configure scene default lighting
+  lights_.clear();
+  lightNodes_.clear();
+  lights_.emplace("default", scnMgr_->createLight("default"));
+  lightNodes_.emplace("default", scnMgr_->getRootSceneNode()->createChildSceneNode());
+  lightNodes_["default"]->attachObject(lights_["default"]);
+  lights_["default"]->setType(Ogre::Light::LT_SPOTLIGHT);
+  lights_["default"]->setPowerScale(1.0);
+  lights_["default"]->setCastShadows(true);
+  lights_["default"]->setPosition(Ogre::Vector3(0, 0, 10));
+  lights_["default"]->setDirection(Ogre::Vector3(0, 0, -1));
+  scnMgr_->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
   scnMgr_->setShadowFarDistance(20); // Try it with different values, as that can also cause shadows to fade out
   scnMgr_->setShadowDirLightTextureOffset(0);
   auto *camSetup = new Ogre::FocusedShadowCameraSetup();
   scnMgr_->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(camSetup));
 
   // create the camera
-  mainCamera_ = scnMgr_->createCamera("myCam");
+  mainCamera_ = scnMgr_->createCamera("camera_main");
   mainCamera_->setNearClipDistance(0.1);
   mainCamera_->setAutoAspectRatio(true);
   mainCamera_->setFarClipDistance(1000);
@@ -1217,4 +1220,27 @@ void OgreVis::closeApp() {
   controlCallback_ = nullptr;
 }
 
+std::pair<Ogre::Light*, Ogre::SceneNode*> OgreVis::addLight(const std::string &name) {
+  lights_.emplace(name, scnMgr_->createLight(name));
+  lightNodes_.emplace(name, scnMgr_->getRootSceneNode()->createChildSceneNode());
+  lightNodes_[name]->attachObject(lights_[name]);
+  return {lights_[name], lightNodes_[name]};
 }
+
+std::pair<Ogre::Light*, Ogre::SceneNode*> OgreVis::addLight(const std::string &name,
+                                                   Ogre::Light type,
+                                                   Ogre::Vector3 pos,
+                                                   Ogre::Vector3 dir,
+                                                   Ogre::Real power,
+                                                   bool shadows) {
+  lights_.emplace(name, scnMgr_->createLight(name));
+  lightNodes_.emplace(name, scnMgr_->getRootSceneNode()->createChildSceneNode());
+  lightNodes_[name]->attachObject(lights_[name]);
+  return {lights_[name], lightNodes_[name]};
+}
+
+void OgreVis::setAmbientLight(Ogre::ColourValue rgba) {
+  scnMgr_->setAmbientLight(rgba);
+}
+
+} // namespace raisim

@@ -39,8 +39,6 @@ void setupCallback() {
   Ogre::Vector3 lightdir(1., 1, -1);
   lightdir.normalise();
   vis->getLight()->setDirection(lightdir);
-
-  vis->setCameraSpeed(300);
   vis->setContactVisObjectSize(0.04, 0.3);
 
   /// shadow setting

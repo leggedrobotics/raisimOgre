@@ -1,6 +1,6 @@
 #include <iostream>
 #include <raisim/math.hpp>
-#include "raisim/RaiCameraMan.hpp"
+#include "raisim/CameraMan.hpp"
 #include "OgreSceneManager.h"
 
 namespace raisim {

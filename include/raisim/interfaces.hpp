@@ -2,10 +2,13 @@
 // Created by jhwangbo on 21.01.19.
 //
 
-#ifndef RAISIMOGREVISUALIZER_INTERFACECLASSES_HPP
-#define RAISIMOGREVISUALIZER_INTERFACECLASSES_HPP
+#ifndef RAISIM_OGRE_INTERFACES_HPP
+#define RAISIM_OGRE_INTERFACES_HPP
 
-#include "Ogre.h"
+// OGRE
+#include <Ogre.h>
+
+// RaiSim
 #include "raisim/World.hpp"
 
 namespace raisim {
@@ -132,6 +135,6 @@ class SimAndGraphicsObjectPool {
   World* world_;
 };
 
-}
+} // namespace raisim
 
-#endif //RAISIMOGREVISUALIZER_INTERFACECLASSES_HPP
+#endif // RAISIM_OGRE_INTERFACES_HPP
