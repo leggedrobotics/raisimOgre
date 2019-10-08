@@ -1011,7 +1011,8 @@ void OgreVis::createMesh(const std::string& name,
 
 std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::HeightMap *hm,
                                                            const std::string &name,
-                                                           const std::string &material) {
+                                                           const std::string &material,
+                                                           int sampleEveryN) {
 
   auto xSamples = hm->getXSamples();
   auto xSize = hm->getXSize();
@@ -1022,11 +1023,15 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::HeightMap *hm
   auto centerY = hm->getCenterY();
   auto &height = hm->getHeightVector();
   std::vector<float> heightFloat;
-  heightFloat.reserve(height.size());
-  for (auto h: height)
-    heightFloat.push_back(h);
+  heightFloat.clear();
 
-  buildHeightMap(name, xSamples, xSize, centerX, ySamples, ySize, centerY, heightFloat);
+  for (size_t x=0; x < xSamples; x+=sampleEveryN) {
+    for (size_t y=0; y < ySamples; y+=sampleEveryN) {
+      heightFloat.push_back(height[x*ySamples+y]);
+    }
+  }
+
+  buildHeightMap(name, (xSamples-1)/sampleEveryN+1, xSize, centerX, (ySamples-1)/sampleEveryN+1, ySize, centerY, heightFloat);
   raisim::Mat<3, 3> rot;
   rot.setIdentity();
 
