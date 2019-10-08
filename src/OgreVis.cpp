@@ -116,22 +116,14 @@ bool OgreVis::mousePressed(const MouseButtonEvent &evt) {
   if (Ogre::ImguiManager::getSingleton().mousePressed(evt)) return true;
 
   switch (evt.button) {
-    case BUTTON_LEFT:
-      leftMouseButtonPressed_ = true;
+    case BUTTON_LEFT:leftMouseButtonPressed_ = true;
       if (hovered_) {
         if (selected_ == hovered_) break;
         if (selected_) {
-          for (int i = 0; i < selectedMaterial_.size(); i++)
-            dynamic_cast<Ogre::Entity *>(selected_->getAttachedObject(0))->getSubEntity(i)->setMaterialName(selectedMaterial_[i]);
           selected_ = nullptr;
         }
         selected_ = hovered_;
         auto *newSelEn = dynamic_cast<Ogre::Entity *>(selected_->getAttachedObject(0));
-        selectedMaterial_.clear();
-        for (auto sub: newSelEn->getSubEntities())
-          selectedMaterial_.push_back(sub->getMaterialName());
-        for (auto sub: newSelEn->getSubEntities())
-          sub->setMaterialName("selection");
         cameraMan_->setStyle(CS_ORBIT);
         cameraMan_->setTarget(selected_);
       } else {
@@ -383,7 +375,7 @@ void OgreVis::setup() {
   scnMgr_->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(camSetup));
 
   // create the camera
-  mainCamera_ = scnMgr_->createCamera("camera_main");
+  mainCamera_ = scnMgr_->createCamera("main");
   mainCamera_->setNearClipDistance(0.1);
   mainCamera_->setAutoAspectRatio(true);
   mainCamera_->setFarClipDistance(1000);
@@ -539,12 +531,12 @@ GraphicObject OgreVis::createSingleGraphicalObject(const std::string &name,
   return obj;
 }
 
-void OgreVis::addVisualObject(const std::string &name,
-                              const std::string &meshName,
-                              const std::string &material,
-                              const raisim::Vec<3> &scale,
-                              bool castShadow,
-                              unsigned long int group) {
+VisualObject* OgreVis::addVisualObject(const std::string &name,
+                                       const std::string &meshName,
+                                       const std::string &material,
+                                       const raisim::Vec<3> &scale,
+                                       bool castShadow,
+                                       unsigned long int group) {
   auto *ent = raisim::OgreVis::getSceneManager()->createEntity(name,
                                                                meshName,
                                                                Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -563,6 +555,8 @@ void OgreVis::addVisualObject(const std::string &name,
   obj.graphics->scale(float(obj.scale[0]), float(obj.scale[1]), float(obj.scale[2]));
   obj.group = group;
   obj.name = name;
+  
+  return &visObject_[name];
 }
 
 void OgreVis::clearVisualObject() {
@@ -775,14 +769,6 @@ void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
 void OgreVis::select(const GraphicObject &ob, bool highlight) {
   auto node = ob.graphics;
   auto *newSelEn = dynamic_cast<Ogre::Entity *>(node->getAttachedObject(0));
-  selectedMaterial_.clear();
-
-  for (auto sub: newSelEn->getSubEntities())
-    selectedMaterial_.push_back(sub->getMaterialName());
-
-  if (highlight)
-    for (auto sub: newSelEn->getSubEntities())
-      sub->setMaterialName("selection");
 
   cameraMan_->setStyle(CS_ORBIT);
   cameraMan_->setTarget(node);
@@ -1011,7 +997,8 @@ void OgreVis::createMesh(const std::string& name,
 
 std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::HeightMap *hm,
                                                            const std::string &name,
-                                                           const std::string &material) {
+                                                           const std::string &material,
+                                                           int sampleEveryN) {
 
   auto xSamples = hm->getXSamples();
   auto xSize = hm->getXSize();
@@ -1022,11 +1009,15 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::HeightMap *hm
   auto centerY = hm->getCenterY();
   auto &height = hm->getHeightVector();
   std::vector<float> heightFloat;
-  heightFloat.reserve(height.size());
-  for (auto h: height)
-    heightFloat.push_back(h);
+  heightFloat.clear();
 
-  buildHeightMap(name, xSamples, xSize, centerX, ySamples, ySize, centerY, heightFloat);
+  for (size_t x=0; x < xSamples; x+=sampleEveryN) {
+    for (size_t y=0; y < ySamples; y+=sampleEveryN) {
+      heightFloat.push_back(height[x*ySamples+y]);
+    }
+  }
+
+  buildHeightMap(name, (xSamples-1)/sampleEveryN+1, xSize, centerX, (ySamples-1)/sampleEveryN+1, ySize, centerY, heightFloat);
   raisim::Mat<3, 3> rot;
   rot.setIdentity();
 
@@ -1204,10 +1195,6 @@ void OgreVis::renderOneFrame() {
 
 void OgreVis::deselect() {
   cameraMan_->setStyle(CS_FREELOOK);
-  if (selected_) {
-    for (int i = 0; i < selectedMaterial_.size(); i++)
-      dynamic_cast<Ogre::Entity *>(selected_->getAttachedObject(0))->getSubEntity(i)->setMaterialName(selectedMaterial_[i]);
-  }
   selected_ = nullptr;
 }
 

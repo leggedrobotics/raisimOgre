@@ -201,7 +201,8 @@ public:
   * @param name unique identifier of the object */
   std::vector<GraphicObject> *createGraphicalObject(raisim::HeightMap *hm,
                                                     const std::string &name,
-                                                    const std::string &material = "default");
+                                                    const std::string &material = "default",
+                                                    int sampleEveryN = 1);
 
   /**
   * @param as raisim articulated system object
@@ -281,13 +282,13 @@ public:
   void setRemoteMode(bool remoteMode) { remoteMode_ = remoteMode; }
 
   void remoteRun();
-
-  void addVisualObject(const std::string &name,
-                       const std::string &meshName,
-                       const std::string &material,
-                       const raisim::Vec<3> &scale,
-                       bool castShadow = true,
-                       unsigned long int group = RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP);
+  
+  VisualObject*  addVisualObject(const std::string &name,
+                                 const std::string &meshName,
+                                 const std::string &material,
+                                 const raisim::Vec<3> &scale,
+                                 bool castShadow = true,
+                                 unsigned long int group = RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP);
 
   void clearVisualObject();
 
@@ -394,7 +395,6 @@ private:
   SimAndGraphicsObjectPool objectSet_;
   std::map<std::string, VisualObject> visObject_;
   std::map<std::string, VisualObject> wires_;
-  std::vector<std::string> selectedMaterial_;
   std::map<std::string, size_t> meshUsageCount_;
   std::set<std::string> primitiveMeshNames_;
   

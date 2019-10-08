@@ -17,19 +17,21 @@ namespace raisim {
 class GraphicObject {
  public:
   GraphicObject() {
+    scale.setConstant(1.0);
+    offset.setZero();
     rotationOffset.setIdentity();
-    scale = {1.0, 1.0, 1.0};
-    offset = {.0, .0, .0};
   }
-
-  Ogre::SceneNode* graphics = nullptr;
-  raisim::Vec<3> scale, offset;
-  raisim::Mat<3, 3> rotationOffset;
-  unsigned long int group = 1ul;
-  size_t localId = 0;
-  bool selectable_ = true;
+  
+public:
   std::string name;
   std::string meshName;
+  raisim::Vec<3> scale;
+  raisim::Vec<3> offset;
+  raisim::Mat<3, 3> rotationOffset;
+  Ogre::SceneNode* graphics = nullptr;
+  unsigned long int group{1ul};
+  size_t localId{0};
+  bool selectable_{true};
 };
 
 
@@ -37,20 +39,56 @@ class GraphicObject {
 class VisualObject {
  public:
   VisualObject(Ogre::SceneNode* grp) : graphics(grp) {
+    scale.setConstant(1.0);
+    offset.setZero();
     rotationOffset.setIdentity();
-    scale = {1.0, 1.0, 1.0};
-    offset = {.0, .0, .0};
   }
 
   VisualObject() {
+    scale.setConstant(1.0);
+    offset.setZero();
     rotationOffset.setIdentity();
   }
-
-  Ogre::SceneNode* graphics = nullptr;
-  raisim::Vec<3> scale, offset;
-  raisim::Mat<3, 3> rotationOffset;
-  unsigned long int group = 1ul;
+  
+  void setScale(double x, double y, double z) {
+    scale = {x, y, z};
+  }
+  
+  void setScale(const Eigen::Vector3d &s) {
+    scale.e() = s;
+  }
+  
+  void setScale(const raisim::Vec<3> &s) {
+    scale = s;
+  }
+  
+  void setPosition(double x, double y, double z) {
+    offset = {x, y, z};
+  }
+  
+  void setPosition(const Eigen::Vector3d &r) {
+    offset.e() = r;
+  }
+  
+  void setPosition(const raisim::Vec<3> &r) {
+    offset = r;
+  }
+  
+  void setOrientation(const Eigen::Matrix3d &R) {
+    rotationOffset.e() = R;
+  }
+  
+  void setOrientation(const raisim::Mat<3, 3> &R) {
+    rotationOffset = R;
+  }
+  
+public:
   std::string name;
+  raisim::Vec<3> scale;
+  raisim::Vec<3> offset;
+  raisim::Mat<3, 3> rotationOffset;
+  Ogre::SceneNode* graphics{nullptr};
+  unsigned long int group{1ul};
 };
 
 class SimAndGraphicsObjectPool {

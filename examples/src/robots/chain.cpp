@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
   auto chain_graphics = vis->createGraphicalObject(chain, "ANYmal");
 
   vis->select(chain_graphics->at(0));
-  vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0), -Ogre::Radian(M_PI_4), 0.5);
+  vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0), -Ogre::Radian(M_PI_4), 2.5);
   chain->setGeneralizedForce(Eigen::VectorXd::Zero(chain->getDOF()));
   chain->setControlMode(raisim::ControlMode::FORCE_AND_TORQUE);
 
