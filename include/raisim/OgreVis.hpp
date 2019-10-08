@@ -176,7 +176,8 @@ class OgreVis :
   * @param name unique identifier of the object */
   std::vector<GraphicObject> *createGraphicalObject(raisim::HeightMap *hm,
                                                     const std::string &name,
-                                                    const std::string &material = "default");
+                                                    const std::string &material = "default",
+                                                    int sampleEveryN = 1);
 
   /**
   * @param as raisim articulated system object
