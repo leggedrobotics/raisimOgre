@@ -539,22 +539,16 @@ GraphicObject OgreVis::createSingleGraphicalObject(const std::string &name,
   return obj;
 }
 
-void OgreVis::addVisualObject(const std::string &name,
-                              const std::string &meshName,
-                              const std::string &material,
-                              const raisim::Vec<3> &scale,
-                              bool castShadow,
-                              unsigned long int group) {
-  auto *ent = raisim::OgreVis::getSceneManager()->createEntity(name,
-                                                               meshName,
-                                                               Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
+VisualObject* OgreVis::addVisualObject(const std::string &name,
+                                       const std::string &meshName,
+                                       const std::string &material,
+                                       const raisim::Vec<3> &scale,
+                                       bool castShadow,
+                                       unsigned long int group) {
+  auto *ent = OgreVis::getSceneManager()->createEntity(name, meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   visObject_[name] = VisualObject();
-
   ent->setCastShadows(castShadow);
-
-  if (!material.empty())
-    ent->getSubEntity(0)->setMaterialName(material);
+  if (!material.empty()) { ent->getSubEntity(0)->setMaterialName(material); }
   /// hack to check if texture coordinates exist
   VisualObject &obj = visObject_[name];
   obj.graphics = getSceneManager()->getRootSceneNode()->createChildSceneNode(name);
@@ -563,6 +557,7 @@ void OgreVis::addVisualObject(const std::string &name,
   obj.graphics->scale(float(obj.scale[0]), float(obj.scale[1]), float(obj.scale[2]));
   obj.group = group;
   obj.name = name;
+  return &visObject_[name];
 }
 
 void OgreVis::clearVisualObject() {

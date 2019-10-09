@@ -282,13 +282,13 @@ public:
   void setRemoteMode(bool remoteMode) { remoteMode_ = remoteMode; }
 
   void remoteRun();
-
-  void addVisualObject(const std::string &name,
-                       const std::string &meshName,
-                       const std::string &material,
-                       const raisim::Vec<3> &scale,
-                       bool castShadow = true,
-                       unsigned long int group = RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP);
+  
+  VisualObject* addVisualObject(const std::string &name,
+                                const std::string &meshName,
+                                const std::string &material,
+                                const raisim::Vec<3> &scale,
+                                bool castShadow = true,
+                                unsigned long int group = RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP);
 
   void clearVisualObject();
 
