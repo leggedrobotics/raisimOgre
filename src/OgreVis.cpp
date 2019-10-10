@@ -625,7 +625,7 @@ raisim::VisualObject *OgreVis::createGraphicalObject(raisim::Wire *wire,
   ent->setCastShadows(true);
 
   if (!material.empty())
-    ent->getSubEntity(0)->setMaterialName(material);
+    ent->setMaterialName(material);
   /// hack to check if texture coordinates exist
   VisualObject &obj = wires_[name];
   obj.graphics = getSceneManager()->getRootSceneNode()->createChildSceneNode(name);
