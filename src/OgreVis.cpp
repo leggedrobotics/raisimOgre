@@ -551,7 +551,7 @@ void OgreVis::addVisualObject(const std::string &name,
   ent->setCastShadows(castShadow);
 
   if (!material.empty())
-    ent->getSubEntity(0)->setMaterialName(material);
+    ent->setMaterialName(material);
   /// hack to check if texture coordinates exist
   VisualObject &obj = visObject_[name];
   obj.graphics = getSceneManager()->getRootSceneNode()->createChildSceneNode(name);
@@ -640,7 +640,7 @@ raisim::VisualObject *OgreVis::createGraphicalObject(raisim::Wire *wire,
   ent->setCastShadows(true);
 
   if (!material.empty())
-    ent->getSubEntity(0)->setMaterialName(material);
+    ent->setMaterialName(material);
   /// hack to check if texture coordinates exist
   VisualObject &obj = wires_[name];
   obj.graphics = getSceneManager()->getRootSceneNode()->createChildSceneNode(name);
