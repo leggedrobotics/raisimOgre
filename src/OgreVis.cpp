@@ -113,25 +113,17 @@ bool OgreVis::mousePressed(const MouseButtonEvent &evt) {
       if (hovered_) {
         if (selected_ == hovered_) break;
         if (selected_) {
-          for (int i = 0; i < selectedMaterial_.size(); i++)
-            dynamic_cast<Ogre::Entity *>(selected_->getAttachedObject(0))->getSubEntity(i)->setMaterialName(
-                selectedMaterial_[i]);
           selected_ = nullptr;
         }
         selected_ = hovered_;
         auto *newSelEn = dynamic_cast<Ogre::Entity *>(selected_->getAttachedObject(0));
-        selectedMaterial_.clear();
-        for (auto sub: newSelEn->getSubEntities())
-          selectedMaterial_.push_back(sub->getMaterialName());
-
-        for (auto sub: newSelEn->getSubEntities())
-          sub->setMaterialName("selection");
         cameraMan_->setStyle(CS_ORBIT);
         cameraMan_->setTarget(selected_);
       } else {
       }
       break;
-    case BUTTON_RIGHT:deselect();
+    case BUTTON_RIGHT:
+      deselect();
       rightMouseButtonPressed_ = true;
       break;
     default:break;
@@ -772,14 +764,6 @@ void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
 void OgreVis::select(const GraphicObject &ob, bool highlight) {
   auto node = ob.graphics;
   auto *newSelEn = dynamic_cast<Ogre::Entity *>(node->getAttachedObject(0));
-  selectedMaterial_.clear();
-
-  for (auto sub: newSelEn->getSubEntities())
-    selectedMaterial_.push_back(sub->getMaterialName());
-
-  if (highlight)
-    for (auto sub: newSelEn->getSubEntities())
-      sub->setMaterialName("selection");
 
   cameraMan_->setStyle(CS_ORBIT);
   cameraMan_->setTarget(node);
@@ -1206,10 +1190,6 @@ void OgreVis::renderOneFrame() {
 
 void OgreVis::deselect() {
   cameraMan_->setStyle(CS_FREELOOK);
-  if (selected_) {
-    for (int i = 0; i < selectedMaterial_.size(); i++)
-      dynamic_cast<Ogre::Entity *>(selected_->getAttachedObject(0))->getSubEntity(i)->setMaterialName(selectedMaterial_[i]);
-  }
   selected_ = nullptr;
 }
 

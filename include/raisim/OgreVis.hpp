@@ -371,7 +371,6 @@ class OgreVis :
   std::map<std::string, VisualObject> visObject_;
   std::map<std::string, VisualObject> wires_;
   uint32_t initialWindowSizeX_ = 400, initialWindowSizeY_ = 300;
-  std::vector<std::string> selectedMaterial_;
   std::map<std::string, size_t> meshUsageCount_;
   std::set<std::string> primitiveMeshNames_;
   double desiredFPS_ = 30.;

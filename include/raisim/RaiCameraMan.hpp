@@ -136,7 +136,6 @@ class _OgreBitesExport CameraMan : public InputListener
   void setPivotOffset(const Ogre::Vector3& offset);
  protected:
   Ogre::Real getDistToTarget();
-  Ogre::Real dist_;
   Ogre::Node::TransformSpace mYawSpace;
   Ogre::SceneNode* mCamera;
   CameraStyle mStyle;
@@ -152,6 +151,8 @@ class _OgreBitesExport CameraMan : public InputListener
   bool mGoingUp;
   bool mGoingDown;
   bool mFastMove;
+  Ogre::Radian yaw_, pitch_;
+  float dist_;
   Ogre::Vector3 mOffset;
 };
 }
