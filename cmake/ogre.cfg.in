@@ -1,4 +1,4 @@
-Render System=OpenGL 3+ Rendering Subsystem
+Render System=OpenGL Rendering Subsystem
 
 [OpenGL Rendering Subsystem]
 Display Frequency=N/A
