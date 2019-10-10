@@ -363,10 +363,9 @@ void OgreVis::setup() {
   lights_.emplace("default", scnMgr_->createLight("default"));
   lightNodes_.emplace("default", scnMgr_->getRootSceneNode()->createChildSceneNode());
   lightNodes_["default"]->attachObject(lights_["default"]);
-  lights_["default"]->setType(Ogre::Light::LT_SPOTLIGHT);
+  lights_["default"]->setType(Ogre::Light::LT_DIRECTIONAL);
   lights_["default"]->setPowerScale(1.0);
   lights_["default"]->setCastShadows(true);
-  lights_["default"]->setPosition(Ogre::Vector3(0, 0, 10));
   lights_["default"]->setDirection(Ogre::Vector3(0, 0, -1));
   scnMgr_->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
   scnMgr_->setShadowFarDistance(20); // Try it with different values, as that can also cause shadows to fade out
@@ -502,18 +501,15 @@ GraphicObject OgreVis::createSingleGraphicalObject(const std::string &name,
                                                    const std::string &meshName,
                                                    const std::string &material,
                                                    const raisim::Vec<3> &scale,
-                                                   const Vec<3> &offset,
-                                                   const Mat<3, 3> &rot,
+                                                   const raisim::Vec<3> &offset,
+                                                   const raisim::Mat<3, 3> &rot,
                                                    size_t localIdx,
                                                    bool castShadow,
                                                    bool selectable,
                                                    unsigned long int group) {
-  auto *ent = raisim::OgreVis::getSceneManager()->createEntity(name,
-                                                               meshName,
-                                                               Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+  auto *ent = OgreVis::getSceneManager()->createEntity(name, meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   ent->setCastShadows(castShadow);
-  if (!material.empty())
-    ent->getSubEntity(0)->setMaterialName(material);
+  if (!material.empty()) { ent->getSubEntity(0)->setMaterialName(material); }
   /// hack to check if texture coordinates exist
   GraphicObject obj;
   obj.graphics = this->getSceneManager()->getRootSceneNode()->createChildSceneNode(name);
@@ -527,7 +523,6 @@ GraphicObject OgreVis::createSingleGraphicalObject(const std::string &name,
   obj.rotationOffset = rot;
   obj.name = name;
   obj.meshName = meshName;
-
   return obj;
 }
 
@@ -538,12 +533,12 @@ VisualObject* OgreVis::addVisualObject(const std::string &name,
                                        bool castShadow,
                                        unsigned long int group) {
   auto *ent = OgreVis::getSceneManager()->createEntity(name, meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-  visObject_[name] = VisualObject();
   ent->setCastShadows(castShadow);
   if (!material.empty()) { ent->getSubEntity(0)->setMaterialName(material); }
+  visObject_[name] = VisualObject();
   /// hack to check if texture coordinates exist
   VisualObject &obj = visObject_[name];
-  obj.graphics = getSceneManager()->getRootSceneNode()->createChildSceneNode(name);
+  obj.graphics = this->getSceneManager()->getRootSceneNode()->createChildSceneNode(name);
   obj.graphics->attachObject(ent);
   obj.scale = scale;
   obj.graphics->scale(float(obj.scale[0]), float(obj.scale[1]), float(obj.scale[2]));
@@ -1078,7 +1073,7 @@ void OgreVis::renderOneFrame() {
     auto nContact = contactProblem->size();
 
     sync();
-
+    
     /// initially set everything to false
     for (auto &con : contactPoints_)
       con.graphics->setVisible(false);
@@ -1146,7 +1141,7 @@ void OgreVis::renderOneFrame() {
       }
     }
   }
-
+  
   for (auto &vob: visObject_) {
     vob.second.graphics->setVisible(vob.second.group & mask_);
     updateVisualizationObject(vob.second);
