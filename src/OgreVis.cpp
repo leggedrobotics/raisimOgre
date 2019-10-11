@@ -184,10 +184,11 @@ void OgreVis::videoThread() {
   imageCounter = 0;
   auto w = getRenderWindow()->getViewport(0)->getActualWidth();
   auto h = getRenderWindow()->getViewport(0)->getActualHeight();
-  std::string command =
-      "ffmpeg -loglevel warning -r " + std::to_string(desiredFPS_) + " -f rawvideo -pix_fmt rgb24 -s " + std::to_string(w) + "x"
-          + std::to_string(h) +
-          " -i - -threads 0 -preset fast -y -pix_fmt yuv420p -crf 21 " + currentVideoFile_;
+  std::string command = "ffmpeg -loglevel warning -r "
+    + std::to_string(desiredFPS_)
+    + " -f rawvideo -pix_fmt rgb24 -s " + std::to_string(w) + "x" + std::to_string(h)
+    + " -i - -threads 0 -preset fast -y -pix_fmt yuv420p -crf 21 "
+    + currentVideoFile_;
   const char *cmd = command.c_str();
   ffmpeg = popen(cmd, "w");
   RSFATAL_IF(!ffmpeg, "a pipe cannot be initiated for video recording. Maybe missing ffmpeg?")
