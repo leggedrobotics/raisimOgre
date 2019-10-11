@@ -35,6 +35,9 @@ create_executable(primitives src/primitives/primitives.cpp)
 # meshes
 create_executable(meshes src/mesh/meshes.cpp)
 
+# visual objects
+create_executable(visualObjects src/visualObjects/visualObjects.cpp)
+
 #==
 # Install example binaries
 #==
