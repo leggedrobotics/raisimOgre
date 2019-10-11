@@ -180,7 +180,7 @@ void OgreVis::videoThread() {
   std::string command =
       "ffmpeg -r " + std::to_string(desiredFPS_) + " -f rawvideo -pix_fmt rgb24 -s " + std::to_string(w) + "x"
           + std::to_string(h) +
-          " -i - -threads 0 -preset fast -y -pix_fmt yuv420p -crf 21 " + currentVideoFile_;
+          " -i - -threads 0 -preset fast -y -crf 21 " + currentVideoFile_;
   const char *cmd = command.c_str();
   ffmpeg = popen(cmd, "w");
   RSFATAL_IF(!ffmpeg, "a pipe cannot be initiated for video recording. Maybe missing ffmpeg?")
