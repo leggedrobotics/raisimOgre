@@ -510,7 +510,7 @@ GraphicObject OgreVis::createSingleGraphicalObject(const std::string &name,
                                                                Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   ent->setCastShadows(castShadow);
   if (!material.empty())
-    ent->getSubEntity(0)->setMaterialName(material);
+    ent->setMaterialName(material);
   /// hack to check if texture coordinates exist
   GraphicObject obj;
   obj.graphics = this->getSceneManager()->getRootSceneNode()->createChildSceneNode(name);
