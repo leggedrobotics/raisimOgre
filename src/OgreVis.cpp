@@ -186,8 +186,9 @@ void OgreVis::videoThread() {
   auto h = getRenderWindow()->getViewport(0)->getActualHeight();
   std::string command = "ffmpeg -loglevel warning -r "
     + std::to_string(desiredFPS_)
-    + " -f rawvideo -pix_fmt rgb24 -s " + std::to_string(w) + "x" + std::to_string(h)
-    + " -i - -threads 0 -preset fast -y -pix_fmt yuv420p -crf 21 "
+    + " -f rawvideo -pix_fmt rgb24 -s "
+    + std::to_string(w) + "x" + std::to_string(h)
+    + " -i - -threads 0 -preset fast -y -crf 21 "
     + currentVideoFile_;
   const char *cmd = command.c_str();
   ffmpeg = popen(cmd, "w");
@@ -331,9 +332,9 @@ void OgreVis::setup() {
   std::map<std::string, std::string> param;
   param["FSAA"] = std::to_string(fsaa_);
   param["vsync"] = "true";
-  
+
   windowPair_ = createWindow(mAppName, initialWindowSizeX_, initialWindowSizeY_, param);
-  
+
   locateResources();
   initialiseRTShaderSystem();
   loadResources();
