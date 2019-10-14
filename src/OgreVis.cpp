@@ -10,6 +10,7 @@
 namespace raisim {
 
 OgreVis::~OgreVis() {
+  if (videoThread_ && videoThread_->joinable()) videoThread_->join();
 }
 
 bool OgreVis::mouseMoved(const MouseMotionEvent &evt) {
