@@ -43,7 +43,7 @@ class Deserializer {
     receiveVector_.resize(raisim::RaisimServer::SEND_BUFFER_SIZE);
   };
 
-  void estabilishConnection() {
+  void estabilishConnection(int portNumber = 8080) {
     ///
     sock_ = 0;
 
@@ -55,7 +55,7 @@ class Deserializer {
     memset(&serv_addr, '0', sizeof(serv_addr));
 
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(raisim::RaisimServer::RAISIM_PORT);
+    serv_addr.sin_port = htons(portNumber);
 
     // Convert IPv4 and IPv6 addresses from text to binary form
     RSFATAL_IF(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0, "Invalid address");
