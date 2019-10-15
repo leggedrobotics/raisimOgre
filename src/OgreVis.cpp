@@ -1148,11 +1148,12 @@ void OgreVis::renderOneFrame() {
         }
       }
     }
-  }
 
-  for (auto &vob: visObject_) {
-    vob.second.graphics->setVisible(vob.second.group & mask_);
-    updateVisualizationObject(vob.second);
+    // remote does not use visObject_
+    for (auto &vob: visObject_) {
+      vob.second.graphics->setVisible(vob.second.group & mask_);
+      updateVisualizationObject(vob.second);
+    }
   }
 
   for (auto &wire: wires_) {
