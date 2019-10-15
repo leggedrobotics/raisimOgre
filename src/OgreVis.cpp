@@ -1038,13 +1038,14 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Mesh *mesh,
   Mat<3, 3> rot;
   rot.setIdentity();
   const std::string &meshName = mesh->getMeshFileName();
+  double scale = mesh->getScale();
 
   raisim::OgreVis::loadMeshFile(meshName, meshName);
   return registerSet(name, mesh, {
           createSingleGraphicalObject(name,
                                       meshName,
                                       material,
-                                      {1, 1, 1},
+                                      {scale, scale, scale},
                                       {0, 0, 0},
                                       rot,
                                       0,
