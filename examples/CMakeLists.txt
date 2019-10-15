@@ -22,6 +22,7 @@ create_executable(kinova src/robots/kinova.cpp)
 create_executable(atlas src/robots/atlas.cpp)
 create_executable(anymalOnHeightMap src/robots/heightMap.cpp)
 create_executable(chain src/robots/chain.cpp)
+create_executable(aliengo src/robots/aliengo.cpp)
 
 # remote
 create_executable(remoteVisualzation_server src/remote/server.cpp)
