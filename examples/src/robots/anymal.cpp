@@ -54,6 +54,15 @@ void setupCallback() {
   vis->setContactVisObjectSize(0.03, 0.6);
   // speed of camera motion in freelook mode
   vis->getCameraMan()->setTopSpeed(5);
+
+  /// skybox
+  Ogre::Quaternion quat;
+  quat.FromAngleAxis(Ogre::Radian(M_PI_2), {1., 0, 0});
+  vis->getSceneManager()->setSkyBox(true,
+                                    "Examples/StormySkyBox",
+                                    500,
+                                    true,
+                                    quat);
 }
 
 int main(int argc, char **argv) {
