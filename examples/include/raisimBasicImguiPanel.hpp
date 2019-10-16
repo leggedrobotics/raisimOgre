@@ -134,7 +134,7 @@ void imguiRenderCallBack() {
       ImGui::PopFont();
 
       ImGui::PushFont(fontMid);
-      ImGui::Text("Ncontacts: %d", ro->getContacts().size());
+      ImGui::Text("Ncontacts: %zu", ro->getContacts().size());
       ImGui::PopFont();
     }
   }
@@ -142,7 +142,7 @@ void imguiRenderCallBack() {
   if (ImGui::CollapsingHeader("Contacts")) {
     ImGui::PushFont(fontMid);
     ImGui::Text("Solver Iterations: %d", world->getContactSolver().getLoopCounter());
-    ImGui::Text("Total number of contacts: %d", world->getContactProblem()->size());
+    ImGui::Text("Total number of contacts: %zu", world->getContactProblem()->size());
     std::vector<float> error;
     error.reserve(world->getContactSolver().getLoopCounter());
 

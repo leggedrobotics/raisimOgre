@@ -38,18 +38,13 @@ material checkerboard_green_transparent
     {
         pass
         {
-             ambient 1 1 1 0.0
-             diffuse 1 1 1 0.0
-             emissive 0 0 0 0
-
              scene_blend alpha_blend
              depth_write off
 
              texture_unit
              {
                  texture green_transparent.png
-                 tex_coord_set 0
-                 colour_op modulate
+                 scale 0.1 0.1
              }
         }
     }
