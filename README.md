@@ -4,6 +4,7 @@
 raisimOgre is a visualizer for raisim. It is a simple wrapper around Ogre3d (https://www.ogre3d.org/), which is an open-source 3d rendering library.
 
 ## News
+- 2019/10/16, please pull ogre. I reported a skybox bug to ogre and added my fix to the forked repository.
 - Mesh functionality added in RAISIM. Now RAISIM can simulate any trimesh (including non-convex ones).
 ![alt-text-2](img/monkeys.gif "meshes")
 
