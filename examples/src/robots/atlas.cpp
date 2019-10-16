@@ -40,6 +40,9 @@ void setupCallback() {
   vis->addResourceDirectory(vis->getResourceDir() + "/material/checkerboard");
   vis->loadMaterialFile("checkerboard.material");
 
+  vis->addResourceDirectory(vis->getResourceDir() + "/material/skybox/violentdays");
+  vis->loadMaterialFile("violentdays.material");
+
   /// shdow setting
   vis->getSceneManager()->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
   vis->getSceneManager()->setShadowTextureSettings(2048, 3);
@@ -56,7 +59,7 @@ void setupCallback() {
   Ogre::Quaternion quat;
   quat.FromAngleAxis(Ogre::Radian(M_PI_2), {1., 0, 0});
   vis->getSceneManager()->setSkyBox(true,
-                                    "Examples/StormySkyBox",
+                                    "skybox/violentdays",
                                     500,
                                     true,
                                     quat,
@@ -92,7 +95,7 @@ int main(int argc, char **argv) {
   robot->setGeneralizedCoordinate(gc);
 
   /// create visualizer objects
-  vis->createGraphicalObject(ground, 10, "floor", "checkerboard_green");
+  vis->createGraphicalObject(ground, 10, "floor", "checkerboard_green_transparent");
   auto robot_visual = vis->createGraphicalObject(robot, "atlas");
 
   vis->select(robot_visual->at(0));
