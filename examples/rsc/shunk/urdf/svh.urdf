@@ -1,0 +1,815 @@
+<?xml version="1.0"?>
+<robot >
+  <link name="world"/>
+  <joint name="svh_base_joint" type="fixed">
+
+    <origin rpy="1 1 0" xyz="0 0 0"/>
+    <parent link="world" />
+    <child link="svh_base_link" />
+  </joint>
+
+  <link name="svh_base_link">
+    <visual>
+      <origin xyz="0 0 0.0132" rpy="3.141 0 0" />
+      <geometry>
+        <mesh filename="../meshes/base10.dae" />
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="2.1"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.007917" ixy="0.0" ixz="0.0" iyy="0.007917" iyz="0.0" izz="0.02503"/>
+    </inertial>
+
+  </link>
+
+  <link name="svh_d">
+    <visual>
+      <geometry>
+        <cylinder length="0.0110" radius="0.001" />
+      </geometry>
+
+    </visual>
+    <inertial>
+      <mass value="0.1"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.000526" ixy="0.0" ixz="0.0" iyy="0.000526" iyz="0.0" izz="0.00026"/>
+    </inertial>
+  </link>
+
+  <link name="svh_h">
+    <visual>
+      <origin rpy="0 1.571 0" xyz="-0.0125 0 0.0825" />
+      <geometry>
+        <cylinder length="0.025" radius="0.001" />
+      </geometry>
+
+    </visual>
+    <inertial>
+      <mass value="0.1"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.000526" ixy="0.0" ixz="0.0" iyy="0.000526" iyz="0.0" izz="0.00026"/>
+    </inertial>
+  </link>
+
+  <link name="svh_d2">
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.025 0 0.09625" />
+      <geometry>
+        <cylinder length="0.0275" radius="0.001" />
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="0.1"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.000526" ixy="0.0" ixz="0.0" iyy="0.000526" iyz="0.0" izz="0.00026"/>
+    </inertial>
+  </link>
+
+
+  <link name="svh_e1">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0.01313 0" />
+      <geometry>
+        <mesh scale="1 1 1" filename="../meshes/h10.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="1.57079632 0 0" xyz="0 0.01313 0" />
+      <geometry>
+        <mesh scale="1 1 1" filename="../meshes/h10.obj" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.1"/>
+      <origin rpy="0 0 0" xyz="0 0.01313 0" />
+      <inertia ixx="0.00417" ixy="0.0" ixz="0.0" iyy="0.00417" iyz="0.0" izz="0.01203"/>
+    </inertial>
+  </link>
+
+
+  <link name="svh_e2">
+    <visual>
+      <origin xyz="-0.0007 0 -0.01002" />
+      <geometry>
+        <mesh scale="1 1 1" filename="../meshes/h11.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="1.57079632 0 0" xyz="-0.0007 0 -0.01002" />
+      <geometry>
+        <mesh scale="1 1 1" filename="../meshes/h11.obj" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.1"/>
+      <origin xyz="-0.0007 0 -0.01002" />
+      <inertia ixx="0.00417" ixy="0.0" ixz="0.0" iyy="0.00417" iyz="0.0" izz="0.01203"/>
+    </inertial>
+  </link>
+
+  <link name="svh_e3">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0175 0 0.015" />
+      <geometry>
+        <cylinder length="0.03" radius="0.001" />
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.000526" ixy="0.0" ixz="0.0" iyy="0.000526" iyz="0.0" izz="0.00026"/>
+      <origin rpy="0 0 0" xyz="0.0175 0 0.015" />
+    </inertial>
+  </link>
+
+  <link name="svh_e">
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.000526" ixy="0.0" ixz="0.0" iyy="0.000526" iyz="0.0" izz="0.00026"/>
+      <origin rpy="0 0 0" xyz="0.0175 0 0.00" />
+    </inertial>
+  </link>
+
+  <link name="svh_e4">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.02825 0 0.043" />
+      <geometry>
+        <cylinder length="0.026" radius="0.001" />
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="0.1"/>
+      <origin rpy="0 0 0" xyz="0.02825 0 0.043" />
+      <inertia ixx="0.000526" ixy="0.0" ixz="0.0" iyy="0.000526" iyz="0.0" izz="0.00026"/>
+    </inertial>
+  </link>
+
+  <link name="svh_e5">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.00675 0 0.04775" />
+      <geometry>
+        <cylinder length="0.0355" radius="0.001" />
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="0.1"/>
+      <origin rpy="0 0 0" xyz="0.00675 0 0.04775" />
+      <inertia ixx="0.000526" ixy="0.0" ixz="0.0" iyy="0.000526" iyz="0.0" izz="0.00026"/>
+    </inertial>
+  </link>
+
+  <link name="svh_z">
+    <visual>
+      <origin xyz="0 0 0.02442" />
+      <geometry>
+        <mesh scale="1 1 1" filename="../meshes/d10.dae" />
+      </geometry>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0.02442" rpy="1.5708 0 0"/>
+      <geometry>
+        <mesh scale="1 1 1" filename="../meshes/d10.obj" />
+      </geometry>
+    </collision> -->
+    <inertial>
+      <mass value="0.2"/>
+      <origin xyz="0 0 0.02442" />
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+    </inertial>
+  </link>
+
+  <link name="svh_virtual_a">
+    <inertial>
+      <mass value="0.1"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.000526" ixy="0.0" ixz="0.0" iyy="0.000526" iyz="0.0" izz="0.00026"/>
+    </inertial>
+  </link>
+
+  <link name="svh_a">
+    <visual>
+      <geometry>
+        <mesh scale="1 1 1" filename="../meshes/d11.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 1.57 0 " xyz="0.025 0 -0.000321" />
+      <geometry>
+        <cylinder radius="0.012" length="0.055"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <mass value="0.2"/>
+
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+    </inertial>
+  </link>
+
+  <link name="svh_b">
+    <visual>
+      <geometry>
+        <mesh scale="1 1 1" filename="../meshes/d12.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 1.57 0 " xyz="0.015 0 -0.000321" />
+      <geometry>
+        <cylinder radius="0.01" length="0.015"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+    </inertial>
+  </link>
+
+  <link name="svh_c">
+    <visual>
+      <geometry>
+        <mesh scale="1 1 1" filename="../meshes/d13.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 1.57 0 " xyz="0.01 0 -0.000321" />
+      <geometry>
+        <cylinder radius="0.008" length="0.03"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+    </inertial>
+  </link>
+
+  <link name="svh_virtual_l">
+    <visual>
+      <origin xyz="0 0 0.01321" />
+      <geometry>
+        <mesh filename="../meshes/f10.dae" />
+      </geometry>
+    </visual>
+    <!-- <collision>
+      <origin rpy = "1.5708 0 0" xyz="0 0 0.01321" />
+      <geometry>
+        <mesh filename="../meshes/f10.obj" />
+      </geometry>
+    </collision> -->
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+      <origin xyz="0 0 0.01321" />
+
+    </inertial>
+  </link>
+
+  <link name="svh_l">
+    <visual>
+      <origin xyz="0 0 -0.000321" />
+      <geometry>
+        <mesh filename="../meshes/f11.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 1.57 0 " xyz="0.022 0 -0.000321" />
+      <geometry>
+        <cylinder radius="0.008" length="0.045"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+      <origin xyz="0 0 -0.000321" />
+
+    </inertial>
+  </link>
+
+  <link name="svh_p">
+    <visual>
+      <geometry>
+        <mesh filename="../meshes/f12.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin rpy="0 1.57 0 " xyz="0.005 0 -0.000321" />
+      <geometry>
+        <cylinder radius="0.008" length="0.012"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+    </inertial>
+  </link>
+
+  <link name="svh_t">
+    <visual>
+      <geometry>
+        <mesh filename="../meshes/f13.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 1.57 0 " xyz="0.003 0 -0.000321" />
+      <geometry>
+        <cylinder radius="0.007" length="0.03"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+    </inertial>
+  </link>
+
+  <link name="svh_virtual_k">
+    <visual>
+      <origin xyz="0 0 0.01321" />
+      <geometry>
+        <mesh filename="../meshes/f20.dae" />
+      </geometry>
+    </visual>
+    <!-- <collision>
+      <origin rpy = "1.5708 0 0" xyz="0 0 0.01321" />
+      <geometry>
+        <mesh filename="../meshes/f20.obj" />
+      </geometry>
+    </collision> -->
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0132"/>
+
+    </inertial>
+
+  </link>
+
+  <link name="svh_k">
+    <visual>
+      <geometry>
+        <mesh filename="../meshes/f21.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 1.57 0 " xyz="0.025 0 -0.000321" />
+      <geometry>
+        <cylinder radius="0.008" length="0.045"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+    </inertial>
+  </link>
+
+  <link name="svh_o">
+    <visual>
+      <geometry>
+        <mesh filename="../meshes/f22.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 1.57 0 " xyz="0.012 0 -0.000321" />
+      <geometry>
+        <cylinder radius="0.008" length="0.024"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+    </inertial>
+  </link>
+
+  <link name="svh_s">
+    <visual>
+      <geometry>
+        <mesh filename="../meshes/f23.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 1.57 0 " xyz="0.006 0 -0.000321" />
+      <geometry>
+        <cylinder radius="0.007" length="0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+    </inertial>
+  </link>
+
+
+  <!-- RING FINGER LINKS -->
+  <link name="svh_virtual_j">
+    <visual>
+      <origin xyz="0 0 -0.01321" />
+      <geometry>
+        <mesh filename="../meshes/f30.dae" />
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 -0.013"/>
+
+    </inertial>
+  </link>
+
+  <link name="svh_j">
+    <visual>
+      <geometry>
+        <mesh filename="../meshes/f31.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 1.57 0 " xyz="0.025 0 -0.000321" />
+      <geometry>
+        <cylinder radius="0.008" length="0.045"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+    </inertial>
+  </link>
+
+  <link name="svh_n">
+    <visual>
+      <geometry>
+        <mesh filename="../meshes/f32.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 1.57 0 " xyz="0.012 0 -0.000321" />
+      <geometry>
+        <cylinder radius="0.008" length="0.024"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+    </inertial>
+  </link>
+
+  <link name="svh_r">
+    <visual>
+      <geometry>
+        <mesh filename="../meshes/f33.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 1.57 0 " xyz="0.008 0 -0.000321" />
+      <geometry>
+        <cylinder radius="0.007" length="0.022"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+    </inertial>
+  </link>
+
+
+
+  <link name="svh_virtual_i">
+    <visual>
+      <origin xyz="0 0 -0.01321" />
+      <geometry>
+        <mesh filename="../meshes/f40.dae" />
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+    </inertial>
+  </link>
+
+  <link name="svh_i">
+    <visual>
+      <geometry>
+        <mesh filename="../meshes/f41.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 1.57 0 " xyz="0.025 0 -0.000321" />
+      <geometry>
+        <cylinder radius="0.006" length="0.045"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <mass value="0.1"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.000526" ixy="0.0" ixz="0.0" iyy="0.000526" iyz="0.0" izz="0.00026"/>
+    </inertial>
+  </link>
+
+  <link name="svh_m">
+    <visual>
+      <geometry>
+        <mesh filename="../meshes/f42.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 1.57 0 " xyz="0.012 0 -0.000321" />
+      <geometry>
+        <cylinder radius="0.006" length="0.014"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+    </inertial>
+  </link>
+
+  <link name="svh_q">
+    <visual>
+      <geometry>
+        <mesh filename="../meshes/f43.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 1.57 0 " xyz="0.005 0 -0.000321" />
+      <geometry>
+        <cylinder radius="0.005" length="0.012"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001979" ixy="0.0" ixz="0.0" iyy="0.001979" iyz="0.0" izz="0.0006979"/>
+    </inertial>
+  </link>
+
+
+  <joint name="svh_Thumb_Flexion" type="revolute">
+    <parent link="svh_virtual_a" />
+    <child link="svh_a" />
+    <limit effort="180.0" lower="0.0" upper="0.9704" velocity="1" />
+    <origin xyz="0 0 0" rpy="0 0 -0.9704" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="svh_Thumb_Helper" type="fixed">
+    <parent link="svh_z" />
+    <child link="svh_virtual_a" />
+    <origin xyz="0 0 0.04596" rpy="0 -1.5707 3.1416" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+
+  <!-- BASE_LINE JOINTS -->
+  <joint name="svh_Thumb_Opposition" type="revolute">
+    <parent link="svh_e1" />
+    <child link="svh_z" />
+    <limit effort="180.0" lower="0.0" upper="0.9879" velocity="1" />
+    <origin xyz="-0.01690 0.02626 0" rpy="0 0.2618 1.571" />
+    <axis xyz="0 0 -1" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <!-- JOINT NOT FOR BASE_LINE. BUT WRITTEN DOWN HERE FOR BETTER UX -->
+
+  <joint name="svh_f1" type="fixed">
+    <parent link="svh_e1" />
+    <child link="svh_d" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="svh_f2" type="fixed">
+    <parent link="svh_d" />
+    <child link="svh_h" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="svh_f3" type="fixed">
+    <parent link="svh_h" />
+    <child link="svh_d2" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="svh_f4" type="fixed">
+    <parent link="svh_base_link" />
+    <child link="svh_e1" />
+    <origin xyz="0 -0.01313 0" rpy="0 0 0" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="svh_j5" type="revolute">
+    <parent link="svh_e1" />
+    <child link="svh_e2" />
+    <limit effort="180.0" lower="0.0" upper="0.98786" velocity="1" />
+    <origin xyz="0.0184 0.006 0.0375" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+    <mimic joint="svh_Thumb_Opposition" multiplier="1" offset="0" />
+  </joint>
+
+  <joint name="svh_f5" type="fixed">
+    <parent link="svh_e2" />
+    <child link="svh_e3" />
+    <origin xyz="0 -0.0060 0" rpy="0 0 0" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="svh_f6" type="fixed">
+    <parent link="svh_e3" />
+    <child link="svh_e" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="svh_f7" type="fixed">
+    <parent link="svh_e" />
+    <child link="svh_e4" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="svh_f8" type="fixed">
+    <parent link="svh_e" />
+    <child link="svh_e5" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <!-- THUMB JOINTS -->
+  <joint name="svh_j3" type="revolute">
+    <parent link="svh_a" />
+    <child link="svh_b" />
+    <limit effort="180.0" lower="0.0" upper="0.98506" velocity="1" />
+    <origin xyz="0.0485 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+    <mimic joint="svh_Thumb_Flexion" multiplier="1.01511" offset="0" />
+  </joint>
+
+  <joint name="svh_j4" type="revolute">
+    <parent link="svh_b" />
+    <child link="svh_c" />
+    <limit effort="180.0" lower="0.0" upper="1.406" velocity="1" />
+    <origin xyz="0.030 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+    <mimic joint="svh_Thumb_Flexion" multiplier="1.44889" offset="0" />
+  </joint>
+
+  <!-- INDEX FINGER JOINTS -->
+  <joint name="svh_Index_Finger_Distal" type="revolute">
+    <parent link="svh_l" />
+    <child link="svh_p" />
+    <limit effort="180.0" lower="0" upper="1.334" velocity="1" />
+    <origin xyz="0.04804 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="svh_Index_Finger_Proximal" type="revolute">
+    <parent link="svh_virtual_l" />
+    <child link="svh_l" />
+    <limit effort="180.0" lower="0.0" upper="0.79849" velocity="1" />
+    <origin xyz="0 0 0" rpy="-1.5707 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <!-- JOINT Finger_Spread in BASE_LINE section for better UX -->
+  <joint name="svh_j14" type="revolute">
+    <parent link="svh_p" />
+    <child link="svh_t" />
+    <limit effort="180.0" lower="0" upper="1.394" velocity="1" />
+    <origin xyz="0.026 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+    <mimic joint="svh_Index_Finger_Distal" multiplier="1.0450" offset="0" />
+  </joint>
+
+  <!-- MIDDLE FINGER JOINTS -->
+  <joint name="svh_Middle_Finger_Proximal" type="revolute">
+    <parent link="svh_virtual_k" />
+    <child link="svh_k" />
+    <limit effort="180.0" lower="0.0" upper="0.79849" velocity="1" />
+    <origin xyz="0 0 0" rpy="-1.5707 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="svh_Middle_Finger_Distal" type="revolute">
+    <parent link="svh_k" />
+    <child link="svh_o" />
+    <limit effort="180.0" lower="0" upper="1.334" velocity="1" />
+    <origin xyz="0.05004 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="svh_j15" type="revolute">
+    <parent link="svh_o" />
+    <child link="svh_s" />
+    <limit effort="180.0" lower="0" upper="1.334" velocity="1" />
+    <origin xyz="0.032 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+    <mimic joint="svh_Middle_Finger_Distal" multiplier="1.0454" offset="0" />
+  </joint>
+
+  <!-- RING FINGER JOINTS -->
+  <joint name="svh_Ring_Finger" type="revolute">
+    <parent link="svh_virtual_j" />
+    <child link="svh_j" />
+    <limit effort="180.0" lower="0.0" upper="0.98175" velocity="1" />
+    <origin xyz="0 0 0" rpy="1.5707 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="svh_j12" type="revolute">
+    <parent link="svh_j" />
+    <child link="svh_n" />
+    <limit effort="180.0" lower="0" upper="1.334" velocity="1" />
+    <origin xyz="0.05004 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+    <mimic joint="svh_Ring_Finger" multiplier="1.3588" offset="0" />
+  </joint>
+
+  <joint name="svh_j16" type="revolute">
+    <parent link="svh_n" />
+    <child link="svh_r" />
+    <limit effort="180.0" lower="0" upper="1.395" velocity="1" />
+    <origin xyz="0.032 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+    <mimic joint="svh_Ring_Finger" multiplier="1.42093" offset="0" />
+  </joint>
+
+  <!-- PINKY JOINTS -->
+  <joint name="svh_Pinky" type="revolute">
+    <parent link="svh_virtual_i" />
+    <child link="svh_i" />
+    <limit effort="180.0" lower="0.0" upper="0.98175" velocity="1" />
+    <origin xyz="0 0 0" rpy="1.5707 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="svh_j13" type="revolute">
+    <parent link="svh_i" />
+    <child link="svh_m" />
+    <limit effort="180.0" lower="0" upper="1.334" velocity="1" />
+    <origin xyz="0.04454 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+    <mimic joint="svh_Pinky" multiplier="1.35880" offset="0" />
+  </joint>
+
+  <joint name="svh_j17" type="revolute">
+    <parent link="svh_m" />
+    <child link="svh_q" />
+    <limit effort="180.0" lower="0" upper="1.3971" velocity="1" />
+    <origin xyz="0.022 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+    <mimic joint="svh_Pinky" multiplier="1.42307" offset="0" />
+  </joint>
+
+  <joint name="svh_index_spread" type="revolute">
+    <parent link="svh_d2" />
+    <child link="svh_virtual_l" />
+    <limit effort="180.0" lower="0.0" upper="0.28833" velocity="1" />
+    <origin xyz="-0.025 0 0.110" rpy="0 -1.5707 1.5707" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+    <mimic joint="svh_Finger_Spread" multiplier="0.2" offset="0" />
+  </joint>
+
+  <joint name="svh_middle_spread_dummy" type="fixed">
+    <parent link="svh_d" />
+    <child link="svh_virtual_k" />
+    <origin xyz="0 0 0.110" rpy="0 -1.5707 1.5707" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+
+  <joint name="svh_ring_spread" type="revolute">
+    <parent link="svh_e5" />
+    <child link="svh_virtual_j" />
+    <limit effort="180.0" lower="0.0" upper="0.28833" velocity="1" />
+    <origin xyz="0.003855 0 0.0655" rpy="-1.5707 -1.5707 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+    <mimic joint="svh_Finger_Spread" multiplier="0.2" offset="0" />
+  </joint>
+
+  <joint name="svh_Finger_Spread" type="revolute">
+    <parent link="svh_e4" />
+    <child link="svh_virtual_i" />
+    <limit effort="180.0" lower="0.0" upper="0.5829" velocity="1" />
+    <origin xyz="0.025355 0 0.056" rpy="-1.5707 -1.5707 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+</robot>

@@ -1,0 +1,40 @@
+seed: 1
+record_video: yes
+
+environment:
+  render: yes
+  num_envs: 20
+  num_threads: 1
+  simulation_dt: 0.0025
+  control_dt: 0.01
+  max_time: 2.0
+  learning_rate: 1e-3
+  nminibatches: 10
+  noptepochs: 10
+  total_timesteps: 100000000
+  eval_every_n: 3
+
+  targetJointOnHand: 15
+  actionScaler: 0.9
+  lowBallSpeedRand:
+    - -0.01
+    - -0.01
+    - -0.01
+    - 0.01
+    - 0.01
+    - 0.01
+  ballSpawnCoordRand:
+    - 0.00
+    - 0.0
+    - 0.01
+  minBallHeight: 0.22
+
+  randParallelShift:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+
+  forceRewardCoeff: 5e-3
