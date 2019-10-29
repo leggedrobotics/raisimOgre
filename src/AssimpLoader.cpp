@@ -1228,13 +1228,12 @@ bool AssimpLoader::createSubMesh(const Ogre::String& name, int index, const aiNo
                       *indexData++ = 0;
                       *indexData++ = 0;
                       faces++;
-                      continue;
+                    } else {
+                      *indexData++ = faces->mIndices[0];
+                      *indexData++ = faces->mIndices[1];
+                      *indexData++ = faces->mIndices[2];
+                      faces++;
                     }
-                    *indexData++ = faces->mIndices[0];
-                    *indexData++ = faces->mIndices[1];
-                    *indexData++ = faces->mIndices[2];
-
-                    faces++;
             }
     }
     else // 16 bit index buffer
@@ -1251,13 +1250,12 @@ bool AssimpLoader::createSubMesh(const Ogre::String& name, int index, const aiNo
                       *indexData++ = 0;
                       *indexData++ = 0;
                       faces++;
-                      continue;
+                    } else {
+                      *indexData++ = faces->mIndices[0];
+                      *indexData++ = faces->mIndices[1];
+                      *indexData++ = faces->mIndices[2];
+                      faces++;
                     }
-                    *indexData++ = faces->mIndices[0];
-                    *indexData++ = faces->mIndices[1];
-                    *indexData++ = faces->mIndices[2];
-
-                    faces++;
             }
     }
 
