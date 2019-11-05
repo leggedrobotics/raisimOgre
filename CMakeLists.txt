@@ -18,6 +18,7 @@ find_package(Eigen3 REQUIRED HINTS ${Eigen3_HINT})
 ####################################
 add_library(${PROJECT_NAME} SHARED
   ${CMAKE_CURRENT_SOURCE_DIR}/src/imgui.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/imgui_plot.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/imgui_draw.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/imgui_widgets.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/ImguiManager.cpp
@@ -42,6 +43,7 @@ target_include_directories(${PROJECT_NAME}
     $<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
+target_compile_options(${PROJECT_NAME} PUBLIC -Wl,--no-as-needed) # workaround for gcc pthread link bug
 
 
 ####################################

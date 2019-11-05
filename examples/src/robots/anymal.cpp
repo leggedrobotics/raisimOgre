@@ -24,9 +24,16 @@
 
 
 #include <raisim/OgreVis.hpp>
-#include "raisimBasicImguiPanel.hpp"
+#include "anymal_imgui_render_callback.hpp"
 #include "raisimKeyboardCallback.hpp"
 #include "helper.hpp"
+
+namespace raisim {
+namespace anymal_gui {
+std::vector<std::vector<float>> jointSpeed, jointTorque;
+std::vector<float> time;
+}
+}
 
 void setupCallback() {
   auto vis = raisim::OgreVis::get();
@@ -72,11 +79,14 @@ int main(int argc, char **argv) {
 
   auto vis = raisim::OgreVis::get();
 
+  /// gui
+  raisim::anymal_gui::init();
+
   /// these method must be called before initApp
   vis->setWorld(&world);
   vis->setWindowSize(1800, 1200);
-  vis->setImguiSetupCallback(imguiSetupCallback);
-  vis->setImguiRenderCallback(imguiRenderCallBack);
+  vis->setImguiSetupCallback(raisim::anymal_gui::imguiSetupCallback);
+  vis->setImguiRenderCallback(raisim::anymal_gui::anymalImguiRenderCallBack);
   vis->setKeyboardCallback(raisimKeyboardCallback);
   vis->setSetUpCallback(setupCallback);
   vis->setAntiAliasing(2);
@@ -88,7 +98,7 @@ int main(int argc, char **argv) {
   auto ground = world.addGround();
   ground->setName("checkerboard");
 
-  std::vector<raisim::ArticulatedSystem*> anymals;
+  raisim::ArticulatedSystem* anymal;
 
   /// create visualizer objects
   vis->createGraphicalObject(ground, 20, "floor", "checkerboard_green");
@@ -96,65 +106,65 @@ int main(int argc, char **argv) {
   /// ANYmal joint PD controller
   Eigen::VectorXd jointNominalConfig(19), jointVelocityTarget(18);
   Eigen::VectorXd jointState(18), jointForce(18), jointPgain(18), jointDgain(18);
+  Eigen::VectorXd jointTorque(12), jointSpeed(12);
+
+
   jointPgain.setZero();
   jointDgain.setZero();
   jointVelocityTarget.setZero();
   jointPgain.tail(12).setConstant(200.0);
   jointDgain.tail(12).setConstant(10.0);
 
-  const size_t N = 1;
-
-  for(size_t i=0; i<N; i++) {
-    for(size_t j=0; j<N; j++) {
-      anymals.push_back(world.addArticulatedSystem(raisim::loadResource("anymal/anymal.urdf")));
-      vis->createGraphicalObject(anymals.back(), "ANYmal" + std::to_string(i) + "X" + std::to_string(j));
-      anymals.back()->setGeneralizedCoordinate({double(2*i), double(j), 0.54, 1.0, 0.0, 0.0, 0.0, 0.03, 0.4,
-                                        -0.8, -0.03, 0.4, -0.8, 0.03, -0.4, 0.8, -0.03, -0.4, 0.8});
-      anymals.back()->setGeneralizedForce(Eigen::VectorXd::Zero(anymals.back()->getDOF()));
-      anymals.back()->setControlMode(raisim::ControlMode::PD_PLUS_FEEDFORWARD_TORQUE);
-      anymals.back()->setPdGains(jointPgain, jointDgain);
-      anymals.back()->setName("anymal"+std::to_string(j+i*N));
-    }
-  }
+  anymal = world.addArticulatedSystem(raisim::loadResource("anymal/anymal.urdf"));
+  auto anymal_graphics = vis->createGraphicalObject(anymal, "ANYmal"); // this is the name assigned for raisimOgre. It is displayed using this name
+  anymal->setGeneralizedCoordinate({0, 0, 0.54, 1.0, 0.0, 0.0, 0.0, 0.03, 0.4,
+                                    -0.8, -0.03, 0.4, -0.8, 0.03, -0.4, 0.8, -0.03, -0.4, 0.8});
+  anymal->setGeneralizedForce(Eigen::VectorXd::Zero(anymal->getDOF()));
+  anymal->setControlMode(raisim::ControlMode::PD_PLUS_FEEDFORWARD_TORQUE);
+  anymal->setPdGains(jointPgain, jointDgain);
+  anymal->setName("anymal"); // this is the name assigned for raisim. Not used in this example
 
   std::default_random_engine generator;
   std::normal_distribution<double> distribution(0.0, 0.2);
   std::srand(std::time(nullptr));
-  anymals.back()->printOutBodyNamesInOrder();
+  double time=0.;
 
   // lambda function for the controller
-  auto controller = [&anymals, &generator, &distribution]() {
+  auto controller = [anymal, &generator, &distribution, &jointTorque, &jointSpeed, &time, &world]() {
     static size_t controlDecimation = 0;
+    time += world.getTimeStep();
 
-    if(controlDecimation++ % 2500 == 0)
-      for(size_t i=0; i<N; i++)
-        for(size_t j=0; j<N; j++)
-          anymals[i * N + j]->setGeneralizedCoordinate({double(2 * i), double(j), 0.54, 1.0, 0.0, 0.0, 0.0, 0.03, 0.4,
-                                                        -0.8, -0.03, 0.4, -0.8, 0.03, -0.4, 0.8, -0.03, -0.4, 0.8});
+    if(controlDecimation++ % 2500 == 0) {
+      anymal->setGeneralizedCoordinate({0, 0, 0.54, 1.0, 0.0, 0.0, 0.0, 0.03, 0.4,
+                                        -0.8, -0.03, 0.4, -0.8, 0.03, -0.4, 0.8, -0.03, -0.4, 0.8});
+      raisim::anymal_gui::clear();
+      time = 0.;
+    }
+
     if(controlDecimation % 50 != 0)
       return;
 
     /// ANYmal joint PD controller
     Eigen::VectorXd jointNominalConfig(19), jointVelocityTarget(18);
     jointVelocityTarget.setZero();
+    jointNominalConfig << 0, 0, 0, 0, 0, 0, 0, 0.03, 0.3, -.6, -0.03, 0.3, -.6, 0.03, -0.3, .6, -0.03, -0.3, .6;
 
-    for(size_t i=0; i < N; i++) {
-      for (size_t j = 0; j < N; j++) {
-        jointNominalConfig << 0, 0, 0, 0, 0, 0, 0, 0.03, 0.3, -.6, -0.03, 0.3, -.6, 0.03, -0.3, .6, -0.03, -0.3, .6;
+    for (size_t k = 0; k < anymal->getGeneralizedCoordinateDim(); k++)
+      jointNominalConfig(k) += distribution(generator);
 
-        for (size_t k = 0; k < anymals[0]->getGeneralizedCoordinateDim(); k++)
-          jointNominalConfig(k) += distribution(generator);
+    anymal->setPdTarget(jointNominalConfig, jointVelocityTarget);
 
-        anymals[i*N+j]->setPdTarget(jointNominalConfig, jointVelocityTarget);
-      }
-    }
+    jointTorque = anymal->getGeneralizedForce().e().tail(12);
+    jointSpeed = anymal->getGeneralizedVelocity().e().tail(12);
+
+    raisim::anymal_gui::push_back(time, jointSpeed, jointTorque);
   };
 
   vis->setControlCallback(controller);
 
   /// set camera
-  vis->getCameraMan()->getCamera()->setPosition(N, -2-int(N), 1.5+N);
-  vis->getCameraMan()->getCamera()->pitch(Ogre::Radian(1.));
+  vis->select(anymal_graphics->at(0), false);
+  vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0), -Ogre::Radian(M_PI_4), 2);
 
   /// run the app
   vis->run();
