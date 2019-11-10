@@ -24,16 +24,15 @@
 
 
 #include <raisim/OgreVis.hpp>
-#include "anymal_imgui_render_callback.hpp"
-#include "raisimKeyboardCallback.hpp"
-#include "helper.hpp"
+#include <helper.hpp>
 
-namespace raisim {
-namespace anymal_gui {
-std::vector<std::vector<float>> jointSpeed, jointTorque;
-std::vector<float> time;
-}
-}
+#include "anymal/anymal_imgui_render_callback.hpp"
+#include "anymal/gaitLogger.hpp"
+#include "anymal/jointSpeedTorqueLogger.hpp"
+#include "anymal/rewardLogger.hpp"
+#include "anymal/videoLogger.hpp"
+
+using namespace raisim;
 
 void setupCallback() {
   auto vis = raisim::OgreVis::get();
@@ -80,14 +79,16 @@ int main(int argc, char **argv) {
   auto vis = raisim::OgreVis::get();
 
   /// gui
-  raisim::anymal_gui::init();
+  anymal_gui::init({anymal_gui::video::init(vis->getResourceDir()),
+                    anymal_gui::joint_speed_and_torque::init(100),
+                    anymal_gui::gait::init(100),
+                    anymal_gui::reward::init({"commandTracking", "torque"})});
 
   /// these method must be called before initApp
   vis->setWorld(&world);
   vis->setWindowSize(1800, 1200);
   vis->setImguiSetupCallback(raisim::anymal_gui::imguiSetupCallback);
   vis->setImguiRenderCallback(raisim::anymal_gui::anymalImguiRenderCallBack);
-  vis->setKeyboardCallback(raisimKeyboardCallback);
   vis->setSetUpCallback(setupCallback);
   vis->setAntiAliasing(2);
 
@@ -108,7 +109,6 @@ int main(int argc, char **argv) {
   Eigen::VectorXd jointState(18), jointForce(18), jointPgain(18), jointDgain(18);
   Eigen::VectorXd jointTorque(12), jointSpeed(12);
 
-
   jointPgain.setZero();
   jointDgain.setZero();
   jointVelocityTarget.setZero();
@@ -124,24 +124,46 @@ int main(int argc, char **argv) {
   anymal->setPdGains(jointPgain, jointDgain);
   anymal->setName("anymal"); // this is the name assigned for raisim. Not used in this example
 
+  // contacts
+  std::vector<size_t> footIndices;
+  std::array<bool, 4> footContactState;
+  footIndices.push_back(anymal->getBodyIdx("LF_SHANK"));
+  footIndices.push_back(anymal->getBodyIdx("RF_SHANK"));
+  footIndices.push_back(anymal->getBodyIdx("LH_SHANK"));
+  footIndices.push_back(anymal->getBodyIdx("RH_SHANK"));
+
   std::default_random_engine generator;
   std::normal_distribution<double> distribution(0.0, 0.2);
   std::srand(std::time(nullptr));
   double time=0.;
 
   // lambda function for the controller
-  auto controller = [anymal, &generator, &distribution, &jointTorque, &jointSpeed, &time, &world]() {
+  auto controller = [anymal,
+                     &generator,
+                     &distribution,
+                     &jointTorque,
+                     &jointSpeed,
+                     &time,
+                     &world,
+                     &footIndices,
+                     &footContactState]() {
     static size_t controlDecimation = 0;
     time += world.getTimeStep();
 
     if(controlDecimation++ % 2500 == 0) {
       anymal->setGeneralizedCoordinate({0, 0, 0.54, 1.0, 0.0, 0.0, 0.0, 0.03, 0.4,
                                         -0.8, -0.03, 0.4, -0.8, 0.03, -0.4, 0.8, -0.03, -0.4, 0.8});
-      raisim::anymal_gui::clear();
+      raisim::anymal_gui::reward::clear();
+      raisim::anymal_gui::gait::clear();
+      raisim::anymal_gui::joint_speed_and_torque::clear();
+
       time = 0.;
     }
 
-    if(controlDecimation % 50 != 0)
+    jointTorque = anymal->getGeneralizedForce().e().tail(12);
+    jointSpeed = anymal->getGeneralizedVelocity().e().tail(12);
+
+    if(controlDecimation % 10 != 0)
       return;
 
     /// ANYmal joint PD controller
@@ -154,10 +176,23 @@ int main(int argc, char **argv) {
 
     anymal->setPdTarget(jointNominalConfig, jointVelocityTarget);
 
-    jointTorque = anymal->getGeneralizedForce().e().tail(12);
-    jointSpeed = anymal->getGeneralizedVelocity().e().tail(12);
+    /// check if the feet are in contact with the ground
+    for(auto& fs: footContactState) fs = false;
 
-    raisim::anymal_gui::push_back(time, jointSpeed, jointTorque);
+    for(auto& contact: anymal->getContacts()) {
+      auto it = std::find(footIndices.begin(), footIndices.end(), contact.getlocalBodyIndex());
+      size_t index = it - footIndices.begin();
+      if (index < 4)
+        footContactState[index] = true;
+    }
+
+    /// torque, speed and contact state
+    anymal_gui::joint_speed_and_torque::push_back(time, jointSpeed, jointTorque);
+    anymal_gui::gait::push_back(footContactState);
+
+    /// just displaying random numbers since we are not doing any training here
+    anymal_gui::reward::log("torque", distribution(generator));
+    anymal_gui::reward::log("commandTracking", distribution(generator));
   };
 
   vis->setControlCallback(controller);
