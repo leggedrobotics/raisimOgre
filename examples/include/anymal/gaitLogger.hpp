@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include <Eigen/Core>
-#include "SlidingMemory.hpp"
+#include "raisim/SlidingMemory.hpp"
 
 namespace raisim {
 namespace anymal_gui {

@@ -26,7 +26,7 @@
 #define _RAISIM_GYM_ANYMAL_JOINTSPEEDTORQUELOGGER_HPP
 #include "raisim/imgui_plot.h"
 #include "font.hpp"
-#include "SlidingMemory.hpp"
+#include "raisim/SlidingMemory.hpp"
 
 namespace raisim {
 namespace anymal_gui {
