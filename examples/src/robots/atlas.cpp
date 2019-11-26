@@ -88,6 +88,7 @@ int main(int argc, char **argv) {
   auto ground = world.addGround();
 
   auto robot = world.addArticulatedSystem(raisim::loadResource("atlas/robot.urdf"));
+  robot->setName("atlas");
   Eigen::VectorXd gc(36);
   gc.setZero();
   gc.segment<7>(0) << 0, 0, 1, 1, 0, 0, 0;
@@ -100,6 +101,9 @@ int main(int argc, char **argv) {
 
   vis->select(robot_visual->at(0));
   vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0), Ogre::Radian(-1.f), 10);
+
+  auto atlasFromWorld = world.getObject("atlas");
+  std::cout<<"atlas name "<<atlasFromWorld->getName()<<std::endl;
 
   /// run the app
   vis->run();
