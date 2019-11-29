@@ -1115,9 +1115,8 @@ bool AssimpLoader::createSubMesh(const Ogre::String& name, int index, const aiNo
         offset += declaration->addElement(source,offset,Ogre::VET_FLOAT2,Ogre::VES_TEXTURE_COORDINATES).getSize();
     }
 
-
-  Ogre::HardwareVertexBufferSharedPtr vbuffer =
-        Ogre::HardwareBufferManager::getSingleton().createVertexBuffer(declaration->getVertexSize(source), // == offset
+    Ogre::HardwareVertexBufferSharedPtr vbuffer =
+        Ogre::HardwareBufferManager::getSingleton().createVertexBuffer( offset, // == offset
         submesh->vertexData->vertexCount,   // == nbVertices
         Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
 
@@ -1214,7 +1213,6 @@ bool AssimpLoader::createSubMesh(const Ogre::String& name, int index, const aiNo
     submesh->indexData->indexStart = 0;
     submesh->indexData->indexCount = mesh->mNumFaces * 3;
 
-    if (submesh->indexData->indexCount >= 65536) // 32 bit index buffer
     {
             submesh->indexData->indexBuffer = Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
                     Ogre::HardwareIndexBuffer::IT_32BIT, submesh->indexData->indexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
@@ -1228,39 +1226,14 @@ bool AssimpLoader::createSubMesh(const Ogre::String& name, int index, const aiNo
                       *indexData++ = 0;
                       *indexData++ = 0;
                       faces++;
-                      continue;
-                    }
-                    *indexData++ = faces->mIndices[0];
-                    *indexData++ = faces->mIndices[1];
-                    *indexData++ = faces->mIndices[2];
-
-                    faces++;
-            }
-    }
-    else // 16 bit index buffer
-    {
-            submesh->indexData->indexBuffer = Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
-            Ogre::HardwareIndexBuffer::IT_16BIT, submesh->indexData->indexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
-
-            Ogre::uint16* indexData = static_cast<Ogre::uint16*>(submesh->indexData->indexBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD));
-
-            for (size_t i=0; i < mesh->mNumFaces;++i)
-            {
-                    if(faces->mNumIndices!=3) {
-                      *indexData++ = 0;
-                      *indexData++ = 0;
-                      *indexData++ = 0;
+                    } else {
+                      *indexData++ = faces->mIndices[0];
+                      *indexData++ = faces->mIndices[1];
+                      *indexData++ = faces->mIndices[2];
                       faces++;
-                      continue;
                     }
-                    *indexData++ = faces->mIndices[0];
-                    *indexData++ = faces->mIndices[1];
-                    *indexData++ = faces->mIndices[2];
-
-                    faces++;
             }
     }
-
     submesh->indexData->indexBuffer->unlock();
 
     // set bone weigths

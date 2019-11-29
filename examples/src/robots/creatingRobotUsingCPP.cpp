@@ -1,28 +1,3 @@
-//
-// Created by Jemin Hwangbo on 2/28/19.
-// MIT License
-//
-// Copyright (c) 2019-2019 Robotic Systems Lab, ETH Zurich
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
-
 #include <raisim/OgreVis.hpp>
 #include "raisimBasicImguiPanel.hpp"
 #include "helper.hpp"
@@ -34,6 +9,7 @@ void setupCallback() {
   vis->getLight()->setDiffuseColour(1, 1, 1);
   vis->getLight()->setCastShadows(true);
   vis->getLightNode()->setPosition(3, 3, 3);
+  vis->setCameraSpeed(300);
 
   /// load textures
   vis->addResourceDirectory(vis->getResourceDir() + "/material/checkerboard");
@@ -65,12 +41,14 @@ void setupCallback() {
                                     Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
 }
 
+using namespace raisim;
+
 int main(int argc, char **argv) {
   /// create raisim world
-  raisim::World world;
+  World world;
   world.setTimeStep(0.002);
 
-  auto vis = raisim::OgreVis::get();
+  auto vis = OgreVis::get();
 
   /// these method must be called before initApp
   vis->setWorld(&world);
@@ -86,23 +64,62 @@ int main(int argc, char **argv) {
   /// create raisim objects
   auto ground = world.addGround();
 
-  auto robot = world.addArticulatedSystem(raisim::loadResource("atlas/robot.urdf"));
-  robot->setName("atlas");
-  Eigen::VectorXd gc(36);
-  gc.setZero();
-  gc.segment<7>(0) << 0, 0, 1, 1, 0, 0, 0;
+  auto floatingJoint = Joint::getFloatingBaseJoint();
 
-  robot->setGeneralizedCoordinate(gc);
+  Body base(1.0, Mat<3, 3>::getIdentity(), Vec<3>::getZeros(), Mat<3, 3>::getIdentity());
+  Body firstLink = base;
+
+  Child root(base, floatingJoint, "root");
+
+  Mat<3, 3> rot;
+  rot.setIdentity();
+
+  root.name = "test";
+
+  CollisionBody box(Shape::Type::Box,
+                    {1., 1., 1.},
+                    {0., 0., 0.},
+                    Mat<3, 3>::getIdentity(),
+                    "box", "", "");
+
+  VisObject visBox(Shape::Box,
+                   {1., 1., 1.},
+                   {0, 0, 0},
+                   Mat<3, 3>::getIdentity(),
+                   {1,1,1},
+                   "vis_box",
+                   "red");
+
+  root.body.colObj.push_back(box);
+  root.body.visObj.push_back(visBox);
+
+  firstLink.colObj.push_back(box);
+  firstLink.visObj.push_back(visBox);
+
+  Joint revoluteJoint({1., 0., 0.},
+                      {0., 2., 2.},
+                      Mat<3, 3>::getIdentity(),
+                      {0., 0.},
+                      Joint::Type::REVOLUTE,
+                      "revolute joint");
+
+  Child firstChild(firstLink, revoluteJoint, "first_child");
+
+  root.addChild(firstChild);
+
+  auto* someRobot = world.addArticulatedSystem(root);
+
+  Eigen::VectorXd gc(someRobot->getGeneralizedCoordinateDim());
+  gc.setZero();
+  gc.segment<7>(0) << 0, 0, 2, 1, 0, 0, 0;
+  someRobot->setGeneralizedCoordinate(gc);
 
   /// create visualizer objects
   vis->createGraphicalObject(ground, 10, "floor", "checkerboard_green_transparent");
-  auto robot_visual = vis->createGraphicalObject(robot, "atlas");
+  auto robot_visual = vis->createGraphicalObject(someRobot, "someRobot");
 
   vis->select(robot_visual->at(0));
   vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0), Ogre::Radian(-1.f), 10);
-
-  auto atlasFromWorld = world.getObject("atlas");
-  std::cout<<"atlas name "<<atlasFromWorld->getName()<<std::endl;
 
   /// run the app
   vis->run();
@@ -112,3 +129,4 @@ int main(int argc, char **argv) {
 
   return 0;
 }
+

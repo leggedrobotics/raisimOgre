@@ -34,6 +34,7 @@ void setupCallback() {
   vis->getLight()->setDiffuseColour(1, 1, 1);
   vis->getLight()->setCastShadows(true);
   vis->getLightNode()->setPosition(3, 3, 3);
+  vis->setCameraSpeed(300);
 
   /// load textures
   vis->addResourceDirectory(vis->getResourceDir() + "/material/checkerboard");
@@ -50,7 +51,7 @@ void setupCallback() {
   // beyond this distance, shadow disappears
   vis->getSceneManager()->setShadowFarDistance(10);
   // size of contact points and contact forces
-  vis->setContactVisObjectSize(0.03, 0.2);
+  vis->setContactVisObjectSize(0.001, 0.02);
   // speed of camera motion in freelook mode
   vis->getCameraMan()->setTopSpeed(5);
 
@@ -80,29 +81,32 @@ int main(int argc, char **argv) {
   vis->setSetUpCallback(setupCallback);
   vis->setAntiAliasing(8);
 
+  raisim::gui::manualStepping = true;
+
   /// starts visualizer thread
   vis->initApp();
 
   /// create raisim objects
   auto ground = world.addGround();
 
-  auto robot = world.addArticulatedSystem(raisim::loadResource("atlas/robot.urdf"));
-  robot->setName("atlas");
+  auto robot = world.addArticulatedSystem(raisim::loadResource("shunk/urdf/svh.urdf"));
+  auto ball = world.addSphere(0.05, 0.1);
+
   Eigen::VectorXd gc(36);
   gc.setZero();
   gc.segment<7>(0) << 0, 0, 1, 1, 0, 0, 0;
 
   robot->setGeneralizedCoordinate(gc);
+  ball->setPosition(0,0,1.2);
 
   /// create visualizer objects
   vis->createGraphicalObject(ground, 10, "floor", "checkerboard_green_transparent");
   auto robot_visual = vis->createGraphicalObject(robot, "atlas");
 
+  vis->createGraphicalObject(ball, "ball", "red");
+
   vis->select(robot_visual->at(0));
   vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0), Ogre::Radian(-1.f), 10);
-
-  auto atlasFromWorld = world.getObject("atlas");
-  std::cout<<"atlas name "<<atlasFromWorld->getName()<<std::endl;
 
   /// run the app
   vis->run();
