@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
             ob = spheres.back();
             break;
           case 2:
-            capsules.push_back(world.addCapsule(0.5, 1., 1));
+            capsules.push_back(world.addCapsule(0.25, 0.5, 1));
             vis->createGraphicalObject(capsules.back(), "capsules" + number, "blue");
             ob = capsules.back();
             break;

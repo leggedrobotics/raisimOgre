@@ -667,14 +667,14 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Capsule *caps
                                                   "sphereMesh",
                                                   material,
                                                   {rad, rad, rad},
-                                                  {0, 0, 0.5},
+                                                  {0, 0, 0.5 * h},
                                                   rot,
                                                   0),
                       createSingleGraphicalObject(name + "_sph2",
                                                   "sphereMesh",
                                                   material,
                                                   {rad, rad, rad},
-                                                  {0, 0, -0.5},
+                                                  {0, 0, -0.5 * h},
                                                   rot,
                                                   0)});
 }
