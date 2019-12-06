@@ -62,8 +62,9 @@ void setupCallback() {
 int main(int argc, char **argv) {
   /// create raisim world
   raisim::World world;
-  world.setTimeStep(0.002);
+  world.setTimeStep(0.0001);
   auto vis = raisim::OgreVis::get();
+  world.setERP(0,0);
 
   /// these method must be called before initApp
   vis->setWorld(&world);
@@ -118,6 +119,8 @@ int main(int argc, char **argv) {
 
   anymal->setGeneralizedCoordinate({0, 0, 3.54, 1.0, 0.0, 0.0, 0.0, 0.03, 0.4,
                                     -0.8, -0.03, 0.4, -0.8, 0.03, -0.4, 0.8, -0.03, -0.4, 0.8});
+  Eigen::Vector4d quat; quat <<1., 0., 0., 0.;
+  hm->setPosition(0.1, 0.2, -0.3);
 
   vis->select(anymal_graphics->at(0), false);
   vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0), -Ogre::Radian(M_PI_4), 2);
