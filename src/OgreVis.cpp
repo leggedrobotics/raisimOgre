@@ -396,21 +396,18 @@ void OgreVis::setup() {
   std::string cubeFile = raisim::OgreVis::getResourceDir() + "/model/primitives/cube.obj";
   std::string cylinderFile = raisim::OgreVis::getResourceDir() + "/model/primitives/cylinder.obj";
   std::string planeFile = raisim::OgreVis::getResourceDir() + "/model/primitives/plane.obj";
-  std::string capsuleFile = raisim::OgreVis::getResourceDir() + "/model/primitives/capsule.obj";
   std::string arrowFile = raisim::OgreVis::getResourceDir() + "/model/primitives/arrow.obj";
 
   raisim::OgreVis::loadMeshFile(sphereFile, "sphereMesh");
   raisim::OgreVis::loadMeshFile(cubeFile, "cubeMesh");
   raisim::OgreVis::loadMeshFile(cylinderFile, "cylinderMesh");
   raisim::OgreVis::loadMeshFile(planeFile, "planeMesh");
-  raisim::OgreVis::loadMeshFile(capsuleFile, "capsuleMesh");
   raisim::OgreVis::loadMeshFile(arrowFile, "arrowMesh");
 
   primitiveMeshNames_.insert("sphereMesh");
   primitiveMeshNames_.insert("cubeMesh");
   primitiveMeshNames_.insert("cylinderMesh");
   primitiveMeshNames_.insert("planeMesh");
-  primitiveMeshNames_.insert("capsuleMesh");
   primitiveMeshNames_.insert("arrowMesh");
 
   raisim::OgreVis::addResourceDirectory(raisim::OgreVis::getResourceDir() + "/material/selection");
@@ -742,9 +739,31 @@ void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
         dim = {vo.visShapeParam[0], vo.visShapeParam[0], vo.visShapeParam[1]};
         break;
       case raisim::Shape::Capsule :
-        meshName = "capsuleMesh";
-        dim = {vo.visShapeParam[0], vo.visShapeParam[0], vo.visShapeParam[1]};
-        break;
+        graphics.push_back(createSingleGraphicalObject(visname + "_cyl",
+                                        "cylinderMesh",
+                                        "",
+                                        {vo.visShapeParam[0], vo.visShapeParam[0], vo.visShapeParam[1]},
+                                        vo.offset,
+                                        vo.rot,
+                                        vo.localIdx, true, true, group));
+        graphics.back().rotationOffset = vo.rot;
+        graphics.push_back(createSingleGraphicalObject(visname + "_sph1",
+                                        "sphereMesh",
+                                        "",
+                                        {vo.visShapeParam[0], vo.visShapeParam[0], vo.visShapeParam[0]},
+                                                       {vo.offset[0], vo.offset[1], vo.offset[2] + 0.5 * vo.visShapeParam[1]},
+                                        vo.rot,
+                                        vo.localIdx, true, true, group));
+        graphics.back().rotationOffset = vo.rot;
+        graphics.push_back(createSingleGraphicalObject(visname + "_sph2",
+                                        "sphereMesh",
+                                        "",
+                                        {vo.visShapeParam[0], vo.visShapeParam[0], vo.visShapeParam[0]},
+                                        {vo.offset[0], vo.offset[1], vo.offset[2] - 0.5 * vo.visShapeParam[1]},
+                                        vo.rot,
+                                        vo.localIdx, true, true, group));
+        graphics.back().rotationOffset = vo.rot;
+        return;
       default:
         RSFATAL("unsupported visual shape of " << name << " of " << as->getRobotDescriptionfFileName())
     }
