@@ -725,6 +725,8 @@ void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
     auto visname = name + "_" + as->getBodyNames()[vo.localIdx] + "_";
     raisim::Vec<3> dim;
     std::string meshName;
+    raisim::Vec<3> capOffsetRaw, capOffset;
+
     switch (vo.shape) {
       case raisim::Shape::Box :
         meshName = "cubeMesh";
@@ -747,19 +749,25 @@ void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
                                         vo.rot,
                                         vo.localIdx, true, true, group));
         graphics.back().rotationOffset = vo.rot;
+        capOffsetRaw = {0, 0, 0.5 * vo.visShapeParam[1]};
+        matvecmul(vo.rot, capOffsetRaw, capOffset);
+        vecadd(vo.offset, capOffset);
         graphics.push_back(createSingleGraphicalObject(visname + "_sph1",
                                         "sphereMesh",
                                         "",
                                         {vo.visShapeParam[0], vo.visShapeParam[0], vo.visShapeParam[0]},
-                                                       {vo.offset[0], vo.offset[1], vo.offset[2] + 0.5 * vo.visShapeParam[1]},
+                                        capOffset,
                                         vo.rot,
                                         vo.localIdx, true, true, group));
         graphics.back().rotationOffset = vo.rot;
+        capOffsetRaw = {0, 0, -0.5 * vo.visShapeParam[1]};
+        matvecmul(vo.rot, capOffsetRaw, capOffset);
+        vecadd(vo.offset, capOffset);
         graphics.push_back(createSingleGraphicalObject(visname + "_sph2",
                                         "sphereMesh",
                                         "",
                                         {vo.visShapeParam[0], vo.visShapeParam[0], vo.visShapeParam[0]},
-                                        {vo.offset[0], vo.offset[1], vo.offset[2] - 0.5 * vo.visShapeParam[1]},
+                                        capOffset,
                                         vo.rot,
                                         vo.localIdx, true, true, group));
         graphics.back().rotationOffset = vo.rot;
