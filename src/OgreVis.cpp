@@ -199,8 +199,8 @@ void OgreVis::videoThread() {
       break;
     } else if (newFrameAvailable_) {
       std::lock_guard<std::mutex> lock(videoFrameMutext_);
-      newFrameAvailable_ = false;
       fwrite(videoPixelBox_->data, Ogre::PixelUtil::getNumElemBytes(pf) * w * h, 1, ffmpeg);
+      newFrameAvailable_ = false;
     } else {
       usleep(1e4);
     }
