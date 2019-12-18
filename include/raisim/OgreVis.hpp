@@ -136,7 +136,10 @@ public:
 
   /** renders a single frame without updating simulation*/
   void renderOneFrame();
-
+  
+  /** set camera speed for free motion*/
+  void setCameraSpeed(float speed);
+  
   /** register a pair of raisim object and graphic object manually. */
   std::vector<GraphicObject> *registerSet(const std::string &name,
                                           raisim::Object *ob,

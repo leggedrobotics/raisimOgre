@@ -1213,6 +1213,10 @@ void OgreVis::renderOneFrame() {
   }
 }
 
+void OgreVis::setCameraSpeed(float speed) {
+  this->getCameraMan()->setTopSpeed(speed);
+}
+
 void OgreVis::deselect() {
   cameraMan_->setStyle(CS_FREELOOK);
   selected_ = nullptr;
