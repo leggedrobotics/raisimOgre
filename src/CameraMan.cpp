@@ -1,6 +1,6 @@
 #include <iostream>
 #include <raisim/math.hpp>
-#include "raisim/RaiCameraMan.hpp"
+#include "raisim/CameraMan.hpp"
 #include "OgreSceneManager.h"
 
 namespace raisim {
@@ -12,7 +12,7 @@ CameraMan::CameraMan(Ogre::SceneNode *cam)
     , mTarget(0)
     , mOrbiting(true)
     , mMoving(false)
-    , mTopSpeed(150)
+    , mTopSpeed(10.0f)
     , mVelocity(Ogre::Vector3::ZERO)
     , mGoingForward(false)
     , mGoingBack(false)

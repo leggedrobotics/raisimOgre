@@ -2,15 +2,14 @@
 // Created by jhwangbo on 22.01.19.
 //
 
-#ifndef RAISIMOGREVISUALIZER_RAICAMERAMAN_HPP
-#define RAISIMOGREVISUALIZER_RAICAMERAMAN_HPP
+#ifndef RAISIM_OGRE_CAMERAMAN_HPP
+#define RAISIM_OGRE_CAMERAMAN_HPP
 
-#include "OgreBitesPrerequisites.h"
-#include "OgreCamera.h"
-#include "OgreSceneNode.h"
-#include "OgreFrameListener.h"
-
-#include "OgreInput.h"
+#include <OgreBitesPrerequisites.h>
+#include <OgreCamera.h>
+#include <OgreSceneNode.h>
+#include <OgreFrameListener.h>
+#include <OgreInput.h>
 
 /** \addtogroup Optional
 *  @{
@@ -18,8 +17,7 @@
 /** \addtogroup Bites
 *  @{
 */
-namespace raisim
-{
+namespace raisim {
 
 using namespace OgreBites;
 
@@ -155,8 +153,9 @@ class _OgreBitesExport CameraMan : public InputListener
   float dist_;
   Ogre::Vector3 mOffset;
 };
-}
+
+} // namespace raisim
 /** @} */
 /** @} */
 
-#endif //RAISIMOGREVISUALIZER_RAICAMERAMAN_HPP
+#endif // RAISIM_OGRE_CAMERAMAN_HPP

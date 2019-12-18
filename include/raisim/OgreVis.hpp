@@ -2,31 +2,48 @@
 // Created by jhwangbo on 17.01.19.
 //
 
-#ifndef RAISIM_OGRE_VISUALIZER_HPP
-#define RAISIM_OGRE_VISUALIZER_HPP
+#ifndef RAISIM_OGRE_VIS_HPP
+#define RAISIM_OGRE_VIS_HPP
+
 #define OGREVIS_MAKE_STR(x) _OGREVIS_MAKE_STR(x)
 #define _OGREVIS_MAKE_STR(x) #x
 
-#include "Ogre.h"
-#include "OgreApplicationContext.h"
-#include "OgreInput.h"
-#include "OgreRTShaderSystem.h"
-#include "OgreApplicationContext.h"
+// C/C++
 #include <iostream>
-#include "raisim/RaiCameraMan.hpp"
+
+// OGRE
+#include <Ogre.h>
+#include <OgreApplicationContext.h>
+#include <OgreInput.h>
+#include <OgreRTShaderSystem.h>
+#include <OgreApplicationContext.h>
 #include <OgreTrays.h>
+
+// OpenGL/SDL
+#include <SDL2/SDL.h>
+
+// RaiSimOgre
 #include "ImguiManager.h"
 #include "AssimpLoader.h"
-#include "interfaceClasses.hpp"
-#include "SDL2/SDL.h"
+#include "CameraMan.hpp"
+#include "interfaces.hpp"
 
 namespace raisim {
 
-class OgreVis :
-    public ApplicationContext, public InputListener, public TrayListener {
+class OgreVis:
+  public ApplicationContext,
+  public InputListener,
+  public TrayListener
+{
+public:
 
- public:
-
+  /** Aliases **/
+  using ImGuiRenderCallback = std::function<void()>;
+  using ImGuiSetupCallback = std::function<void()>;
+  using KeyboardCallback = std::function<bool(const KeyboardEvent &)>;
+  using SetUpCallback = std::function<void()>;
+  using ControlCallback = std::function<void()>;
+  
   enum VisualizationGroup :
       unsigned long {
     RAISIM_OBJECT_GROUP = 1ul << 0,
@@ -41,12 +58,9 @@ class OgreVis :
     return &singleton;
   }
 
-  using ImGuiRenderCallback = std::function<void()>;
-  using ImGuiSetupCallback = std::function<void()>;
-  using KeyboardCallback = std::function<bool(const KeyboardEvent &)>;
-  using SetUpCallback = std::function<void()>;
-  using ControlCallback = std::function<void()>;
-
+  /** set title of main render window **/
+  void setWindowTitle(const std::string &title) { mAppName = title; }
+  
   /** set imgui render callback. This callback is called for every frame. */
   void setImguiRenderCallback(ImGuiRenderCallback callback) { imGuiRenderCallback_ = callback; }
 
@@ -82,12 +96,26 @@ class OgreVis :
   /** get CameraMan**/
   CameraMan *getCameraMan() { return cameraMan_; }
 
-  /** get default light for adjusting it**/
-  Ogre::Light *getLight() { return light_; }
+  /** get specific light Light object for configuring it **/
+  Ogre::Light *getLight(const std::string &index="default") { return lights_[index]; }
 
-  /** get LightNode for moving the main light around**/
-  Ogre::SceneNode *getLightNode() { return lightNode_; }
-
+  /** get specific light SceneNode object for a specific light to allow moving it around **/
+  Ogre::SceneNode *getLightNode(const std::string &index="default") { return lightNodes_[index]; }
+  
+  /** add a new light to the scene **/
+  std::pair<Ogre::Light*, Ogre::SceneNode*> addLight(const std::string &name);
+  
+  /** add a new light to the scene with specific configurations **/
+  std::pair<Ogre::Light*, Ogre::SceneNode*> addLight(const std::string &name,
+                                                     Ogre::Light type,
+                                                     Ogre::Vector3 pos,
+                                                     Ogre::Vector3 dir,
+                                                     Ogre::Real power,
+                                                     bool shadows);
+  
+  void setAmbientLight(Ogre::ColourValue rgba);
+  
+  
   /** get main Ogre::Viewport**/
   Ogre::Viewport *getViewPort() { return viewport_; }
 
@@ -108,10 +136,10 @@ class OgreVis :
 
   /** renders a single frame without updating simulation*/
   void renderOneFrame();
-
+  
   /** set camera speed for free motion*/
-  void setCameraSpeed(float speed) { cameraSpeed_ = speed; }
-
+  void setCameraSpeed(float speed);
+  
   /** register a pair of raisim object and graphic object manually. */
   std::vector<GraphicObject> *registerSet(const std::string &name,
                                           raisim::Object *ob,
@@ -257,13 +285,13 @@ class OgreVis :
   void setRemoteMode(bool remoteMode) { remoteMode_ = remoteMode; }
 
   void remoteRun();
-
-  void addVisualObject(const std::string &name,
-                       const std::string &meshName,
-                       const std::string &material,
-                       const raisim::Vec<3> &scale,
-                       bool castShadow = true,
-                       unsigned long int group = RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP);
+  
+  VisualObject* addVisualObject(const std::string &name,
+                                const std::string &meshName,
+                                const std::string &material,
+                                const raisim::Vec<3> &scale,
+                                bool castShadow = true,
+                                unsigned long int group = RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP);
 
   void clearVisualObject();
 
@@ -294,18 +322,17 @@ class OgreVis :
                                             bool selectable = true,
                                             unsigned long int group = RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP);
 
- private:
-  OgreVis()
-      : ApplicationContext("RaisimDemoApp") {
+private:
+  
+  OgreVis():
+    ApplicationContext("RaiSim OGRE")
+  {
+    RSINFO("Loading RaisimOgre Resources from: " + resourceDir_)
+    RSINFO("Loading OGRE Configurations from: " + std::string(OGREVIS_MAKE_STR(OGRE_CONFIG_DIR)))
     resourceDir_ = std::string(OGREVIS_MAKE_STR(RAISIM_OGRE_RESOURCE_DIR));
     mFSLayer->setHomePath(std::string(OGREVIS_MAKE_STR(OGRE_CONFIG_DIR)));
-
-    RSINFO("Loading RaisimOgre Resource from: " + resourceDir_)
-    RSINFO("Loading Ogre Configuration from: " + std::string(OGREVIS_MAKE_STR(OGRE_CONFIG_DIR)))
-
     lm_ = std::make_unique<Ogre::LogManager>();
     lm_->createLog("", true, false, false); //TODO: redirect to our own logger.
-
     start = std::chrono::system_clock::now();
   }
 
@@ -343,42 +370,48 @@ class OgreVis :
                   const std::vector<float>& uv,
                   const std::vector<unsigned long>& indices);
 
+private:
   ImGuiRenderCallback imGuiRenderCallback_ = nullptr;
   ImGuiSetupCallback imGuiSetupCallback_ = nullptr;
   KeyboardCallback keyboardCallback_ = nullptr;
   SetUpCallback setUpCallback_ = nullptr;
   ControlCallback controlCallback_ = nullptr;
+  
   NativeWindowPair windowPair_;
+  Ogre::RaySceneQuery *raySceneQuery_ = nullptr;
+  
+  std::unordered_map<std::string, Ogre::Light*> lights_;
+  std::unordered_map<std::string, Ogre::SceneNode*> lightNodes_;
+  
   Ogre::SceneNode *camNode_ = nullptr;
   Ogre::Camera *mainCamera_ = nullptr;
   raisim::CameraMan *cameraMan_;
-  Ogre::RaySceneQuery *raySceneQuery_ = nullptr;
-  float cameraSpeed_;
-  bool leftMouseButtonPressed_ = false;
-  bool rightMouseButtonPressed_ = false;
-  bool leftShiftButtonPressed_ = false;
-  int mouseX_ = 0, mouseY_ = 0;
+  
   std::string resourceDir_;
   Ogre::SceneNode *selected_ = nullptr, *hovered_ = nullptr;
   std::vector<Ogre::Entity> *highlightEntity_;
   Ogre::SceneManager *scnMgr_;
-  Ogre::Light *light_;
-  Ogre::SceneNode *lightNode_;
   Ogre::Viewport *viewport_;
   Ogre::GpuProgramParametersSharedPtr mParams;
+  
   raisim::World *world_ = nullptr;
   SimAndGraphicsObjectPool objectSet_;
   std::map<std::string, VisualObject> visObject_;
   std::map<std::string, VisualObject> wires_;
-  uint32_t initialWindowSizeX_ = 400, initialWindowSizeY_ = 300;
   std::map<std::string, size_t> meshUsageCount_;
   std::set<std::string> primitiveMeshNames_;
+  
   double desiredFPS_ = 30.;
   int fsaa_ = 8;
   float realTimeFactor_ = 1.0;
   bool remoteMode_ = false;
   double wireThickness_ = 0.02;
-
+  uint32_t initialWindowSizeX_ = 400, initialWindowSizeY_ = 300;
+  bool leftMouseButtonPressed_ = false;
+  bool rightMouseButtonPressed_ = false;
+  bool leftShiftButtonPressed_ = false;
+  int mouseX_ = 0, mouseY_ = 0;
+  
   /// visualizing simulation
   std::vector<raisim::VisualObject> contactPoints_;
   double contactPointSphereSize_ = 0.03;
@@ -395,7 +428,6 @@ class OgreVis :
   bool isVideoRecording_;
   bool newFrameAvailable_ = false;
   std::mutex videoFrameMutext_, videoInitMutex_;
-
   std::unique_ptr<Ogre::PixelBox> videoPixelBox_;
   std::unique_ptr<Ogre::uchar> videoBuffer_;
   FILE *ffmpeg;
@@ -405,8 +437,8 @@ class OgreVis :
   bool paused_ = false;
   unsigned long int mask_ = 1ul;
   std::chrono::system_clock::time_point start, end;
-
 };
-}
 
-#endif //OGRETEST_RAISIMVISUALIZER_HPP
+} // namespace raisim
+
+#endif // RAISIM_OGRE_VIS_HPP

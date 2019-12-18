@@ -36,7 +36,6 @@ void setupCallback() {
   vis->getLight()->setDiffuseColour(1, 1, 1);
   vis->getLight()->setCastShadows(true);
   vis->getLightNode()->setPosition(3, 3, 3);
-  vis->setCameraSpeed(300);
 
   /// load  textures
   vis->addResourceDirectory(vis->getResourceDir() + "/material/checkerboard");

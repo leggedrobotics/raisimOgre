@@ -2,10 +2,17 @@
 // Created by jhwangbo on 17.01.19.
 //
 
-#include <raisim/misc.hpp>
-#include "raisim/OgreVis.hpp"
+// C/C++
 #include <chrono>
-#include "OgreTangentSpaceCalc.h"
+
+// OGRE
+#include <OgreTangentSpaceCalc.h>
+
+// RaiSim
+#include <raisim/misc.hpp>
+
+// RaiSimOgre
+#include "raisim/OgreVis.hpp"
 
 namespace raisim {
 
@@ -178,10 +185,12 @@ void OgreVis::videoThread() {
   imageCounter = 0;
   auto w = getRenderWindow()->getViewport(0)->getActualWidth();
   auto h = getRenderWindow()->getViewport(0)->getActualHeight();
-  std::string command =
-      "ffmpeg -r " + std::to_string(desiredFPS_) + " -f rawvideo -pix_fmt rgb24 -s " + std::to_string(w) + "x"
-          + std::to_string(h) +
-          " -i - -threads 0 -preset fast -y -crf 21 " + currentVideoFile_;
+  std::string command = "ffmpeg -loglevel warning -r "
+    + std::to_string(desiredFPS_)
+    + " -f rawvideo -pix_fmt rgb24 -s "
+    + std::to_string(w) + "x" + std::to_string(h)
+    + " -i - -threads 0 -preset fast -y -crf 21 "
+    + currentVideoFile_;
   const char *cmd = command.c_str();
   ffmpeg = popen(cmd, "w");
   RSFATAL_IF(!ffmpeg, "a pipe cannot be initiated for video recording. Maybe missing ffmpeg?")
@@ -349,31 +358,28 @@ void OgreVis::setup() {
   // register our scene with the RTSS
   Ogre::RTShader::ShaderGenerator *shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
   shadergen->addSceneManager(scnMgr_);
-
-  // -- tutorial section start --
-  scnMgr_->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
   raySceneQuery_ = scnMgr_->createRayQuery(Ogre::Ray());
-
-  light_ = scnMgr_->createLight("mainLight");
-
-  Ogre::Vector3 lightdir(1., 0, -2);
-  lightdir.normalise();
-
-  light_->setType(Ogre::Light::LT_DIRECTIONAL);
-  light_->setDirection(lightdir);
-  light_->setDiffuseColour(Ogre::ColourValue(0.3f, 0.3f, 0.3f));
-  light_->setSpecularColour(Ogre::ColourValue(0.3f, 0.3f, 0.3f));
-  light_->setCastShadows(true);
-  lightNode_ = scnMgr_->getRootSceneNode()->createChildSceneNode();
-  lightNode_->attachObject(light_);
-
+  
+  // Configure scene default lighting
+  lights_.clear();
+  lightNodes_.clear();
+  lights_.emplace("default", scnMgr_->createLight("default"));
+  lightNodes_.emplace("default", scnMgr_->getRootSceneNode()->createChildSceneNode());
+  lightNodes_["default"]->attachObject(lights_["default"]);
+  lights_["default"]->setType(Ogre::Light::LT_DIRECTIONAL);
+  lights_["default"]->setPowerScale(1.0);
+  lights_["default"]->setCastShadows(true);
+  lights_["default"]->setDirection(Ogre::Vector3(1, 0, -2));
+  lights_["default"]->setDiffuseColour(Ogre::ColourValue(0.3f, 0.3f, 0.3f));
+  lights_["default"]->setSpecularColour(Ogre::ColourValue(0.3f, 0.3f, 0.3f));
+  scnMgr_->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
   scnMgr_->setShadowFarDistance(20); // Try it with different values, as that can also cause shadows to fade out
   scnMgr_->setShadowDirLightTextureOffset(0);
   auto *camSetup = new Ogre::FocusedShadowCameraSetup();
   scnMgr_->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(camSetup));
 
   // create the camera
-  mainCamera_ = scnMgr_->createCamera("myCam");
+  mainCamera_ = scnMgr_->createCamera("main");
   mainCamera_->setNearClipDistance(0.1);
   mainCamera_->setAutoAspectRatio(true);
   mainCamera_->setFarClipDistance(1000);
@@ -497,18 +503,15 @@ GraphicObject OgreVis::createSingleGraphicalObject(const std::string &name,
                                                    const std::string &meshName,
                                                    const std::string &material,
                                                    const raisim::Vec<3> &scale,
-                                                   const Vec<3> &offset,
-                                                   const Mat<3, 3> &rot,
+                                                   const raisim::Vec<3> &offset,
+                                                   const raisim::Mat<3, 3> &rot,
                                                    size_t localIdx,
                                                    bool castShadow,
                                                    bool selectable,
                                                    unsigned long int group) {
-  auto *ent = raisim::OgreVis::getSceneManager()->createEntity(name,
-                                                               meshName,
-                                                               Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+  auto *ent = OgreVis::getSceneManager()->createEntity(name, meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   ent->setCastShadows(castShadow);
-  if (!material.empty())
-    ent->setMaterialName(material);
+  if (!material.empty()) { ent->setMaterialName(material); }
   /// hack to check if texture coordinates exist
   GraphicObject obj;
   obj.graphics = this->getSceneManager()->getRootSceneNode()->createChildSceneNode(name);
@@ -522,34 +525,28 @@ GraphicObject OgreVis::createSingleGraphicalObject(const std::string &name,
   obj.rotationOffset = rot;
   obj.name = name;
   obj.meshName = meshName;
-
   return obj;
 }
 
-void OgreVis::addVisualObject(const std::string &name,
-                              const std::string &meshName,
-                              const std::string &material,
-                              const raisim::Vec<3> &scale,
-                              bool castShadow,
-                              unsigned long int group) {
-  auto *ent = raisim::OgreVis::getSceneManager()->createEntity(name,
-                                                               meshName,
-                                                               Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-  visObject_[name] = VisualObject();
-
+VisualObject* OgreVis::addVisualObject(const std::string &name,
+                                       const std::string &meshName,
+                                       const std::string &material,
+                                       const raisim::Vec<3> &scale,
+                                       bool castShadow,
+                                       unsigned long int group) {
+  auto *ent = OgreVis::getSceneManager()->createEntity(name, meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   ent->setCastShadows(castShadow);
-
-  if (!material.empty())
-    ent->setMaterialName(material);
+  if (!material.empty()) { ent->setMaterialName(material); }
+  visObject_[name] = VisualObject();
   /// hack to check if texture coordinates exist
   VisualObject &obj = visObject_[name];
-  obj.graphics = getSceneManager()->getRootSceneNode()->createChildSceneNode(name);
+  obj.graphics = this->getSceneManager()->getRootSceneNode()->createChildSceneNode(name);
   obj.graphics->attachObject(ent);
   obj.scale = scale;
   obj.graphics->scale(float(obj.scale[0]), float(obj.scale[1]), float(obj.scale[2]));
   obj.group = group;
   obj.name = name;
+  return &visObject_[name];
 }
 
 void OgreVis::clearVisualObject() {
@@ -1108,7 +1105,7 @@ void OgreVis::renderOneFrame() {
     auto nContact = contactProblem->size();
 
     sync();
-
+    
     /// initially set everything to false
     for (auto &con : contactPoints_)
       con.graphics->setVisible(false);
@@ -1176,7 +1173,7 @@ void OgreVis::renderOneFrame() {
       }
     }
   }
-
+  
   for (auto &vob: visObject_) {
     vob.second.graphics->setVisible(vob.second.group & mask_);
     updateVisualizationObject(vob.second);
@@ -1216,6 +1213,10 @@ void OgreVis::renderOneFrame() {
   }
 }
 
+void OgreVis::setCameraSpeed(float speed) {
+  this->getCameraMan()->setTopSpeed(speed);
+}
+
 void OgreVis::deselect() {
   cameraMan_->setStyle(CS_FREELOOK);
   selected_ = nullptr;
@@ -1230,4 +1231,27 @@ void OgreVis::closeApp() {
   controlCallback_ = nullptr;
 }
 
+std::pair<Ogre::Light*, Ogre::SceneNode*> OgreVis::addLight(const std::string &name) {
+  lights_.emplace(name, scnMgr_->createLight(name));
+  lightNodes_.emplace(name, scnMgr_->getRootSceneNode()->createChildSceneNode());
+  lightNodes_[name]->attachObject(lights_[name]);
+  return {lights_[name], lightNodes_[name]};
 }
+
+std::pair<Ogre::Light*, Ogre::SceneNode*> OgreVis::addLight(const std::string &name,
+                                                   Ogre::Light type,
+                                                   Ogre::Vector3 pos,
+                                                   Ogre::Vector3 dir,
+                                                   Ogre::Real power,
+                                                   bool shadows) {
+  lights_.emplace(name, scnMgr_->createLight(name));
+  lightNodes_.emplace(name, scnMgr_->getRootSceneNode()->createChildSceneNode());
+  lightNodes_[name]->attachObject(lights_[name]);
+  return {lights_[name], lightNodes_[name]};
+}
+
+void OgreVis::setAmbientLight(Ogre::ColourValue rgba) {
+  scnMgr_->setAmbientLight(rgba);
+}
+
+} // namespace raisim
