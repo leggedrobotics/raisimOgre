@@ -369,8 +369,10 @@ void OgreVis::setup() {
   lights_["default"]->setType(Ogre::Light::LT_DIRECTIONAL);
   lights_["default"]->setPowerScale(1.0);
   lights_["default"]->setCastShadows(true);
-  lights_["default"]->setDirection(Ogre::Vector3(0, 0, -1));
-  scnMgr_->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+  lights_["default"]->setDirection(Ogre::Vector3(1, 0, -2));
+  lights_["default"]->setDiffuseColour(Ogre::ColourValue(0.3f, 0.3f, 0.3f));
+  lights_["default"]->setSpecularColour(Ogre::ColourValue(0.3f, 0.3f, 0.3f));
+  scnMgr_->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
   scnMgr_->setShadowFarDistance(20); // Try it with different values, as that can also cause shadows to fade out
   scnMgr_->setShadowDirLightTextureOffset(0);
   auto *camSetup = new Ogre::FocusedShadowCameraSetup();
