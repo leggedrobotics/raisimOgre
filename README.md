@@ -4,6 +4,7 @@
 raisimOgre is a visualizer for raisim. It is a simple wrapper around Ogre3d (https://www.ogre3d.org/), which is an open-source 3d rendering library.
 
 ## News
+- 2-10/12/18 Major code clean-up + light refactoring by Vasilios. You can now create multiple light sources.
 - Now you can make simple graphs in raisimOgre using imgui + imgui_plot
 ![alt-text-2](img/anymal.gif "graph")
 - 2019/10/16, please pull ogre. I reported a skybox bug to ogre and added my fix to the forked repository.
