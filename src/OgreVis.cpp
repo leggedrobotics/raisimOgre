@@ -1194,7 +1194,7 @@ void OgreVis::renderOneFrame() {
 
     wire.second.offset = mid;
     wire.second.rotationOffset = rot;
-    wire.second.scale = {wireThickness_, wireThickness_, wobj->getLength()};
+    wire.second.scale = {wireThickness_, wireThickness_, wobj->getDistance()};
     updateVisualizationObject(wire.second);
   }
 

@@ -103,6 +103,11 @@ int main(int argc, char **argv) {
   pin4->setBodyType(raisim::BodyType::STATIC);
   vis->createGraphicalObject(pin4, "pin4", "lawn_green");
 
+  auto pin5 = world.addSphere(0.1, 0.8);
+  pin5->setPosition(0.9, 0.0, 6.0);
+  pin5->setBodyType(raisim::BodyType::STATIC);
+  vis->createGraphicalObject(pin5, "pin5", "lawn_green");
+
   auto ball1 = world.addSphere(0.1498, 0.8, "steel");
   ball1->setPosition(0, 0.0, 1.0);
   vis->createGraphicalObject(ball1, "ball1", "dark_red");
@@ -119,6 +124,10 @@ int main(int argc, char **argv) {
   ball4->setPosition(2.9, 0.0, 3.0);
   vis->createGraphicalObject(ball4, "ball4", "orange");
 
+  auto box = world.addBox(.1, .1, .1, 1);
+  box->setPosition(0.9, 0.0, 4.0);
+  vis->createGraphicalObject(box, "box", "red");
+
   auto wire1 = world.addStiffWire(pin1, 0, {0,0,0}, ball1, 0, {0,0,0}, 2.0);
   vis->createGraphicalObject(wire1, "wire1", "red");
   auto wire2 = world.addStiffWire(pin2, 0, {0,0,0}, ball2, 0, {0,0,0}, 2.0);
@@ -127,6 +136,9 @@ int main(int argc, char **argv) {
   vis->createGraphicalObject(wire3, "wire3", "red");
   auto wire4 = world.addStiffWire(pin4, 0, {0,0,0}, ball4, 0, {0,0,0}, 2.0);
   vis->createGraphicalObject(wire4, "wire4", "red");
+
+  auto wire5 = world.addCompliantWire(pin5, 0, {0,0,0}, box, 0, {0., 0, 0}, 2.0, 200);
+  vis->createGraphicalObject(wire5, "wire5", "red");
 
   /// create visualizer objects
   vis->createGraphicalObject(ground, 20, "floor", "checkerboard_green");

@@ -31,6 +31,7 @@
 #include "anymal/jointSpeedTorqueLogger.hpp"
 #include "anymal/rewardLogger.hpp"
 #include "anymal/videoLogger.hpp"
+#include "anymal/frameVisualizer.hpp"
 
 using namespace raisim;
 
@@ -75,13 +76,15 @@ int main(int argc, char **argv) {
   raisim::World world;
   world.setTimeStep(0.0025);
 
+  /// just a shortcut
   auto vis = raisim::OgreVis::get();
 
   /// gui
   anymal_gui::init({anymal_gui::video::init(vis->getResourceDir()),
                     anymal_gui::joint_speed_and_torque::init(100),
                     anymal_gui::gait::init(100),
-                    anymal_gui::reward::init({"commandTracking", "torque"})});
+                    anymal_gui::reward::init({"commandTracking", "torque"}),
+                    anymal_gui::frame::init()});
 
   /// these method must be called before initApp
   vis->setWorld(&world);
@@ -95,13 +98,14 @@ int main(int argc, char **argv) {
   vis->initApp();
 
   /// create raisim objects
+  auto anymal = world.addArticulatedSystem(raisim::loadResource("anymal/anymal.urdf"));
   auto ground = world.addGround();
-  ground->setName("checkerboard");
-
-  raisim::ArticulatedSystem* anymal;
+  ground->setName("checkerboard"); /// not necessary here but once you set name, you can later retrieve it using raisim::World::getObject()
 
   /// create visualizer objects
   vis->createGraphicalObject(ground, 20, "floor", "checkerboard_green");
+  auto anymal_graphics = vis->createGraphicalObject(anymal, "ANYmal"); // this is the name assigned for raisimOgre. It is displayed using this name
+  anymal_gui::frame::setArticulatedSystem(anymal, 0.3); // to visualize frames
 
   /// ANYmal joint PD controller
   Eigen::VectorXd jointNominalConfig(19), jointVelocityTarget(18);
@@ -114,8 +118,7 @@ int main(int argc, char **argv) {
   jointPgain.tail(12).setConstant(200.0);
   jointDgain.tail(12).setConstant(10.0);
 
-  anymal = world.addArticulatedSystem(raisim::loadResource("anymal/anymal.urdf"));
-  auto anymal_graphics = vis->createGraphicalObject(anymal, "ANYmal"); // this is the name assigned for raisimOgre. It is displayed using this name
+  /// set anymal properties
   anymal->setGeneralizedCoordinate({0, 0, 0.54, 1.0, 0.0, 0.0, 0.0, 0.03, 0.4,
                                     -0.8, -0.03, 0.4, -0.8, 0.03, -0.4, 0.8, -0.03, -0.4, 0.8});
   anymal->setGeneralizedForce(Eigen::VectorXd::Zero(anymal->getDOF()));
@@ -123,7 +126,7 @@ int main(int argc, char **argv) {
   anymal->setPdGains(jointPgain, jointDgain);
   anymal->setName("anymal"); // this is the name assigned for raisim. Not used in this example
 
-  // contacts
+  /// contacts
   std::vector<size_t> footIndices;
   std::array<bool, 4> footContactState;
   footIndices.push_back(anymal->getBodyIdx("LF_SHANK"));
@@ -131,12 +134,13 @@ int main(int argc, char **argv) {
   footIndices.push_back(anymal->getBodyIdx("LH_SHANK"));
   footIndices.push_back(anymal->getBodyIdx("RH_SHANK"));
 
+  /// just to get random motions of anymal
   std::default_random_engine generator;
-  std::normal_distribution<double> distribution(0.0, 0.2);
+  std::normal_distribution<double> distribution(0.0, 0.6);
   std::srand(std::time(nullptr));
   double time=0.;
 
-  // lambda function for the controller
+  /// lambda function for the controller
   auto controller = [anymal,
                      &generator,
                      &distribution,
@@ -162,7 +166,7 @@ int main(int argc, char **argv) {
     jointTorque = anymal->getGeneralizedForce().e().tail(12);
     jointSpeed = anymal->getGeneralizedVelocity().e().tail(12);
 
-    if(controlDecimation % 10 != 0)
+    if(controlDecimation % 50 != 0)
       return;
 
     /// ANYmal joint PD controller
