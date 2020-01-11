@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
 
   auto floatingJoint = Joint::getFloatingBaseJoint();
 
-  Body base(1.0, Mat<3, 3>::getIdentity(), Vec<3>::getZeros(), Mat<3, 3>::getIdentity());
+  Body base(1.0, Mat<3, 3>::getIdentity(), Vec<3>::getZeros());
   Body firstLink = base;
 
   Child root(base, floatingJoint, "root");
