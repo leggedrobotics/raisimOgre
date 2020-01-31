@@ -66,7 +66,7 @@ Finally, build raisimOgre (assuming that you already have cloned this repo).
 ```commandline
 cd $WORKSPACE
 cd raisimOgre && mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$LOCAL_BUILD -DCMAKE_INSTALL_PREFIX=$LOCAL_BUILD
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$LOCAL_BUILD -DCMAKE_INSTALL_PREFIX=$LOCAL_BUILD -DRAISIM_OGRE_EXAMPLES=ON
 make install -j8
 ```
 
