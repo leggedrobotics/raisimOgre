@@ -94,7 +94,14 @@ int main(int argc, char **argv) {
   terrainProperties.fractalOctaves = 3;
   terrainProperties.fractalLacunarity = 2.0;
   terrainProperties.fractalGain = 0.25;
+
+  /// comment one of the following two heightmap methods
+
+  /// using terrain properties
   auto hm = world.addHeightMap(0.0, 0.0, terrainProperties);
+
+  /// using raisim text file
+//  auto hm = world.addHeightMap(raisim::loadResource("heightMap/heightMapExample.txt"), 0, 0);
 
   /// create visualizer objects
   vis->createGraphicalObject(hm, "terrain", "default");
