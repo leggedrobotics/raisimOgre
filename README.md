@@ -74,11 +74,8 @@ make install -j8
 - ffmpeg (video recording, for OgreVis::startRecordingVideo method. The install instruction can be found at https://tecadmin.net/install-ffmpeg-on-linux/)
 
 ## Examples
-By default, we disable building examples. If you want to build them, you can enable them by setting RAISIM_OGRE_EXAMPLES=ON. For example,
+If you want to build examples, you can enable them by setting -DRAISIM_OGRE_EXAMPLES=ON (as above build description).
 
-```commandline
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$LOCAL_BUILD -DCMAKE_INSTALL_PREFIX=$LOCAL_BUILD -DRAISIM_OGRE_EXAMPLES=True
-```
 The executables are located in the examples folder in the build directory. Some examples do not start automatically. You should start simulation by unchecking "Simulation/Manual stepping" in the control panel.
 
 anymalOnHeightMap
