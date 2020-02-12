@@ -51,7 +51,6 @@
         <parent link="link1"/>
         <child link="link2"/>
         <origin xyz="0 0 -0.34"/>
-        <axis xyz="0 1 0"/>
         <limit lower="1"/>
     </joint>
 
@@ -79,7 +78,6 @@
         <parent link="link2"/>
         <child link="link3"/>
         <origin xyz="0 0 -0.24"/>
-        <axis xyz="0 1 0"/>
         <limit lower="1"/>
     </joint>
 
@@ -107,7 +105,6 @@
         <parent link="link3"/>
         <child link="link4"/>
         <origin xyz="0 0 -0.24"/>
-        <axis xyz="0 1 0"/>
         <limit lower="1"/>
     </joint>
 
