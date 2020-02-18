@@ -81,21 +81,22 @@ int main() {
   JointPositions maxTorque;
   maxTorque << 30.5, 30.5, 30.5, 6.8, 6.8, 6.8, 1.75, 1.75, 1.75;
   // Desired position and input torque
-  JointPositions jointConfigTarget, tau;
-  jointConfigTarget << DEFAULT_JOINT_CONFIG;
+  JointPositions tau;
+  std::vector<JointPositions> jointConfigTarget(100);
+
   tau.setZero();
   // Error for PD controller
   JointPositions jointConfigError, jointVelError;
   // state
-  JointPositions jointConfig, jointVel;
+  JointPositions jointConfig, jointVel, jointConfigTemp;
 
   // create simulation handle
   raisim::World sim;
   sim.setTimeStep(0.002);
-  auto kinova = sim.addArticulatedSystem(raisim::loadResource("kinova/urdf/kinova_stand.urdf"));
+  std::vector<raisim::ArticulatedSystem *> kinovas;
 
-  // Display DOF
-  RSINFO("Degree of Freedom: " << kinova->getDOF())
+  for(int i=0; i< 100; i++)
+    kinovas.push_back(sim.addArticulatedSystem(raisim::loadResource("kinova/urdf/kinova_stand.urdf")));
 
   // visualizer
   auto real_time_factor = 1.0;
@@ -117,11 +118,15 @@ int main() {
 
   // Create the robot and ground visuals
   auto checkerBoard = sim.addGround();
-  groundGraphic = vis->createGraphicalObject(checkerBoard, 20, "floor", "checkerboard");
-  kinovaGraphic = vis->createGraphicalObject(kinova, "kinova");
+  groundGraphic = vis->createGraphicalObject(checkerBoard, 20, "floor", "checkerboard_green");
+
+  for(int i=0; i< 100; i++)
+    kinovaGraphic = vis->createGraphicalObject(kinovas[i], "kinova_" + std::to_string(i));
 
   vis->select(kinovaGraphic->at(0));
   vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0.), Ogre::Radian(-1.), 3);
+  std::default_random_engine generator;
+  std::normal_distribution<double> distribution(0.0, 0.6);
 
   /*
    * Basic Operation
@@ -131,24 +136,38 @@ int main() {
   jointConfig << DEFAULT_JOINT_CONFIG;
   jointVel.setZero();
   tau.setZero();
-  kinova->setState(jointConfig, jointVel);
-  kinova->setGeneralizedForce(tau);
+  for(auto kinova : kinovas) {
+    kinova->setState(jointConfig, jointVel);
+    kinova->setGeneralizedForce(tau);
+  }
+
+  for(int i=0; i<10; i++) {
+    for(int j=0; j<10; j++) {
+      kinovas[i*10+j]->setBasePos({i*1.5, j*1.5, 0.5});
+      jointConfigTarget[i*10+j] << DEFAULT_JOINT_CONFIG;
+      for(int k=0; k<9; k++)
+        jointConfigTarget[i*10+j][k] += distribution(generator);
+    }
+  }
 
   // basic operation
-  jointConfigTarget << DEFAULT_JOINT_CONFIG;
   RSINFO("starting basic operation!")
   for (size_t k = 0; k < 10000; k++) {
     while (time < 0.0) {
       // get robot's state
-      jointConfig = kinova->getGeneralizedCoordinate().e();
-      jointVel = kinova->getGeneralizedVelocity().e();
-      // calculate the joint torque to apply using PD controller in joint-space
-      jointConfigError = jointConfigTarget - jointConfig;
-      jointVelError = - jointVel;
-      tau = jointConfigError.cwiseProduct(jointPgain) + jointVelError.cwiseProduct(jointDgain);
-      tau = tau.cwiseMax(-maxTorque).cwiseMin(maxTorque);
-      // perform stepping in the environment
-      kinova->setGeneralizedForce(tau);
+      int idx = 0;
+
+      for(auto kinova : kinovas) {
+        jointConfig = kinova->getGeneralizedCoordinate().e();
+        jointVel = kinova->getGeneralizedVelocity().e();
+        // calculate the joint torque to apply using PD controller in joint-space
+        jointConfigError = jointConfigTarget[idx++] - jointConfig;
+        jointVelError = -jointVel;
+        tau = jointConfigError.cwiseProduct(jointPgain) + jointVelError.cwiseProduct(jointDgain);
+        tau = tau.cwiseMax(-maxTorque).cwiseMin(maxTorque);
+        // perform stepping in the environment
+        kinova->setGeneralizedForce(tau);
+      }
       sim.integrate();
       time += sim.getTimeStep();
     }
@@ -156,33 +175,6 @@ int main() {
     vis->renderOneFrame();
   }
 
-  /*
-   * Random Input Operation
-   */
-  // Set initial state of the robot
-  jointConfig << DEFAULT_JOINT_CONFIG;
-  jointVel.setZero();
-  tau.setZero();
-  kinova->setState(jointConfig, jointVel);
-  kinova->setGeneralizedForce(tau);
-  // random input
-  RSINFO("starting random input operation!")
-
-  for (size_t k = 0; k < 10000; k++) {
-    // random input
-    jointConfigTarget.setRandom();
-    // get robot's state
-    jointConfig = kinova->getGeneralizedCoordinate().e();
-    jointVel = kinova->getGeneralizedVelocity().e();
-    // calculate the joint torque to apply using PD controller in joint-space
-    jointConfigError = jointConfigTarget - jointConfig;
-    jointVelError = - jointVel;
-    tau = jointConfigError.cwiseProduct(jointPgain) + jointVelError.cwiseProduct(jointDgain);
-    tau = tau.cwiseMax(-maxTorque).cwiseMin(maxTorque);
-    // perform stepping in the environment
-    kinova->setGeneralizedForce(tau);
-    sim.integrate();
-  }
 
   // shutdown
   vis->closeApp();
