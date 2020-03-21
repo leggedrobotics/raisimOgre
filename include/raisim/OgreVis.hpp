@@ -52,11 +52,16 @@ public:
     RAISIM_CONTACT_FORCE_GROUP = 1ul << 3
   };
 
+  static std::unique_ptr<OgreVis> singletonPtr;
+
   /** return a pointer of the singleton**/
   static OgreVis *get() {
-    static OgreVis singleton;
-    return &singleton;
+    if(!singletonPtr) 
+      singletonPtr.reset(new OgreVis);
+    return singletonPtr.get();
   }
+
+  ~OgreVis() final;
 
   /** set title of main render window **/
   void setWindowTitle(const std::string &title) { mAppName = title; }
@@ -336,7 +341,6 @@ private:
     start = std::chrono::system_clock::now();
   }
 
-  ~OgreVis() final;
   void setup() final;
   void shutdown() final;
   bool keyPressed(const KeyboardEvent &evt) final;
@@ -440,5 +444,7 @@ private:
 };
 
 } // namespace raisim
+
+std::unique_ptr<raisim::OgreVis> raisim::OgreVis::singletonPtr(nullptr);
 
 #endif // RAISIM_OGRE_VIS_HPP
