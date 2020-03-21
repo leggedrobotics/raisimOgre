@@ -427,9 +427,9 @@ private:
 
   /// video recording related
   std::string currentVideoFile_;
-  bool initiateVideoRecording_;
-  bool stopVideoRecording_;
-  bool isVideoRecording_;
+  bool initiateVideoRecording_ = false;
+  bool stopVideoRecording_ = false;
+  bool isVideoRecording_ = false;
   bool newFrameAvailable_ = false;
   std::mutex videoFrameMutext_, videoInitMutex_;
   std::unique_ptr<Ogre::PixelBox> videoPixelBox_;
