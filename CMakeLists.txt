@@ -43,7 +43,7 @@ target_include_directories(${PROJECT_NAME}
     $<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
-target_compile_options(${PROJECT_NAME} PUBLIC -Wl,--no-as-needed) # workaround for gcc pthread link bug
+target_compile_options(${PROJECT_NAME} PUBLIC -Wl,--no-as-needed,-rpath,$ORIGIN) # workaround for gcc pthread link bug
 
 
 ####################################
