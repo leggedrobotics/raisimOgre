@@ -219,12 +219,12 @@ public:
                                                     const std::string &name,
                                                     const std::string &material = "default");
 
-  /**
-  * @param as raisim articulated system object
-  * @param name unique identifier of the object */
-  std::vector<GraphicObject> *createGraphicalObject(raisim::Compound *compound,
-                                                    const std::string &name,
-                                                    const std::string &material = "default");
+  // /**
+  // * @param as raisim articulated system object
+  // * @param name unique identifier of the object */
+  // std::vector<GraphicObject> *createGraphicalObject(raisim::Compound *compound,
+  //                                                   const std::string &name,
+  //                                                   const std::string &material = "default");
 
   /** sync raisim and ogre*/
   void sync();

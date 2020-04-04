@@ -695,77 +695,77 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::ArticulatedSy
 }
 
 
-std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Compound *com,
-                                                           const std::string &name,
-                                                           const std::string &material) {
-  std::vector<GraphicObject> graphics;
-  auto& ch = com->getChildren();
+// std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Compound *com,
+//                                                            const std::string &name,
+//                                                            const std::string &material) {
+//   std::vector<GraphicObject> graphics;
+//   auto& ch = com->getChildren();
 
-  for (size_t i=0; i< com->getChildren().size(); i++) {
-    auto visname = name + "_ch_" + std::to_string(i);
-    raisim::Vec<3> dim;
-    std::string meshName;
-    raisim::Vec<3> capOffsetRaw, capOffset;    
-    switch(ch[i].objectType) {
-      case raisim::Shape::Box :
-        meshName = "cubeMesh";
-        dim = {ch[i].objectParam[0], ch[i].objectParam[1], ch[i].objectParam[2]};
-        break;
-      case raisim::Shape::Sphere :
-        meshName = "sphereMesh";
-        dim = {ch[i].objectParam[0], ch[i].objectParam[0], ch[i].objectParam[0]};
-        break;
-      case raisim::Shape::Cylinder :
-        meshName = "cylinderMesh";
-        dim = {ch[i].objectParam[0], ch[i].objectParam[0], ch[i].objectParam[1]};
-        break;
-      case raisim::Shape::Capsule :
-        graphics.push_back(createSingleGraphicalObject(visname + "_cyl",
-                                        "cylinderMesh",
-                                        "",
-                                        {ch[i].objectParam[0], ch[i].objectParam[0], ch[i].objectParam[1]},
-                                        ch[i].trans.pos,
-                                        ch[i].trans.rot,
-                                        0, true, true, RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP));
-        graphics.back().rotationOffset = ch[i].trans.rot;
-        capOffsetRaw = {0, 0, 0.5 * ch[i].objectParam[1]};
-        matvecmul(ch[i].trans.rot, capOffsetRaw, capOffset);
-        vecadd(ch[i].trans.pos, capOffset);
-        graphics.push_back(createSingleGraphicalObject(visname + "_sph1",
-                                        "sphereMesh",
-                                        "",
-                                        {ch[i].objectParam[0], ch[i].objectParam[0], ch[i].objectParam[0]},
-                                        capOffset,
-                                        ch[i].trans.rot,
-                                        0, true, true, RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP));
-        graphics.back().rotationOffset = ch[i].trans.rot;
-        capOffsetRaw = {0, 0, -0.5 * ch[i].objectParam[1]};
-        matvecmul(ch[i].trans.rot, capOffsetRaw, capOffset);
-        vecadd(ch[i].trans.pos, capOffset);
-        graphics.push_back(createSingleGraphicalObject(visname + "_sph2",
-                                        "sphereMesh",
-                                        "",
-                                        {ch[i].objectParam[0], ch[i].objectParam[0], ch[i].objectParam[0]},
-                                        capOffset,
-                                        ch[i].trans.rot,
-                                        0, true, true, RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP));
-        continue;
-    }
+//   for (size_t i=0; i< com->getChildren().size(); i++) {
+//     auto visname = name + "_ch_" + std::to_string(i);
+//     raisim::Vec<3> dim;
+//     std::string meshName;
+//     raisim::Vec<3> capOffsetRaw, capOffset;    
+//     switch(ch[i].objectType) {
+//       case raisim::Shape::Box :
+//         meshName = "cubeMesh";
+//         dim = {ch[i].objectParam[0], ch[i].objectParam[1], ch[i].objectParam[2]};
+//         break;
+//       case raisim::Shape::Sphere :
+//         meshName = "sphereMesh";
+//         dim = {ch[i].objectParam[0], ch[i].objectParam[0], ch[i].objectParam[0]};
+//         break;
+//       case raisim::Shape::Cylinder :
+//         meshName = "cylinderMesh";
+//         dim = {ch[i].objectParam[0], ch[i].objectParam[0], ch[i].objectParam[1]};
+//         break;
+//       case raisim::Shape::Capsule :
+//         graphics.push_back(createSingleGraphicalObject(visname + "_cyl",
+//                                         "cylinderMesh",
+//                                         "",
+//                                         {ch[i].objectParam[0], ch[i].objectParam[0], ch[i].objectParam[1]},
+//                                         ch[i].trans.pos,
+//                                         ch[i].trans.rot,
+//                                         0, true, true, RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP));
+//         graphics.back().rotationOffset = ch[i].trans.rot;
+//         capOffsetRaw = {0, 0, 0.5 * ch[i].objectParam[1]};
+//         matvecmul(ch[i].trans.rot, capOffsetRaw, capOffset);
+//         vecadd(ch[i].trans.pos, capOffset);
+//         graphics.push_back(createSingleGraphicalObject(visname + "_sph1",
+//                                         "sphereMesh",
+//                                         "",
+//                                         {ch[i].objectParam[0], ch[i].objectParam[0], ch[i].objectParam[0]},
+//                                         capOffset,
+//                                         ch[i].trans.rot,
+//                                         0, true, true, RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP));
+//         graphics.back().rotationOffset = ch[i].trans.rot;
+//         capOffsetRaw = {0, 0, -0.5 * ch[i].objectParam[1]};
+//         matvecmul(ch[i].trans.rot, capOffsetRaw, capOffset);
+//         vecadd(ch[i].trans.pos, capOffset);
+//         graphics.push_back(createSingleGraphicalObject(visname + "_sph2",
+//                                         "sphereMesh",
+//                                         "",
+//                                         {ch[i].objectParam[0], ch[i].objectParam[0], ch[i].objectParam[0]},
+//                                         capOffset,
+//                                         ch[i].trans.rot,
+//                                         0, true, true, RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP));
+//         continue;
+//     }
 
-    graphics.push_back(createSingleGraphicalObject(visname + meshName,
-                                                meshName,
-                                                "",
-                                                dim,
-                                                ch[i].trans.pos,
-                                                ch[i].trans.rot,
-                                                0,
-                                                true,
-                                                true,
-                                                RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP));
-  }
+//     graphics.push_back(createSingleGraphicalObject(visname + meshName,
+//                                                 meshName,
+//                                                 "",
+//                                                 dim,
+//                                                 ch[i].trans.pos,
+//                                                 ch[i].trans.rot,
+//                                                 0,
+//                                                 true,
+//                                                 true,
+//                                                 RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP));
+//   }
 
-  return registerSet(name, com, std::move(graphics));
-}
+//   return registerSet(name, com, std::move(graphics));
+// }
 
 void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
                                              std::vector<GraphicObject> &graphics,

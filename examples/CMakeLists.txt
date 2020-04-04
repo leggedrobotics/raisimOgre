@@ -17,7 +17,7 @@ endfunction()
 
 # robots
 create_executable(anymal src/robots/anymal.cpp)
-create_executable(anymal_angularMomentumTest src/robots/anymal_angularMomentumTest.cpp)
+# create_executable(anymal_angularMomentumTest src/robots/anymal_angularMomentumTest.cpp)
 create_executable(laikago src/robots/laikago.cpp)
 create_executable(kinova src/robots/kinova.cpp)
 create_executable(atlas src/robots/atlas.cpp)
@@ -33,11 +33,11 @@ create_executable(remoteVisualzation_client src/remote/client.cpp)
 
 # primitives
 create_executable(zurichHeightMap src/primitives/heightMapFromPng.cpp)
-create_executable(randomTerrainGenerator src/primitives/randomTerrainGenerator.cpp)
+# create_executable(randomTerrainGenerator src/primitives/randomTerrainGenerator.cpp)
 create_executable(newtonsCradle src/primitives/newtonsCradle.cpp)
 create_executable(primitives src/primitives/primitives.cpp)
 # create_executable(compound src/primitives/compound.cpp)
-create_executable(capsuleBox src/primitives/capsuleBox.cpp)
+# create_executable(capsuleBox src/primitives/capsuleBox.cpp)
 
 # meshes
 create_executable(meshes src/mesh/meshes.cpp)
