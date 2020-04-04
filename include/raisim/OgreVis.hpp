@@ -99,7 +99,7 @@ public:
   Ogre::SceneManager *getSceneManager() { return scnMgr_; }
 
   /** get CameraMan**/
-  CameraMan *getCameraMan() { return cameraMan_; }
+  CameraMan *getCameraMan() { return cameraMan_.get(); }
 
   /** get specific light Light object for configuring it **/
   Ogre::Light *getLight(const std::string &index="default") { return lights_[index]; }
@@ -216,6 +216,13 @@ public:
   * @param as raisim articulated system object
   * @param name unique identifier of the object */
   std::vector<GraphicObject> *createGraphicalObject(raisim::Mesh *mesh,
+                                                    const std::string &name,
+                                                    const std::string &material = "default");
+
+  /**
+  * @param as raisim articulated system object
+  * @param name unique identifier of the object */
+  std::vector<GraphicObject> *createGraphicalObject(raisim::Compound *compound,
                                                     const std::string &name,
                                                     const std::string &material = "default");
 
@@ -342,7 +349,6 @@ private:
   }
 
   void setup() final;
-  void shutdown() final;
   bool keyPressed(const KeyboardEvent &evt) final;
   bool keyReleased(const KeyboardEvent &evt) final;
   bool mousePressed(const MouseButtonEvent &evt) final;
@@ -389,7 +395,7 @@ private:
   
   Ogre::SceneNode *camNode_ = nullptr;
   Ogre::Camera *mainCamera_ = nullptr;
-  raisim::CameraMan *cameraMan_;
+  std::unique_ptr<raisim::CameraMan> cameraMan_;
   
   std::string resourceDir_;
   Ogre::SceneNode *selected_ = nullptr, *hovered_ = nullptr;

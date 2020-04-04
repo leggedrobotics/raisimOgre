@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include <raisim/OgreVis.hpp>
 #include "raisimBasicImguiPanel.hpp"
 #include "helper.hpp"
+#include "RandomHeightMapGenerator.hpp"
 
 void setupCallback() {
   auto vis = raisim::OgreVis::get();
@@ -51,60 +52,46 @@ void setupCallback() {
   vis->getCameraMan()->setTopSpeed(5);
 
   /// skybox
-  Ogre::Quaternion quat;
-  quat.FromAngleAxis(Ogre::Radian(M_PI_2), {1., 0., 0.});
-  vis->getSceneManager()->setSkyBox(true,
-                                    "Examples/StormySkyBox",
-                                    500,
-                                    true,
-                                    quat,
-                                    Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+  vis->getRenderWindow()->getViewport(0)->setBackgroundColour(Ogre::ColourValue(1.,1.,1.));
 }
 
 int main(int argc, char **argv) {
   /// create raisim world
   raisim::World world;
   world.setTimeStep(0.002);
-  world.setERP(0.003, 0.);
   auto vis = raisim::OgreVis::get();
 
   /// these method must be called before initApp
   vis->setWorld(&world);
   vis->setWindowSize(1200, 600);
-  vis->setImguiSetupCallback(imguiSetupCallback);
-  vis->setImguiRenderCallback(imguiRenderCallBack);
   vis->setSetUpCallback(setupCallback);
   vis->setAntiAliasing(8);
 
   /// starts visualizer thread
   vis->initApp();
 
-  /// create raisim objects
-  auto sphere1 = world.addSphere(0.1, 10);
-  auto sphere2 = world.addSphere(0.1, 10);
+  double cameraAngle = 0.;
+  raisim::HeightMap* heightMap = nullptr;
+  raisim::RandomHeightMapGenerator hmGenerator;
+  std::mt19937 gen(0);  
 
-  // the floating base orientation is initialized to identity and all joints and positions are initialized to 1
-  auto anymal = world.addArticulatedSystem(raisim::loadResource("anymal/anymal.urdf"));
 
-  // loading heightmap from a png file
-  auto heightMap = world.addHeightMap(raisim::loadResource("heightMap/zurichHeightMap.png"), 0, 0, 100, 100, 0.0005, -10);
+  for (int i=0; i< 5000; i++) {
+    if (i % 500 == 0) {
+      if(heightMap) {
+        vis->remove(heightMap);
+        world.removeObject(heightMap);
+      }
 
-  vis->createGraphicalObject(sphere1, "sphere1", "gravel");
-  vis->createGraphicalObject(sphere2, "sphere2", "default");
-  vis->createGraphicalObject(heightMap, "floor", "default");
-  auto* anymal_visual = vis->createGraphicalObject(anymal, "anymal");
+      // loading heightmap from a png file
+      heightMap = hmGenerator.generateTerrain(&world, raisim::RandomHeightMapGenerator::GroundType((i+100)/500), 1, false, gen);
+      auto heightMapVis = vis->createGraphicalObject(heightMap, "floor", "default");
+      vis->select(heightMapVis->at(0));
+    }
+    vis->getCameraMan()->setYawPitchDist(Ogre::Radian(i*0.03), Ogre::Radian(-1.), 12);      
+    vis->renderOneFrame();
+  }
 
-  sphere1->setPosition(0, 0, 5);
-  sphere2->setPosition(0.5, 0, 3);
-
-  /// set camera
-  vis->select(anymal_visual->at(0));
-  vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0.), Ogre::Radian(-1.), 3);
-
-  /// run the app
-  vis->run();
-
-  /// terminate
   vis->closeApp();
 
   return 0;

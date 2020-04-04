@@ -2,7 +2,7 @@
 // Created by Jemin Hwangbo on 2/28/19.
 // MIT License
 //
-// Copyright (c) 2019-2019 Robotic Systems Lab, ETH Zurich
+// Copyright (c) 2019-2020 Jemin Hwangbo
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 
 
 #include <raisim/OgreVis.hpp>
@@ -51,7 +50,7 @@ void setupCallback() {
   // beyond this distance, shadow disappears
   vis->getSceneManager()->setShadowFarDistance(60);
   // size of contact points and contact forces
-  vis->setContactVisObjectSize(0.1, 3.0);
+  vis->setContactVisObjectSize(0.02, 3.0);
   // speed of camera motion in freelook mode
   vis->getCameraMan()->setTopSpeed(10);
 }
@@ -70,57 +69,22 @@ int main(int argc, char **argv) {
   vis->setSetUpCallback(setupCallback);
   vis->setKeyboardCallback(raisimKeyboardCallback);
   vis->setAntiAliasing(2);
+  raisim::gui::manualStepping = true;
 
   /// init
   vis->initApp();
 
-  /// create raisim objects
-  auto ground = world.addGround();
-
-  std::vector<raisim::Box*> cubes;
-  std::vector<raisim::Sphere*> spheres;
-  std::vector<raisim::Capsule*> capsules;
-  std::vector<raisim::Cylinder*> cylinders;
-
-  static const int N=6;
-
-  for(size_t i=0; i<N; i++) {
-    for(size_t j=0; j<N; j++) {
-      for (size_t k = 0; k < N; k++) {
-        std::string number = std::to_string(i) + std::to_string(j) + std::to_string(k);
-        raisim::SingleBodyObject *ob = nullptr;
-        switch ((i + j + k) % 4) {
-          case 0:
-            cubes.push_back(world.addBox(1, 1, 1, 1));
-            vis->createGraphicalObject(cubes.back(), "cubes" + number, "red");
-            ob = cubes.back();
-            break;
-          case 1:
-            spheres.push_back(world.addSphere(0.5, 1));
-            vis->createGraphicalObject(spheres.back(), "sphere" + number, "green");
-            ob = spheres.back();
-            break;
-          case 2:
-            capsules.push_back(world.addCapsule(0.25, 0.5, 1));
-            vis->createGraphicalObject(capsules.back(), "capsules" + number, "blue");
-            ob = capsules.back();
-            break;
-          case 3:
-            cylinders.push_back(world.addCylinder(0.5, 0.5, 1));
-            vis->createGraphicalObject(cylinders.back(), "cylinders" + number, "default");
-            ob = cylinders.back();
-            break;
-        }
-        ob->setPosition(-N + 2.*i, -N + 2.*j, N*2. + 2.*k);
-      }
-    }
-  }
-
-  /// create visualizer objects
-  vis->createGraphicalObject(ground, 20, "floor", "default");
+  auto box = world.addBox(1, 1, 1, 2);
+  box->setPosition(0,0,0.5);
+  box->setBodyType(raisim::BodyType::STATIC);
+  auto capsule = world.addCapsule(0.1, 0.2, 1);
+  capsule->setPosition(0.5,0,1.1);
+  capsule->setOrientation(0.5,0,0.7,0);
+  vis->createGraphicalObject(capsule, "capsule", "blue");
+  vis->createGraphicalObject(box, "box", "blue");
 
   /// set camera
-  vis->getCameraMan()->getCamera()->setPosition(0,-N*3.5,N*1.5);
+  vis->getCameraMan()->getCamera()->setPosition(0,-3, 5);
   vis->getCameraMan()->getCamera()->pitch(Ogre::Radian(1.2));
 
   /// run the app

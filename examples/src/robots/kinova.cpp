@@ -56,15 +56,11 @@ void setupCallback() {
   // speed of camera motion in freelook mode
   vis->getCameraMan()->setTopSpeed(2);
 
-  /// shdow setting
-  vis->getSceneManager()->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
-  vis->getSceneManager()->setShadowTextureSettings(2048, 3);
-
   /// skybox
   Ogre::Quaternion quat;
   quat.FromAngleAxis(Ogre::Radian(M_PI_2), {1, 0, 0});
   vis->getSceneManager()->setSkyBox(true,
-                                    "Examples/StormySkyBox",
+                                    "white",
                                     500,
                                     true,
                                     quat,
@@ -83,6 +79,7 @@ int main() {
   // Desired position and input torque
   JointPositions tau;
   std::vector<JointPositions> jointConfigTarget(100);
+  JointPositions jointVelocityTarget; jointVelocityTarget.setZero();
 
   tau.setZero();
   // Error for PD controller
@@ -94,13 +91,28 @@ int main() {
   raisim::World sim;
   sim.setTimeStep(0.002);
   std::vector<raisim::ArticulatedSystem *> kinovas;
+  constexpr int kinoRows = 1;
 
-  for(int i=0; i< 100; i++)
+  for(int i=0; i< kinoRows*kinoRows; i++) {
     kinovas.push_back(sim.addArticulatedSystem(raisim::loadResource("kinova/urdf/kinova_stand.urdf")));
+    kinovas.back()->setControlMode(raisim::ControlMode::PD_PLUS_FEEDFORWARD_TORQUE);
+  }
+
+  auto table = sim.addBox(0.6, 0.6, 0.6, 100.);
+  // auto cylinder = sim.addCylinder(0.03, 0.1, 1.);
+  // auto box = sim.addBox(0.1, 0.1, 0.1, 1.0);
+  // auto sphere = sim.addSphere(0.06, 1.);
+  auto capsule = sim.addCapsule(0.03, 0.1, 1.);
+
+  table->setPosition(1, 0, 0.31);
+  // cylinder->setPosition(0.8, 0, 0.65);
+  // box->setPosition(0.9, 0.1, 0.65);
+  // sphere->setPosition(1.0, -0.1, 0.65);
+  capsule->setPosition(1.1, 0, 0.75);
 
   // visualizer
   auto real_time_factor = 1.0;
-  auto fps = 50.0;
+  auto fps = 60.0;
   std::vector<::raisim::GraphicObject>* kinovaGraphic{nullptr};
   std::vector<::raisim::GraphicObject>* groundGraphic{nullptr};
   // Get local handle to visualizer singleton
@@ -111,6 +123,7 @@ int main() {
   vis->setSetUpCallback(setupCallback);
   vis->setImguiSetupCallback(imguiSetupCallback);
   vis->setImguiRenderCallback(imguiRenderCallBack);
+  raisim::gui::manualStepping = true;
 
   vis->initApp();
   // Configure general properties
@@ -119,14 +132,20 @@ int main() {
   // Create the robot and ground visuals
   auto checkerBoard = sim.addGround();
   groundGraphic = vis->createGraphicalObject(checkerBoard, 20, "floor", "checkerboard_green");
+  auto tableGraphic = vis->createGraphicalObject(table, "table", "gray");
+  // auto cylinderGraphic = vis->createGraphicalObject(cylinder, "cylinder", "red");
+  // auto boxGraphic = vis->createGraphicalObject(box, "box", "green");
+  // auto sphereGraphic = vis->createGraphicalObject(sphere, "sphere", "orange");
+  auto capsuleGraphic = vis->createGraphicalObject(capsule, "capsule", "brown");
 
-  for(int i=0; i< 100; i++)
+  for(int i=0; i< kinoRows*kinoRows; i++)
     kinovaGraphic = vis->createGraphicalObject(kinovas[i], "kinova_" + std::to_string(i));
 
   vis->select(kinovaGraphic->at(0));
   vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0.), Ogre::Radian(-1.), 3);
   std::default_random_engine generator;
   std::normal_distribution<double> distribution(0.0, 0.6);
+  generator.seed(4);
 
   /*
    * Basic Operation
@@ -141,42 +160,24 @@ int main() {
     kinova->setGeneralizedForce(tau);
   }
 
-  for(int i=0; i<10; i++) {
-    for(int j=0; j<10; j++) {
-      kinovas[i*10+j]->setBasePos({i*1.5, j*1.5, 0.5});
-      jointConfigTarget[i*10+j] << DEFAULT_JOINT_CONFIG;
-      for(int k=0; k<9; k++)
-        jointConfigTarget[i*10+j][k] += distribution(generator);
-    }
-  }
-
-  // basic operation
-  RSINFO("starting basic operation!")
-  for (size_t k = 0; k < 10000; k++) {
-    while (time < 0.0) {
-      // get robot's state
-      int idx = 0;
-
-      for(auto kinova : kinovas) {
-        jointConfig = kinova->getGeneralizedCoordinate().e();
-        jointVel = kinova->getGeneralizedVelocity().e();
-        // calculate the joint torque to apply using PD controller in joint-space
-        jointConfigError = jointConfigTarget[idx++] - jointConfig;
-        jointVelError = -jointVel;
-        tau = jointConfigError.cwiseProduct(jointPgain) + jointVelError.cwiseProduct(jointDgain);
-        tau = tau.cwiseMax(-maxTorque).cwiseMin(maxTorque);
-        // perform stepping in the environment
-        kinova->setGeneralizedForce(tau);
+  for(int i=0; i<kinoRows; i++) {
+    for(int j=0; j<kinoRows; j++) {
+      kinovas[i*kinoRows+j]->setBasePos({i*1.5, j*1.5, 0.1});
+      jointConfigTarget[i*kinoRows+j] << DEFAULT_JOINT_CONFIG;
+      for(int k=0; k<9; k++) {
+        jointConfigTarget[i*kinoRows+j][k] += distribution(generator);
+        jointConfigTarget[i*kinoRows+j][k]  = 0;
       }
-      sim.integrate();
-      time += sim.getTimeStep();
+
+      kinovas[i*kinoRows+j]->setPdTarget(jointConfigTarget[i*kinoRows+j], jointVelocityTarget);
+      kinovas[i*kinoRows+j]->setPdGains(jointPgain, jointDgain);
     }
-    time -= real_time_factor / fps;
-    vis->renderOneFrame();
   }
 
+  /// run the app
+  vis->run();
 
-  // shutdown
+  /// terminate
   vis->closeApp();
 
   return 0;

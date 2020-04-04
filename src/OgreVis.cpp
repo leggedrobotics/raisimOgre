@@ -323,10 +323,6 @@ bool OgreVis::keyReleased(const KeyboardEvent &evt) {
   return true;
 }
 
-void OgreVis::shutdown() {
-  delete cameraMan_;
-}
-
 void OgreVis::setup() {
   // do not forget to call the base first
   mRoot->initialise(false);
@@ -388,7 +384,7 @@ void OgreVis::setup() {
   camNode_->attachObject(mainCamera_);
   camNode_->setPosition(10, 10, 10);
   camNode_->setOrientation(1, 0, 0, 0);
-  cameraMan_ = new CameraMan(camNode_);   // create a default camera controller
+  cameraMan_ = std::make_unique<raisim::CameraMan>(camNode_);   // create a default camera controller
   cameraMan_->setStyle(CS_FREELOOK);
 
   // and tell it to render into the main window
@@ -698,6 +694,79 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::ArticulatedSy
   return registerSet(name, as, std::move(graphics));
 }
 
+
+std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Compound *com,
+                                                           const std::string &name,
+                                                           const std::string &material) {
+  std::vector<GraphicObject> graphics;
+  auto& ch = com->getChildren();
+
+  for (size_t i=0; i< com->getChildren().size(); i++) {
+    auto visname = name + "_ch_" + std::to_string(i);
+    raisim::Vec<3> dim;
+    std::string meshName;
+    raisim::Vec<3> capOffsetRaw, capOffset;    
+    switch(ch[i].objectType) {
+      case raisim::Shape::Box :
+        meshName = "cubeMesh";
+        dim = {ch[i].objectParam[0], ch[i].objectParam[1], ch[i].objectParam[2]};
+        break;
+      case raisim::Shape::Sphere :
+        meshName = "sphereMesh";
+        dim = {ch[i].objectParam[0], ch[i].objectParam[0], ch[i].objectParam[0]};
+        break;
+      case raisim::Shape::Cylinder :
+        meshName = "cylinderMesh";
+        dim = {ch[i].objectParam[0], ch[i].objectParam[0], ch[i].objectParam[1]};
+        break;
+      case raisim::Shape::Capsule :
+        graphics.push_back(createSingleGraphicalObject(visname + "_cyl",
+                                        "cylinderMesh",
+                                        "",
+                                        {ch[i].objectParam[0], ch[i].objectParam[0], ch[i].objectParam[1]},
+                                        ch[i].trans.pos,
+                                        ch[i].trans.rot,
+                                        0, true, true, RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP));
+        graphics.back().rotationOffset = ch[i].trans.rot;
+        capOffsetRaw = {0, 0, 0.5 * ch[i].objectParam[1]};
+        matvecmul(ch[i].trans.rot, capOffsetRaw, capOffset);
+        vecadd(ch[i].trans.pos, capOffset);
+        graphics.push_back(createSingleGraphicalObject(visname + "_sph1",
+                                        "sphereMesh",
+                                        "",
+                                        {ch[i].objectParam[0], ch[i].objectParam[0], ch[i].objectParam[0]},
+                                        capOffset,
+                                        ch[i].trans.rot,
+                                        0, true, true, RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP));
+        graphics.back().rotationOffset = ch[i].trans.rot;
+        capOffsetRaw = {0, 0, -0.5 * ch[i].objectParam[1]};
+        matvecmul(ch[i].trans.rot, capOffsetRaw, capOffset);
+        vecadd(ch[i].trans.pos, capOffset);
+        graphics.push_back(createSingleGraphicalObject(visname + "_sph2",
+                                        "sphereMesh",
+                                        "",
+                                        {ch[i].objectParam[0], ch[i].objectParam[0], ch[i].objectParam[0]},
+                                        capOffset,
+                                        ch[i].trans.rot,
+                                        0, true, true, RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP));
+        continue;
+    }
+
+    graphics.push_back(createSingleGraphicalObject(visname + meshName,
+                                                meshName,
+                                                "",
+                                                dim,
+                                                ch[i].trans.pos,
+                                                ch[i].trans.rot,
+                                                0,
+                                                true,
+                                                true,
+                                                RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP));
+  }
+
+  return registerSet(name, com, std::move(graphics));
+}
+
 void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
                                              std::vector<GraphicObject> &graphics,
                                              raisim::ArticulatedSystem *as,
@@ -722,7 +791,7 @@ void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
     auto visname = name + "_" + as->getBodyNames()[vo.localIdx] + "_";
     raisim::Vec<3> dim;
     std::string meshName;
-    raisim::Vec<3> capOffsetRaw, capOffset;
+    raisim::Vec<3> capOffsetRaw, capOffset;    
 
     switch (vo.shape) {
       case raisim::Shape::Box :
@@ -767,7 +836,6 @@ void OgreVis::registerRaisimGraphicalObjects(raisim::VisObject &vo,
                                         capOffset,
                                         vo.rot,
                                         vo.localIdx, true, true, group));
-        graphics.back().rotationOffset = vo.rot;
         return;
       default:
         RSFATAL("unsupported visual shape of " << name << " of " << as->getRobotDescriptionfFileName())
@@ -1228,7 +1296,9 @@ void OgreVis::closeApp() {
   imGuiSetupCallback_ = nullptr;
   keyboardCallback_ = nullptr;
   setUpCallback_ = nullptr;
-  controlCallback_ = nullptr;
+  controlCallback_ = nullptr;  
+  if(singletonPtr) singletonPtr.reset(nullptr);
+
 }
 
 std::pair<Ogre::Light*, Ogre::SceneNode*> OgreVis::addLight(const std::string &name) {
