@@ -8,3 +8,4 @@ third_party/filament_src/*
 .vscode/*
 lib/raisim/*
 /.project
+rsc/test.mp4
