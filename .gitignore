@@ -9,3 +9,4 @@ third_party/filament_src/*
 lib/raisim/*
 .project/*
 *.mp4
+*imgui.ini
