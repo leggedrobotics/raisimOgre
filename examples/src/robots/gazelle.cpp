@@ -23,10 +23,9 @@
 // THE SOFTWARE.
 
 
-
 #include <raisim/OgreVis.hpp>
 #include "raisimBasicImguiPanel.hpp"
-#include "raisimKeyboardCallback.hpp"
+#include "helper.hpp"
 
 void setupCallback() {
   auto vis = raisim::OgreVis::get();
@@ -36,12 +35,12 @@ void setupCallback() {
   vis->getLight()->setCastShadows(true);
   vis->getLightNode()->setPosition(3, 3, 3);
 
-  /// load  textures
-  vis->addResourceDirectory(vis->getResourceDir() + "/material/gravel");
-  vis->loadMaterialFile("gravel.material");
-
+  /// load textures
   vis->addResourceDirectory(vis->getResourceDir() + "/material/checkerboard");
   vis->loadMaterialFile("checkerboard.material");
+
+  vis->addResourceDirectory(vis->getResourceDir() + "/material/skybox/violentdays");
+  vis->loadMaterialFile("violentdays.material");
 
   /// shdow setting
   vis->getSceneManager()->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
@@ -49,79 +48,59 @@ void setupCallback() {
 
   /// scale related settings!! Please adapt it depending on your map size
   // beyond this distance, shadow disappears
-  vis->getSceneManager()->setShadowFarDistance(60);
+  vis->getSceneManager()->setShadowFarDistance(10);
   // size of contact points and contact forces
-  vis->setContactVisObjectSize(0.1, 3.0);
+  vis->setContactVisObjectSize(0.03, 0.2);
   // speed of camera motion in freelook mode
-  vis->getCameraMan()->setTopSpeed(10);
+  vis->getCameraMan()->setTopSpeed(5);
+
+  /// skybox
+  Ogre::Quaternion quat;
+  quat.FromAngleAxis(Ogre::Radian(M_PI_2), {1., 0, 0});
+  vis->getSceneManager()->setSkyBox(true,
+                                    "skybox/violentdays",
+                                    500,
+                                    true,
+                                    quat,
+                                    Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
 }
 
 int main(int argc, char **argv) {
   /// create raisim world
   raisim::World world;
-  world.setTimeStep(0.003);
+  world.setTimeStep(0.002);
+
+  auto vis = raisim::OgreVis::get();
 
   /// these method must be called before initApp
-  auto vis = raisim::OgreVis::get();
   vis->setWorld(&world);
-  vis->setWindowSize(1800, 1000);
+  vis->setWindowSize(1800, 1200);
   vis->setImguiSetupCallback(imguiSetupCallback);
   vis->setImguiRenderCallback(imguiRenderCallBack);
   vis->setSetUpCallback(setupCallback);
-  vis->setKeyboardCallback(raisimKeyboardCallback);
-  vis->setAntiAliasing(2);
+  vis->setAntiAliasing(8);
+  raisim::gui::manualStepping = true;
 
-  /// init
+  /// starts visualizer thread
   vis->initApp();
 
   /// create raisim objects
   auto ground = world.addGround();
 
-  std::vector<raisim::Box*> cubes;
-  std::vector<raisim::Sphere*> spheres;
-  std::vector<raisim::Capsule*> capsules;
-  std::vector<raisim::Cylinder*> cylinders;
+  auto robot = world.addArticulatedSystem(raisim::loadResource("gazelle/GAZELLE.urdf"));
+  robot->setName("gazelle");
+  Eigen::VectorXd gc(robot->getGeneralizedCoordinateDim());
+  gc.setZero();
+  gc.segment<7>(0) << 0, 0, 1, 1, 0, 0, 0;
 
-  static const int N=6;
-
-  for(size_t i=0; i<N; i++) {
-    for(size_t j=0; j<N; j++) {
-      for (size_t k = 0; k < N; k++) {
-        std::string number = std::to_string(i) + std::to_string(j) + std::to_string(k);
-        raisim::SingleBodyObject *ob = nullptr;
-        switch ((i + j + k) % 4) {
-          case 0:
-            cubes.push_back(world.addBox(1, 1, 1, 1));
-            vis->createGraphicalObject(cubes.back(), "cubes" + number, "red");
-            ob = cubes.back();
-            break;
-          case 1:
-            spheres.push_back(world.addSphere(0.5, 1));
-            vis->createGraphicalObject(spheres.back(), "sphere" + number, "green");
-            ob = spheres.back();
-            break;
-          case 2:
-            capsules.push_back(world.addCapsule(0.25, 0.5, 1));
-            vis->createGraphicalObject(capsules.back(), "capsules" + number, "blue");
-            ob = capsules.back();
-            break;
-          case 3:
-            cylinders.push_back(world.addCylinder(0.5, 0.5, 1));
-            vis->createGraphicalObject(cylinders.back(), "cylinders" + number, "default");
-            ob = cylinders.back();
-            break;
-        }
-        ob->setPosition(-N + 2.*i, -N + 2.*j, N*2. + 2.*k);
-      }
-    }
-  }
+  robot->setGeneralizedCoordinate(gc);
 
   /// create visualizer objects
-  vis->createGraphicalObject(ground, 20, "floor", "default");
+  vis->createGraphicalObject(ground, 10, "floor", "checkerboard_green_transparent");
+  auto robot_visual = vis->createGraphicalObject(robot, "gazelle");
 
-  /// set camera
-  vis->getCameraMan()->getCamera()->setPosition(0,-N*3.5,N*1.5);
-  vis->getCameraMan()->getCamera()->pitch(Ogre::Radian(1.2));
+  vis->select(robot_visual->at(0));
+  vis->getCameraMan()->setYawPitchDist(Ogre::Radian(0), Ogre::Radian(-1.f), 10);
 
   /// run the app
   vis->run();
