@@ -7,3 +7,4 @@ third_party/filament/*
 third_party/filament_src/*
 .vscode/*
 lib/raisim/*
+.project/*
