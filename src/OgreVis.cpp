@@ -50,7 +50,7 @@ void OgreVis::loadMaterialFile(const std::string &filename) {
   Ogre::MaterialManager::getSingleton().parseScript(ds, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 }
 
-void OgreVis::loadMeshFile(const std::string &file, const std::string &meshName, bool fromMemory) {
+void OgreVis::loadMeshFile(const std::string &rawFilename, const std::string &meshName, bool fromMemory) {
   AssimpLoader::AssOptions opts;
   if (meshUsageCount_.find(meshName) != meshUsageCount_.end())
     meshUsageCount_[meshName]++;
@@ -59,7 +59,33 @@ void OgreVis::loadMeshFile(const std::string &file, const std::string &meshName,
 
   if (Ogre::MeshManager::getSingleton().getByName(meshName)) return;
 
+  std::string file = rawFilename;
   if (!fromMemory) {
+    // Add support for paths with package:// prepended: Drop this string as we
+    // assume it to have been added via addResourceDirectory.
+    if (file.find("package://") != std::string::npos) {
+      // Find end of package name:
+      std::size_t package_prefix_start = file.find("package://");
+      std::size_t package_name_start = package_prefix_start + 10;
+      std::size_t package_name_end = file.find("/", package_name_start);
+      if (package_name_end == std::string::npos) {
+        std::cerr << "Something went wrong when looking for slash: " << package_name_end << std::endl;
+        return;
+      }
+      std::string package_name = file.substr(package_name_start, package_name_end - package_name_start);
+      // std::cout << "Package: " << package_name << std::endl;
+
+      // We now want to find the relative path of the URDF w.r.t. the package root.
+      // This works if the package is installed on a ROS path for instance.
+      std::size_t pos_after_package_name = file.find(package_name) + package_name.length() + 1;
+      // std::cout << "Relative path: " << file.substr(pos_after_package_name, package_prefix_start - pos_after_package_name) << std::endl;
+
+      // Erase the "package://package-name" string from the whole file path.
+      file.erase(package_prefix_start, package_name_end - package_prefix_start + 1);
+
+      // Erase the relative path component from root of package to URDF location.
+      file.erase(pos_after_package_name, package_prefix_start - pos_after_package_name);
+    }
 
     RSFATAL_IF(!fileExists(file), "File " + file + " not found.")
 
