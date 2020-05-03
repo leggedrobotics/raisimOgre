@@ -451,6 +451,4 @@ private:
 
 } // namespace raisim
 
-std::unique_ptr<raisim::OgreVis> raisim::OgreVis::singletonPtr(nullptr);
-
 #endif // RAISIM_OGRE_VIS_HPP
