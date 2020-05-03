@@ -339,7 +339,7 @@ private:
   OgreVis():
     ApplicationContext("RaiSim OGRE")
   {
-    RSINFO("Loading RaisimOgre Resources from: " + resourceDir_)
+    RSINFO("Loading RaiSim OGRE Resources from: " + std::string(OGREVIS_MAKE_STR(RAISIM_OGRE_RESOURCE_DIR)))
     RSINFO("Loading OGRE Configurations from: " + std::string(OGREVIS_MAKE_STR(OGRE_CONFIG_DIR)))
     resourceDir_ = std::string(OGREVIS_MAKE_STR(RAISIM_OGRE_RESOURCE_DIR));
     mFSLayer->setHomePath(std::string(OGREVIS_MAKE_STR(OGRE_CONFIG_DIR)));
