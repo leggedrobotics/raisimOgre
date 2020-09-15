@@ -14,6 +14,7 @@
     <build_depend>raisim</build_depend>
     <build_depend>sdl2</build_depend>
     <build_depend>zziplib</build_depend>
+    <build_depend>zlib</build_depend>
     <!--Package Export-->
     <export>
         <build_type>cmake</build_type>
