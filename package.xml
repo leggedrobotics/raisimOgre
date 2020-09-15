@@ -12,6 +12,7 @@
     <buildtool_depend>cmake</buildtool_depend>
     <exec_depend>catkin</exec_depend>
     <build_depend>raisim</build_depend>
+    <build_depend>sdl2</build_depend>
     <!--Package Export-->
     <export>
         <build_type>cmake</build_type>
