@@ -10,6 +10,8 @@ option(RAISIM_OGRE_EXAMPLES "Build example applications." FALSE)
 ########### dependencies ###########
 ####################################
 find_package(raisim CONFIG REQUIRED)
+# add the Ubuntu OGRE cmake module config to module path
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/share/OGRE/cmake/modules/")
 find_package(OGRE 1.12.1 CONFIG REQUIRED COMPONENTS Bites RTShaderSystem)
 find_package(Eigen3 REQUIRED HINTS ${Eigen3_HINT})
 
