@@ -186,7 +186,15 @@ public:
   * @param raisim wire object
   * @param name unique identifier of the object
   * @param material for visualization */
-  raisim::VisualObject *createGraphicalObject(raisim::Wire *wire,
+  raisim::VisualObject *createGraphicalObject(raisim::CompliantLengthConstraint *wire,
+                                              const std::string &name,
+                                              const std::string &material = "default");
+
+  /**
+  * @param raisim wire object
+  * @param name unique identifier of the object
+  * @param material for visualization */
+  raisim::VisualObject *createGraphicalObject(raisim::StiffLengthConstraint *wire,
                                               const std::string &name,
                                               const std::string &material = "default");
 

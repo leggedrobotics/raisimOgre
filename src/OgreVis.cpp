@@ -635,7 +635,34 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Cylinder *cap
                      {createSingleGraphicalObject(name, "cylinderMesh", material, {rad, rad, h}, {0, 0, 0}, rot, 0)});
 }
 
-raisim::VisualObject *OgreVis::createGraphicalObject(raisim::Wire *wire,
+raisim::VisualObject *OgreVis::createGraphicalObject(raisim::CompliantLengthConstraint *wire,
+                                                     const std::string &name,
+                                                     const std::string &material) {
+  wire->setName(name);
+
+  auto *ent = raisim::OgreVis::getSceneManager()->createEntity(name,
+                                                               "cylinderMesh",
+                                                               Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+  wires_[name] = VisualObject();
+
+  ent->setCastShadows(true);
+
+  if (!material.empty())
+    ent->setMaterialName(material);
+  /// hack to check if texture coordinates exist
+  VisualObject &obj = wires_[name];
+  obj.graphics = getSceneManager()->getRootSceneNode()->createChildSceneNode(name);
+  obj.graphics->attachObject(ent);
+  obj.scale = {1., 1., 1.};
+  obj.graphics->scale(float(obj.scale[0]), float(obj.scale[1]), float(obj.scale[2]));
+  obj.group = RAISIM_OBJECT_GROUP | RAISIM_COLLISION_BODY_GROUP;
+  obj.name = name;
+
+  return &wires_[name];
+}
+
+raisim::VisualObject *OgreVis::createGraphicalObject(raisim::StiffLengthConstraint *wire,
                                                      const std::string &name,
                                                      const std::string &material) {
   wire->setName(name);
